@@ -16,18 +16,18 @@ namespace SwanSongExtended.Items
     {
         public override bool isEnabled => true;
         #region config
-        [AutoConfig("Percent Barrier Base", 0.2f)]
-        public static float percentBase = 0.2f;
+        [AutoConfig("Percent Barrier Base", 0.4f)]
+        public static float percentBase = 0.4f;
         [AutoConfig("Percent Barrier Stack", 0)]
         public static float percentStack = 0;
         [AutoConfig("Flat Barrier Base", 0)]
         public static int flatBase = 0;
-        [AutoConfig("Flat Barrier Stack", 20)]
-        public static int flatStack = 20;
-        [AutoConfig("Barrier Decay Freeze Base", 0.5f)]
-        public static float decayFreezeBase = 0.5f;
-        [AutoConfig("Barrier Decay Freeze Stack", 0.5f)]
-        public static float decayFreezeStack = 0.5f;
+        [AutoConfig("Flat Barrier Stack", 40)]
+        public static int flatStack = 40;
+        [AutoConfig("Barrier Decay Freeze Base", 1f)]
+        public static float decayFreezeBase = 1f;
+        [AutoConfig("Barrier Decay Freeze Stack", 1f)]
+        public static float decayFreezeStack = 1f;
 
         public override string ConfigName => "Item: " + ItemName;
         #endregion
@@ -42,7 +42,7 @@ namespace SwanSongExtended.Items
 
         public override string ItemLore => "Standing still blocks one hit and grants barrier.";
 
-        public override ItemTier Tier => ItemTier.Tier1;
+        public override ItemTier Tier => ItemTier.Tier2;
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility};
 
