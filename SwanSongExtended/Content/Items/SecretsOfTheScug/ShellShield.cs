@@ -37,16 +37,16 @@ namespace SwanSongExtended.Items
 
         public override string ItemLangTokenName => "SHELLSHIELD";
 
-        public override string ItemPickupDesc => "Standing still blocks one hit and grants barrier.";
+        public override string ItemPickupDesc => "Standing still blocks one hit, granting barrier and regeneration.";
 
-        public override string ItemFullDescription => "Standing still blocks one hit and grants barrier.";
-
-        public override string ItemLore => $"While not moving, you are {UtilityColor("protected")} against one hit. " +
+        public override string ItemFullDescription => $"While not moving, you are {UtilityColor("protected")} against one hit. " +
             $"Using your protection {UtilityColor("blocks the hit")}, then grants " +
             $"{HealingColor($"{ConvertDecimal(percentBase)} of maximum health {StackText($"+{flatStack} flat")} in barrier")}, " +
             $"and grants {HealingColor("Regenerative")} and {UtilityColor("freezes")} barrier decay for " +
             $"{UtilityColor($"{decayFreezeBase}")} {StackText($"+{decayFreezeStack}")} seconds. " +
             $"Recharges after {UtilityColor("7")} seconds.";
+
+        public override string ItemLore => "";
 
         public override ItemTier Tier => ItemTier.Tier1;
 
