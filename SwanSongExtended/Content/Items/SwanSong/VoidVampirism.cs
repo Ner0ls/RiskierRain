@@ -14,26 +14,26 @@ namespace SwanSongExtended.Items
     {
         int vampireBleedChance = 10;
 
-        int maxBleedBonusBase = 9;
-        int maxBleedBonusStack = 5;
-        float bonusDamagePerBleed = 0.04f;
+        int maxHealing = 3;
+        int maxHealingStack = 2;
+        float healthPerBleed = 0.1f;
         public override ExpansionDef RequiredExpansion => SwanSongPlugin.expansionDefSS2;
 
         public override string ItemName => "Bloodsucking Coralite";
 
         public override string ItemLangTokenName => "HEALFROMBLEEDINGENEMIES";
 
-        public override string ItemPickupDesc => "Deal more damage against bleeding enemies. Corrupts all Chef Staches.";
+        public override string ItemPickupDesc => "Bleeding enemies heal you on hit. Corrupts all Leeching Seeds.";
 
         public override string ItemFullDescription => $"Gain <style=cIsHealth>{vampireBleedChance}% bleed chance</style>. " +
-            $"Bleeding enemies take <style=cIsDamage>+{bonusDamagePerBleed * 100}% more damage</style> from your attacks " +
+            $"Bleeding enemies heal you for <style=cIsDamage>+{healthPerBleed} health</style> when hit " +
             $"<style=cIsHealth>per stack of bleed</style>, up to a maximum of " +
-            $"{maxBleedBonusBase} <style=cStack>(+{maxBleedBonusStack} per stack)</style> times. " +
-            $"<style=cIsVoid>Corrupts all Chef Staches.</style>";
+            $"{maxHealing} <style=cStack>(+{maxHealingStack} per stack)</style> health. " +
+            $"<style=cIsVoid>Corrupts all Leeching Seeds.</style>";
 
         public override string ItemLore => "";
 
-        public override ItemTier Tier => ItemTier.VoidTier2;
+        public override ItemTier Tier => ItemTier.VoidTier1;
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Healing, ItemTag.Damage };
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/coralite.prefab");
@@ -50,6 +50,30 @@ namespace SwanSongExtended.Items
             On.RoR2.CharacterBody.RecalculateStats += VampireBleedChance;
             On.RoR2.Items.ContagiousItemManager.Init += CreateTransformation;
             On.RoR2.HealthComponent.TakeDamageProcess += TakeMoreDamageWhileBurning;
+            On.RoR2.GlobalEventManager.OnCharacterDeath += VampireOnKill;
+        }
+
+        private void VampireOnKill(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
+        {
+            orig(self, damageReport);
+            CharacterBody enemyBody = damageReport.victimBody;
+            CharacterBody attackerBody = damageReport.attackerBody;
+            if (enemyBody == null || attackerBody == null)
+                return;
+            Inventory attackerInventory = attackerBody.inventory;
+            if (attackerInventory != null)
+            {
+                int itemCount = GetCount(attackerInventory);
+                if (itemCount > 0)
+                {
+                    int currentBuffCount = enemyBody.GetBuffCount(RoR2Content.Buffs.Bleeding);
+                    int maxHealingCount = (maxHealing + maxHealingStack * GetCount(attackerBody));
+
+                    float healingToDo = MathF.Min((healthPerBleed * currentBuffCount), maxHealingCount);
+
+                    attackerBody.AddTimedBuffAuthority(JunkContent.Buffs.MeatRegenBoost.buffIndex, healingToDo * 3);
+                }
+            }
         }
 
         private void TakeMoreDamageWhileBurning(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
@@ -62,9 +86,11 @@ namespace SwanSongExtended.Items
                     CharacterBody victimBody = self.body;
 
                     int currentBuffCount = victimBody.GetBuffCount(RoR2Content.Buffs.Bleeding);
-                    int maxBuffCount = maxBleedBonusBase + maxBleedBonusStack * GetCount(attackerBody);
+                    int maxHealingCount = (maxHealing + maxHealingStack * GetCount(attackerBody));
 
-                    damageInfo.damage *= 1 + bonusDamagePerBleed * Mathf.Min(currentBuffCount, maxBuffCount);
+                    float healingToDo = MathF.Min((healthPerBleed * currentBuffCount), maxHealingCount);
+
+                    attackerBody.AddTimedBuffAuthority(JunkContent.Buffs.MeatRegenBoost.buffIndex, healingToDo);
                 }
             }
 
@@ -84,7 +110,7 @@ namespace SwanSongExtended.Items
         {
             ItemDef.Pair transformation = new ItemDef.Pair()
             {
-                itemDef1 = ChefReference.instance.ItemsDef, //consumes leeching seed
+                itemDef1 = RoR2Content.Items.Seed, //consumes leeching seed
                 itemDef2 = VoidVampirism.instance.ItemsDef
             };
             ItemCatalog.itemRelationships[DLC1Content.ItemRelationshipTypes.ContagiousItem] = ItemCatalog.itemRelationships[DLC1Content.ItemRelationshipTypes.ContagiousItem].AddToArray(transformation);
