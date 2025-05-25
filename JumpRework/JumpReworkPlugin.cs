@@ -27,7 +27,7 @@ namespace JumpRework
     [BepInDependency(R2API.ContentManagement.R2APIContentManager.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(MoreStats.MoreStatsPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(MissileRework.MissileReworkPlugin.guid, BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency(DynamicJump.DynamicJumpPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency(DynamicJump.DynamicJumpPlugin.guid, BepInDependency.DependencyFlags.SoftDependency)]
 
     [BepInPlugin(guid, modName, version)]
     [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(ContentAddition))]
@@ -38,7 +38,7 @@ namespace JumpRework
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
         public const string modName = "FruityJumps";
-        public const string version = "1.3.1";
+        public const string version = "1.3.2";
         #endregion
         #region config
         internal static ConfigFile CustomConfigFile { get; private set; }
