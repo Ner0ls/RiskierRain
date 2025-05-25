@@ -9,6 +9,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using static MoreStats.StatHooks;
+using static SwanSongExtended.Modules.Language.Styling;
 
 namespace SwanSongExtended.Items
 {
@@ -40,7 +41,12 @@ namespace SwanSongExtended.Items
 
         public override string ItemFullDescription => "Standing still blocks one hit and grants barrier.";
 
-        public override string ItemLore => "Standing still blocks one hit and grants barrier.";
+        public override string ItemLore => $"While not moving, you are {UtilityColor("protected")} against one hit. " +
+            $"Using your protection {UtilityColor("blocks the hit")}, then grants " +
+            $"{HealingColor($"{ConvertDecimal(percentBase)} of maximum health {StackText($"+{flatStack} flat")} in barrier")}, " +
+            $"and grants {HealingColor("Regenerative")} and {UtilityColor("freezes")} barrier decay for " +
+            $"{UtilityColor($"{decayFreezeBase}")} {StackText($"+{decayFreezeStack}")} seconds. " +
+            $"Recharges after {UtilityColor("7")} seconds.";
 
         public override ItemTier Tier => ItemTier.Tier1;
 
@@ -74,7 +80,6 @@ namespace SwanSongExtended.Items
 
         public override void Init()
         {
-            base.Init();
             shellShieldBuff = Content.CreateAndAddBuff("ShellShieldBuff", Addressables.LoadAssetAsync<Sprite>("RoR2/Base/ElementalRings/texBuffElementalRingsReadyIcon.tif").WaitForCompletion(),
                     Color.cyan,
                     false,
@@ -83,7 +88,9 @@ namespace SwanSongExtended.Items
                     Color.cyan,
                     false,
                     true);
+            shellShieldBuff.isHidden = true;
             shellShieldCooldown.isHidden = true;
+            base.Init();
         }
         private void ShellShieldOnTakeDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
