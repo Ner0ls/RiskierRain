@@ -14,9 +14,9 @@ namespace SwanSongExtended.Items
     {
         int vampireBleedChance = 10;
 
-        int maxHealing = 3;
-        int maxHealingStack = 2;
-        float healthPerBleed = 0.1f;
+        int maxHealing = 2;
+        int maxHealingStack = 1;
+        float healthPerBleed = 0.2f;
         public override ExpansionDef RequiredExpansion => SwanSongPlugin.expansionDefSS2;
 
         public override string ItemName => "Bloodsucking Coralite";
