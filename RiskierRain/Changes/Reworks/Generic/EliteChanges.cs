@@ -326,9 +326,10 @@ namespace RiskierRain
                 CharacterBody victimBody = victim.GetComponent<CharacterBody>();
                 if (attackerBody && victimBody)
                 {
-                    if (attackerBody.HasBuff(DLC1Content.Buffs.EliteVoid))
+                    float luck = attackerBody.master ? attackerBody.master.luck : 0;
+                    if (attackerBody.HasBuff(DLC1Content.Buffs.EliteVoid) && Util.CheckRoll0To1(damageInfo.procCoefficient, luck))
                     {
-                        victimBody.AddTimedBuffAuthority(RoR2Content.Buffs.NullifyStack.buffIndex, voidtouchedNullifyBaseDuration * damageInfo.procCoefficient);
+                        victimBody.AddTimedBuffAuthority(RoR2Content.Buffs.NullifyStack.buffIndex, voidtouchedNullifyBaseDuration);
                     }
                 }
             }
