@@ -112,7 +112,6 @@ namespace RiskierRainContent.EntityState.Captain
                 FireProjectileInfo fpi = new FireProjectileInfo
                 {
                     projectilePrefab = VulcanSlugSkill.vulcanSlugPrefab,
-                    position = aimRay.origin,
                     rotation = Util.QuaternionSafeLookRotation(aimRay.direction),
                     owner = base.gameObject,
                     damage = damageStat * damageCoefficient,
