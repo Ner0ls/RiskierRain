@@ -3,6 +3,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API;
 using R2API.Utils;
+using RainrotSharedUtils.Shelters;
 using RoR2;
 using System;
 using System.Security;
@@ -31,12 +32,14 @@ namespace RainrotSharedUtils
         public const string version = "1.0.2";
         #endregion
 
+        public const string shelterKeywordToken = "2R4R_SHELTER_KEYWORD";
         public const string executeKeywordToken = "2R4R_EXECUTION_KEYWORD";
         public const string noAttackSpeedKeywordToken = "2R4R_NOATTACKSPEED_KEYWORD";
         public const float survivorExecuteThreshold = 0.15f;
 
         public void Awake()
         {
+            ShelterUtilsModule.Init();
             Hooks.DoHooks();
 
             LanguageAPI.Add(executeKeywordToken,
@@ -48,6 +51,9 @@ namespace RainrotSharedUtils
                 $"<style=cKeywordName>Exacting</style>" +
                 $"<style=cSub>This skill <style=cIsHealth>does not gain attack speed bonuses</style>. " +
                 $"Instead, attack speed <style=cIsDamage>increases total damage</style>.</style>");
+            LanguageAPI.Add(shelterKeywordToken,
+                $"<style=cKeywordName>Shelter</style>" +
+                $"<style=cSub>Protects from storms and fog.</style>");
         }
     }
 }

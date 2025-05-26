@@ -1,0 +1,189 @@
+﻿using RoR2;
+using RoR2BepInExPack.Utilities;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
+using UnityEngine;
+
+namespace RainrotSharedUtils.Shelters
+{
+    public static class ShelterUtilsModule
+    {
+        public static bool useShelterBuff = false;
+
+        #region interfacing
+        public static bool IsBodySuperSheltered(CharacterBody body, float radius = 0)
+        {
+            foreach (ShelterProviderBehavior shelter in ShelterProviderBehavior.readOnlyInstancesList)
+            {
+                if (!shelter.isSuperShelter)
+                    continue;
+                if (shelter.IsInBounds(body.corePosition, radius))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool IsPositionSuperSheltered(Vector3 position, float radius = 0)
+        {
+            foreach (ShelterProviderBehavior shelter in ShelterProviderBehavior.readOnlyInstancesList)
+            {
+                if (!shelter.isSuperShelter)
+                    continue;
+                if (shelter.IsInBounds(position, radius))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool IsBodySheltered(CharacterBody body, float radius = 0)
+        {
+            foreach (ShelterProviderBehavior shelter in ShelterProviderBehavior.readOnlyInstancesList)
+            {
+                if (shelter.IsInBounds(body.corePosition, radius))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        public static bool IsPositionSheltered(Vector3 position, float radius = 0)
+        {
+            foreach (ShelterProviderBehavior shelter in ShelterProviderBehavior.readOnlyInstancesList)
+            {
+                if (shelter.IsInBounds(position, radius))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
+
+        public static void Init()
+        {
+            On.RoR2.TeleporterInteraction.Awake += SheltersOnTeleporterAwake;
+            On.RoR2.HoldoutZoneController.Awake += SheltersOnHoldoutAwake;
+            On.RoR2.SphereZone.OnEnable += SheltersOnSphereZoneEnable;
+            On.RoR2.VerticalTubeZone.OnEnable += SheltersOnTubeZoneEnable;
+
+            On.RoR2.FogDamageController.GetAffectedBodiesOnTeam += ShelterProtectFromFog2;
+            On.RoR2.FogDamageController.EvaluateTeam += ShelterProtectFromFog;
+
+            RoR2.Run.onRunDestroyGlobal += SheltersOnRunDestroy;
+        }
+
+        private static void ShelterProtectFromFog(On.RoR2.FogDamageController.orig_EvaluateTeam orig, FogDamageController self, TeamIndex teamIndex)
+        {
+            if (ShelterProviderBehavior.readOnlyInstancesList.Count == self.safeZones.Count)
+            {
+                orig(self, teamIndex);
+                return;
+            }
+            foreach (TeamComponent teamComponent in TeamComponent.GetTeamMembers(teamIndex))
+            {
+                CharacterBody body = teamComponent.body;
+                bool bodyHasStacks = self.characterBodyToStacks.ContainsKey(body);
+                bool bodyIsSheltered = IsBodySheltered(body);
+                bool bodyHasCooldown = body.HasBuff(RoR2Content.Buffs.VoidFogStackCooldown);
+                //using (List<IZone>.Enumerator enumerator2 = self.safeZones.GetEnumerator())
+                //{
+                //    while (enumerator2.MoveNext())
+                //    {
+                //        if (enumerator2.Current.IsInBounds(teamComponent.transform.position))
+                //        {
+                //            flag2 = true;
+                //            break;
+                //        }
+                //    }
+                //}
+                if (bodyIsSheltered)
+                {
+                    if (bodyHasStacks)
+                    {
+                        self.characterBodyToStacks.Remove(body);
+                        if (bodyHasCooldown)
+                        {
+                            body.RemoveOldestTimedBuff(RoR2Content.Buffs.VoidFogStackCooldown);
+                        }
+                    }
+                }
+                else if (!bodyHasStacks)
+                {
+                    self.characterBodyToStacks.Add(body, 1);
+                    self.DumpArenaDamageInfo(body);
+                    body.AddTimedBuff(RoR2Content.Buffs.VoidFogStackCooldown, self.healthFractionRampIncreaseCooldown);
+                }
+                else if (!bodyHasCooldown)
+                {
+                    Dictionary<CharacterBody, int> dictionary = self.characterBodyToStacks;
+                    CharacterBody key = body;
+                    dictionary[key]++;
+                    self.DumpArenaDamageInfo(body);
+                    body.AddTimedBuff(RoR2Content.Buffs.VoidFogStackCooldown, self.healthFractionRampIncreaseCooldown);
+                }
+            }
+        }
+
+        private static IEnumerable<CharacterBody> ShelterProtectFromFog2(On.RoR2.FogDamageController.orig_GetAffectedBodiesOnTeam orig, FogDamageController self, TeamIndex teamIndex)
+        {
+            IEnumerable<CharacterBody> affectedBodies = orig(self, teamIndex);
+
+            return affectedBodies.Where(body => !ShelterUtilsModule.IsBodySheltered(body));
+        }
+
+        private static ShelterProviderBehavior AddShelterProvider(GameObject obj, IZone zone)
+        {
+            ShelterProviderBehavior shelter = obj.GetComponent<ShelterProviderBehavior>();
+            if (!shelter)
+            {
+                shelter = obj.AddComponent<ShelterProviderBehavior>();
+            }
+            shelter.zoneBehavior = zone;
+            return shelter;
+        }
+
+        private static void SheltersOnRunDestroy(Run obj)
+        {
+            ReadOnlyCollection<ShelterProviderBehavior> allShelterInstances = ShelterProviderBehavior.readOnlyInstancesList;
+            for (int i = allShelterInstances.Count - 1; i >= 0; i--)
+            {
+                if (allShelterInstances[i])
+                {
+                    UnityEngine.Object.Destroy(allShelterInstances[i].gameObject);
+                }
+            }
+        }
+
+        #region zones to shelters
+        private static void SheltersOnTeleporterAwake(On.RoR2.TeleporterInteraction.orig_Awake orig, TeleporterInteraction self)
+        {
+            orig(self);
+
+            ShelterProviderBehavior shelter = AddShelterProvider(self.gameObject, self.holdoutZoneController as IZone);
+            shelter.isSuperShelter = true;
+        }
+        private static void SheltersOnTubeZoneEnable(On.RoR2.VerticalTubeZone.orig_OnEnable orig, VerticalTubeZone self)
+        {
+            orig(self);
+            AddShelterProvider(self.gameObject, self as IZone);
+        }
+
+        private static void SheltersOnSphereZoneEnable(On.RoR2.SphereZone.orig_OnEnable orig, SphereZone self)
+        {
+            orig(self);
+            AddShelterProvider(self.gameObject, self as IZone);
+        }
+
+        private static void SheltersOnHoldoutAwake(On.RoR2.HoldoutZoneController.orig_Awake orig, HoldoutZoneController self)
+        {
+            orig(self);
+            AddShelterProvider(self.gameObject, self as IZone);
+        }
+        #endregion
+    }
+}

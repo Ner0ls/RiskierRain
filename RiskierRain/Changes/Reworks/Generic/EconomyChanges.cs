@@ -22,6 +22,7 @@ using SwanSongExtended;
 using MonoMod.RuntimeDetour;
 using System.Reflection;
 using Stage = RoR2.Stage;
+using RainrotSharedUtils.Shelters;
 
 namespace RiskierRain
 {
@@ -738,7 +739,7 @@ namespace RiskierRain
         public static int halcyoniteShrineLowGoldCost = 40;//75
         public static int halcyoniteShrineMidGoldCost = 100;//150
         public static int halcyoniteShrineMaxGoldCost = 150;//300
-
+        public static float halcyoniteShrineRadius = 30;//30
 
         void ChangeHalcyoniteShrineGoldRequirements()
         {
@@ -748,10 +749,36 @@ namespace RiskierRain
                 HalcyoniteShrineInteractable hsi = halcyoniteShrinePrefab.GetComponent<HalcyoniteShrineInteractable>();
                 if (hsi)
                 {
+                    ShelterProviderBehavior shelter = halcyoniteShrinePrefab.AddComponent<ShelterProviderBehavior>();
+                    shelter.fallbackRadius = halcyoniteShrineRadius;
+                    shelter.enabled = false;
+
                     hsi.lowGoldCost = halcyoniteShrineLowGoldCost;
                     hsi.midGoldCost = halcyoniteShrineMidGoldCost;
                     hsi.maxGoldCost = halcyoniteShrineMaxGoldCost;
                 }
+            }
+            On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteNoQuality.OnEnter += ShrineHalcyoniteShelterStart;
+            On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteFinished.OnEnter += ShrineHalcyoniteShelterEnd;
+        }
+
+        private void ShrineHalcyoniteShelterEnd(On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteFinished.orig_OnEnter orig, EntityStates.ShrineHalcyonite.ShrineHalcyoniteFinished self)
+        {
+            orig(self);
+            ShelterProviderBehavior shelter = self.gameObject.GetComponent<ShelterProviderBehavior>();
+            if (shelter)
+            {
+                shelter.enabled = false;
+            }
+        }
+
+        private void ShrineHalcyoniteShelterStart(On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteNoQuality.orig_OnEnter orig, EntityStates.ShrineHalcyonite.ShrineHalcyoniteNoQuality self)
+        {
+            orig(self);
+            ShelterProviderBehavior shelter = self.gameObject.GetComponent<ShelterProviderBehavior>();
+            if (shelter)
+            {
+                shelter.enabled = true;
             }
         }
         #endregion

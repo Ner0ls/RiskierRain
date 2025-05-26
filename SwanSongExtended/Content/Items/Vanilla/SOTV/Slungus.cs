@@ -11,6 +11,7 @@ using UnityEngine.AddressableAssets;
 using RoR2.Projectile;
 using RoR2.ExpansionManagement;
 using SwanSongExtended.Modules;
+using RainrotSharedUtils.Shelters;
 
 namespace SwanSongExtended.Items
 {
@@ -33,13 +34,13 @@ namespace SwanSongExtended.Items
 
         public override string ItemPickupDesc => "Standing still increases you damage while slowing nearby enemies and projectiles.";
 
-        public override string ItemFullDescription => $"While stationary, create a " +
+        public override string ItemFullDescription => $"While stationary, create a sheltering " +
             $"<style=cIsUtility>stasis field</style> reaching {radiusBase}m around you, " +
             $"<style=cIsUtility>slowing</style> nearby " +
             //$"enemies by <style=cIsUtility>{Tools.ConvertDecimal(1 - projectileSlowCoefficient)}</style> " +
             //$"and projectiles by <style=cIsUtility>{Tools.ConvertDecimal(1 - projectileSlowCoefficient)}</style>.";
             $"enemes and projectiles by <style=cIsUtility>{Tools.ConvertDecimal(1 - projectileSlowCoefficient)}</style>. " +
-            $"Deal {Tools.ConvertDecimal(movespeedIncreaseBase)} more damage " +
+            $"Move {Tools.ConvertDecimal(movespeedIncreaseBase)} faster " +
             $"<style=cStack>({Tools.ConvertDecimal(movespeedIncreaseStack)} per stack) until the next time you get hit.";
 
         public override string ItemLore =>
@@ -108,6 +109,13 @@ FUN-GUYS Inc. is not liable for any illness, injury, death, extended or permanen
             //buffWard.buffDef = RoR2Content.Buffs.Slow60;
             buffWard.expires = false; //true
             buffWard.expireDuration = 10; //10
+            buffWard.radius = radiusBase;
+
+            ShelterProviderBehavior shelter = slungusSlowFieldPrefab.AddComponent<ShelterProviderBehavior>();
+            if (shelter)
+            {
+                shelter.fallbackRadius = radiusBase;
+            }
         }
 
         private void RemoveSlungusBuff(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)

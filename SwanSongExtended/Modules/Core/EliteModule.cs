@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using R2API;
+using SwanSongExtended.Storms;
 
 namespace SwanSongExtended.Modules
 {
@@ -43,10 +44,10 @@ namespace SwanSongExtended.Modules
                         HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[5].eliteTypes, eliteDef.eliteDef);
                         break;
                     case EliteTiers.StormT1:
-                        HG.ArrayUtils.ArrayAppend(ref SwanSongPlugin.StormT1.eliteTypes, eliteDef.eliteDef);
+                        HG.ArrayUtils.ArrayAppend(ref StormsCore.StormEliteT1.eliteTypes, eliteDef.eliteDef);
                         break;
                     case EliteTiers.StormT2:
-                        HG.ArrayUtils.ArrayAppend(ref SwanSongPlugin.StormT2.eliteTypes, eliteDef.eliteDef);
+                        HG.ArrayUtils.ArrayAppend(ref StormsCore.StormEliteT2.eliteTypes, eliteDef.eliteDef);
                         break;
                     case EliteTiers.Lunar:
                         HG.ArrayUtils.ArrayAppend(ref R2API.EliteAPI.VanillaEliteTiers[6].eliteTypes, eliteDef.eliteDef);

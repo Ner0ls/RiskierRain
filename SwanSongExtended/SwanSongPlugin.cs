@@ -124,7 +124,7 @@ namespace SwanSongExtended
             Modules.EliteModule.Init();
             Modules.AllyCaps.Init();
             Modules.Spawnlists.Init();
-            this.InitializeStorms();
+            Storms.StormsCore.Init();
 
             ConfigManager.HandleConfigAttributes(GetType(), "SwanSong", Modules.Config.MyConfig);
             
@@ -349,7 +349,7 @@ namespace SwanSongExtended
             }
             else
             {
-                Debug.LogError($"ItemDef {name} failed to load - unable to blacklist");
+                Log.Error($"ItemDef {name} failed to load - unable to blacklist");
             }
         }
 

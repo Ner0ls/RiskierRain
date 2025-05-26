@@ -5,7 +5,10 @@ using EntityStates.Engi.Mine;
 using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API;
+using RainrotSharedUtils;
+using RainrotSharedUtils.Shelters;
 using RoR2;
+using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,7 +21,7 @@ namespace RiskierRain.SurvivorTweaks
     {
         public static float mineArmingDuration = 2f;//3f
         public static GameObject bubbleShieldPrefab;
-        public static float bubbleShieldDiameter = 30;//20
+        public static float bubbleShieldRadius = 15;//10
         public override string survivorName => "Engineer";
 
         public override string bodyName => "ENGIBODY";
@@ -37,18 +40,37 @@ namespace RiskierRain.SurvivorTweaks
             On.EntityStates.Engi.Mine.MineArmingWeak.FixedUpdate += ChangeMineArmTime;
 
             //utility
-            LanguageAPI.Add("ENGI_UTILITY_DESCRIPTION", "Place an <style=cIsUtility>impenetrable shield</style> that blocks all incoming damage, and <style=cIsUtility>slows enemies</style> inside.");
-            bubbleShieldPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Engi/EngiBubbleShield.prefab").WaitForCompletion().InstantiateClone("NewEngiBubbleShield", true);
+            DoUtility(utility);
+        }
+
+        private void DoUtility(SkillFamily slot)
+        {
+            LanguageAPI.Add("ENGI_UTILITY_DESCRIPTION", 
+                $"<style=cIsUtility>Sheltering</style>. " +
+                $"Place an <style=cIsUtility>impenetrable shield</style> that " +
+                $"blocks all incoming damage, and <style=cIsUtility>slows enemies</style> inside.");
+
+            SkillDef bubbleSkill = slot.variants[0].skillDef;
+            bubbleSkill.keywordTokens = new string[] { SharedUtilsPlugin.shelterKeywordToken };
+
+            bubbleShieldPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Engi/EngiBubbleShield.prefab").WaitForCompletion();
             //ChildLocator cl = bubbleShieldPrefab.GetComponent<ChildLocator>();
             Transform bubble = bubbleShieldPrefab.transform.Find("Collision");//FindChild(Deployed.childLocatorString).gameObject;
-            bubble.localScale = Vector3.one * bubbleShieldDiameter;
+            bubble.localScale = Vector3.one * bubbleShieldRadius * 2;
+
+            ShelterProviderBehavior shelter = bubble.gameObject.AddComponent<ShelterProviderBehavior>();
+            if (shelter)
+            {
+                shelter.fallbackRadius = bubbleShieldRadius;
+            }
+
             BuffWard buffWard = bubble.gameObject.AddComponent<BuffWard>();
             buffWard.buffDef = Addressables.LoadAssetAsync<BuffDef>("RoR2/Base/Common/bdSlow50.asset").WaitForCompletion();
             buffWard.buffDuration = 0.3f;
             buffWard.interval = 0.2f;
-            buffWard.radius = bubbleShieldDiameter / 2;
+            buffWard.radius = bubbleShieldRadius;
             buffWard.invertTeamFilter = true;
-            On.EntityStates.Engi.EngiWeapon.FireMines.OnEnter += ReplaceBubbleShieldPrefab;
+            //On.EntityStates.Engi.EngiWeapon.FireMines.OnEnter += ReplaceBubbleShieldPrefab;
             On.EntityStates.Engi.EngiBubbleShield.Deployed.FixedUpdate += BubbleBuffwardTeam;
         }
 
