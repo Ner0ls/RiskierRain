@@ -40,7 +40,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/frozenTurtleShell.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/texFrozenShellIcon.png");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/frozenshell.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {

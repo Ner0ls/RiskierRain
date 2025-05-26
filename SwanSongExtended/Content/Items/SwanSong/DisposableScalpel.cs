@@ -46,7 +46,7 @@ You already knew all that, though. Can’t help but wonder what you keep orderin
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlScalpel.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/texIconPickupITEM_BOSSITEMCONSUMABLE.png");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/disposablescalpel.png");
 
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.OnKillEffect, ItemTag.Utility, ItemTag.AIBlacklist, ItemTag.BrotherBlacklist };
 
@@ -57,7 +57,7 @@ You already knew all that, though. Can’t help but wonder what you keep orderin
         public override void Init()
         {
             brokenItemDef = CreateNewUntieredItem("BROKENSCALPEL",
-                assetBundle.LoadAsset<Sprite>("Assets/Icons/texIconPickupITEM_BROKENSCALPEL.png"));
+                assetBundle.LoadAsset<Sprite>("Assets/Icons/disposablescalpelused.png"));
             DoLangForItem(brokenItemDef, "Broken Scalpel", "The blade has shattered into innumerous pieces.", "It is no longer usable.");
             base.Init();
         }

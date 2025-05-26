@@ -45,7 +45,7 @@ namespace SwanSongExtended.Items
         //testing egg model
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlFuse.prefab");
 
-        public override Sprite ItemIcon => Resources.Load<Sprite>("textures/miscicons/texWIPIcon");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/fuse.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {

@@ -46,7 +46,7 @@ Nature is so magical :)";
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlNaturesGift.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/texIconPickupITEM_BORBOMANAFLOWER.png");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/manaflower.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {

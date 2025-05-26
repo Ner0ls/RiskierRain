@@ -40,7 +40,7 @@ namespace SwanSongExtended.Items
 
         public override ExpansionDef RequiredExpansion => SwanSongPlugin.expansionDefSS2;
 
-        public override string ItemName => "Elegy of Extinction";
+        public override string ItemName => "Compression Loop";
 
         public override string ItemLangTokenName => "LUNARINCREASECD";
 
@@ -57,7 +57,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlCompressionLoop.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/texIconPickupITEM_LUNARINCREASECD.png");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/lunarincreasecd.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {

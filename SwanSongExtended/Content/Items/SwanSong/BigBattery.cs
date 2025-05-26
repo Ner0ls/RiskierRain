@@ -86,7 +86,7 @@ You know?";
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlAAAAAAA.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/texIconPickupITEM_BORBOBIGBATTERY.png");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/battery.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {

@@ -33,7 +33,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlDiscountCard.prefab");
 
-        public override Sprite ItemIcon => Resources.Load<Sprite>("textures/miscicons/texWIPIcon");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/discountcard.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
@@ -42,10 +42,10 @@ namespace SwanSongExtended.Items
 
         public override void Init()
         {
-            usedItemDef = CreateNewUntieredItem("DISCOUNTCARDUSED", Resources.Load<Sprite>("textures/miscicons/texWIPIcon"), itemTags: ItemTags);
+            usedItemDef = CreateNewUntieredItem("DISCOUNTCARDUSED", assetBundle.LoadAsset<Sprite>("Assets/Icons/discountcardused.png"), itemTags: ItemTags);
             DoLangForItem(usedItemDef, "Discount Card (Used)", "Gain cash back on shop purchases. One use remaining.",
                 fullDescPartial + " One use remaining.");
-            spentItemDef = CreateNewUntieredItem("DISCOUNTCARDSPENT", Resources.Load<Sprite>("textures/miscicons/texWIPIcon"), itemTags: ItemTags);
+            spentItemDef = CreateNewUntieredItem("DISCOUNTCARDSPENT", assetBundle.LoadAsset<Sprite>("Assets/Icons/discountcardspent.png"), itemTags: ItemTags);
             DoLangForItem(spentItemDef, "Discount Card (Spent)", "It's just a piece of paper with a bunch of holes.",
                 "It's just a piece of paper with a bunch of holes.");
             base.Init();

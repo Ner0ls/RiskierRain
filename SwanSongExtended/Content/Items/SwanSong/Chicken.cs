@@ -42,7 +42,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlRawChicken.prefab");
 
-        public override Sprite ItemIcon => Resources.Load<Sprite>("textures/miscicons/texWIPIcon");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/chicken.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
