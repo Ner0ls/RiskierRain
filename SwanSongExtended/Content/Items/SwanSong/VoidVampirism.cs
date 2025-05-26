@@ -67,7 +67,7 @@ namespace SwanSongExtended.Items
                 if (itemCount > 0)
                 {
                     int currentBuffCount = enemyBody.GetBuffCount(RoR2Content.Buffs.Bleeding);
-                    int maxHealingCount = (maxHealing + maxHealingStack * GetCount(attackerBody));
+                    int maxHealingCount = (maxHealing + maxHealingStack * itemCount);
 
                     float healingToDo = MathF.Min((healthPerBleed * currentBuffCount), maxHealingCount);
 
@@ -81,12 +81,13 @@ namespace SwanSongExtended.Items
             if (damageInfo.attacker != null)
             {
                 CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
-                if (attackerBody != null)
+                int count = GetCount(attackerBody);
+                if (attackerBody != null && count > 0)
                 {
                     CharacterBody victimBody = self.body;
 
                     int currentBuffCount = victimBody.GetBuffCount(RoR2Content.Buffs.Bleeding);
-                    int maxHealingCount = (maxHealing + maxHealingStack * GetCount(attackerBody));
+                    int maxHealingCount = (maxHealing + maxHealingStack * count);
 
                     float healingToDo = MathF.Min((healthPerBleed * currentBuffCount), maxHealingCount);
 
