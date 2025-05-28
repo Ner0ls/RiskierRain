@@ -2,6 +2,27 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Content\EntityStates\Bandit\FireMinigun.cs" />
+    <None Include="Content\EntityStates\Captain\ThermalCannonFire.cs" />
+    <None Include="Content\EntityStates\Captain\ThermalCannonPrep.cs" />
+    <None Include="Content\EntityStates\Captain\VulcanSlug.cs" />
+    <None Include="Content\EntityStates\Engineer\PlaceFlamer.cs" />
+    <None Include="Content\EntityStates\Engineer\Turret\ThrowFlame.cs" />
+    <None Include="Content\EntityStates\Huntress\ChargeExplosiveArrow.cs" />
+    <None Include="Content\EntityStates\Huntress\FireExplosiveArrow.cs" />
+    <None Include="Content\Interactables\Interactables\CurseStatue.cs" />
+    <None Include="Content\Interactables\Interactables\FakeShrine.cs" />
+    <None Include="Content\Interactables\QuestInteractables\EnergyCrystalAltar.cs" />
+    <None Include="Content\Interactables\QuestInteractables\FlameAltar.cs" />
+    <None Include="Content\Interactables\QuestInteractables\LunarBrandMaker.cs" />
+    <None Include="Content\Interactables\QuestInteractables\SpineAltar.cs" />
+    <None Include="Content\Interactables\QuestInteractables\SpineCharger.cs" />
+    <None Include="Content\Skills\Bandit\MinigunSkill.cs" />
+    <None Include="Content\Skills\Captain\ThermalCannonSkill.cs" />
+    <None Include="Content\Skills\Captain\VulcanSlugSkill.cs" />
+    <None Include="Content\Skills\Engineer\PlaceFlamerTurret.cs" />
+    <None Include="Content\Skills\Engineer\Turret\FireTurretFlamer.cs" />
+    <None Include="Content\Skills\Huntress\ExplosiveArrowSkill.cs" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -28,8 +49,29 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Content\EntityStates\Bandit\FireMinigun.cs" />
+    <Compile Remove="Content\EntityStates\Captain\ThermalCannonFire.cs" />
+    <Compile Remove="Content\EntityStates\Captain\ThermalCannonPrep.cs" />
+    <Compile Remove="Content\EntityStates\Captain\VulcanSlug.cs" />
+    <Compile Remove="Content\EntityStates\Engineer\PlaceFlamer.cs" />
+    <Compile Remove="Content\EntityStates\Engineer\Turret\ThrowFlame.cs" />
+    <Compile Remove="Content\EntityStates\Huntress\ChargeExplosiveArrow.cs" />
+    <Compile Remove="Content\EntityStates\Huntress\FireExplosiveArrow.cs" />
     <Compile Remove="Content\Interactables\Interactables\CombatShrineLunar.cs" />
     <Compile Remove="Content\Interactables\Interactables\ConstructConstruct.cs" />
+    <Compile Remove="Content\Interactables\Interactables\CurseStatue.cs" />
+    <Compile Remove="Content\Interactables\Interactables\FakeShrine.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\EnergyCrystalAltar.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\FlameAltar.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\LunarBrandMaker.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\SpineAltar.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\SpineCharger.cs" />
+    <Compile Remove="Content\Skills\Bandit\MinigunSkill.cs" />
+    <Compile Remove="Content\Skills\Captain\ThermalCannonSkill.cs" />
+    <Compile Remove="Content\Skills\Captain\VulcanSlugSkill.cs" />
+    <Compile Remove="Content\Skills\Engineer\PlaceFlamerTurret.cs" />
+    <Compile Remove="Content\Skills\Engineer\Turret\FireTurretFlamer.cs" />
+    <Compile Remove="Content\Skills\Huntress\ExplosiveArrowSkill.cs" />
   </ItemGroup>
 
   <ItemGroup>
