@@ -35,8 +35,11 @@ namespace RiskierRain
         int awuAdaptiveArmorCount = 1;
 
         static float costExponent = 1f;
-        static float goldRewardMultiplierGlobal = 0.6f;
+        static float goldRewardMultiplierGlobal = 0.8f;
         static float expRewardMultiplierGlobal = 1;
+
+        public float interactableCreditsMultiplier = 1.2f;
+        public float monsterCreditsMultiplier = 1.5f;
 
 
         PurchaseInteraction smallChest = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Chest1/Chest1.prefab").WaitForCompletion().GetComponent<PurchaseInteraction>();
@@ -310,8 +313,6 @@ namespace RiskierRain
         #endregion
 
         #region Stage Credits
-        public float interactableCreditsMultiplier = 1.5f;
-        public float monsterCreditsMultiplier = 1.5f;
         public void IncreaseStageInteractableCredits(DirectorAPI.StageSettings settings, DirectorAPI.StageInfo currentStage)
         {
             settings.SceneDirectorInteractableCredits = (int)(settings.SceneDirectorInteractableCredits * interactableCreditsMultiplier);
