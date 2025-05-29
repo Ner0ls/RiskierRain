@@ -15,6 +15,7 @@ using R2API;
 using RoR2.Skills;
 using System.Security.Permissions;
 using System.Security;
+using SurvivorTweaks.SurvivorTweaks;
 
 #pragma warning disable CS0618 // Type or member is obsolete
 [assembly: SecurityPermission(SecurityAction.RequestMinimum, SkipVerification = true)]
@@ -57,7 +58,6 @@ namespace SurvivorTweaks
         public const string DEVELOPER_PREFIX = "FRUIT";
 
         public static AssetBundle mainAssetBundle => CommonAssets.mainAssetBundle;
-        public static AssetBundle orangeAssetBundle => CommonAssets.orangeAssetBundle;
 
         public static ExpansionDef expansionDefSS2 = null;
         #region asset paths
@@ -125,7 +125,7 @@ namespace SurvivorTweaks
             ///elites
             ///artifacts
             ///scavengers
-            //BeginInitializing<ItemBase>(allTypes, "SwanSongItems.txt");
+            BeginInitializing<SurvivorTweakBase>(allTypes, "SurvivorTweaks.txt");
 
             BeginInitializing<SkillBase>(allTypes, "SurvivorTweaksSkills.txt");
         }
