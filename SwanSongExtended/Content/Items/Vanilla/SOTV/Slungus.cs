@@ -32,7 +32,7 @@ namespace SwanSongExtended.Items
 
         public override string ItemLangTokenName => "SLUNGUS";
 
-        public override string ItemPickupDesc => "Standing still increases you damage while slowing nearby enemies and projectiles.";
+        public override string ItemPickupDesc => "Standing still shelters you, slowing nearby enemies and projectiles. Move faster until hit.";
 
         public override string ItemFullDescription => $"While stationary, create a sheltering " +
             $"<style=cIsUtility>stasis field</style> reaching {radiusBase}m around you, " +
