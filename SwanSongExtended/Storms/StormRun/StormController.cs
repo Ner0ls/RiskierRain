@@ -47,6 +47,7 @@ namespace SwanSongExtended.Storms
         protected List<HoldoutZoneController> holdoutZones => StormRunBehavior.holdoutZones;
         internal float stormDelayTime = 0;
         internal float stormWarningTime = 0;
+        bool shelterObjectiveActive = false;
 
 
         public void Awake()
@@ -54,6 +55,33 @@ namespace SwanSongExtended.Storms
             combatDirector = GetComponent<CombatDirector>();
             combatDirector.enabled = false;
             mainStateMachine = GetComponent<EntityStateMachine>();
+        }
+
+        public void SetShelterObjective(bool enable)
+        {
+            if (enable)
+            {
+                if (!shelterObjectiveActive)
+                {
+                    ObjectivePanelController.collectObjectiveSources += this.OnCollectObjectiveSources;
+                }
+            }
+            else
+            {
+                if (shelterObjectiveActive)
+                {
+                    ObjectivePanelController.collectObjectiveSources -= this.OnCollectObjectiveSources;
+                }
+            }
+        }
+        private void OnCollectObjectiveSources(CharacterMaster master, List<ObjectivePanelController.ObjectiveSourceDescriptor> objectiveSourcesList)
+        {
+            objectiveSourcesList.Add(new ObjectivePanelController.ObjectiveSourceDescriptor
+            {
+                master = master,
+                objectiveType = typeof(StormObjectiveTracker),
+                source = base.gameObject
+            });
         }
 
         public void BeginStormApproach(float stormDelayTime, float stormWarningTime)
@@ -114,11 +142,15 @@ namespace SwanSongExtended.Storms
             public override void OnExit()
             {
                 base.OnExit();
+                stormController.SetShelterObjective(false);
                 //On.RoR2.MeteorStormController.MeteorWave.GetNextMeteor -= MeteorWave_GetNextMeteor;
             }
             public override void FixedUpdate()
             {
                 base.FixedUpdate();
+                bool teleporterActive = TeleporterInteraction.instance && TeleporterInteraction.instance.isCharging;
+                stormController.SetShelterObjective(!teleporterActive);
+
                 //thisa is just for meteor stuff; we can make it work for the other storsm when they start existing lol.
                 this.waveTimer -= Time.fixedDeltaTime;
                 if (this.waveTimer <= 0f)
@@ -298,6 +330,7 @@ namespace SwanSongExtended.Storms
                         break;
                 }
 
+                stormController.SetShelterObjective(true);
                 RoR2.Chat.AddMessage(warningMessage);
             }
             public override void OnExit()
@@ -335,6 +368,8 @@ namespace SwanSongExtended.Storms
                     outer.SetNextState(new StormActive());
                 }
 
+                bool teleporterActive = TeleporterInteraction.instance && TeleporterInteraction.instance.isCharging;
+                stormController.SetShelterObjective(!teleporterActive);
 
                 if (stormType == StormType.None || !Run.instance)
                 {

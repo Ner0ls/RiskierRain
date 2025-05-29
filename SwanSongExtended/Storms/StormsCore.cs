@@ -17,6 +17,7 @@ namespace SwanSongExtended.Storms
 {
     public static class StormsCore
     {
+        public const string stormShelterObjectiveToken = "OBJECTIVE_SHELTER";
         public static GameObject StormsRunBehaviorPrefab;
         public static GameObject StormsControllerPrefab;
         public static EliteTierDef StormEliteT1;
@@ -54,6 +55,7 @@ namespace SwanSongExtended.Storms
             ShelterUtilsModule.useShelterBuff = true;
             CreateStormEliteTiers();
             CreateStormsRunBehaviorPrefab();
+            LanguageAPI.Add(stormShelterObjectiveToken, "Seek shelter from the <style=cDeath>Storm... <sprite name=\"TP\" tint=1></style>");
 
             //On.RoR2.HoldoutZoneController.OnEnable += RegisterHoldoutZone;
             //On.RoR2.HoldoutZoneController.OnDisable += UnregisterHoldoutZone;
