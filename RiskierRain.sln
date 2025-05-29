@@ -63,7 +63,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FruityCradles", "FruityCrad
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BetterSoulCost", "BetterSoulCost\BetterSoulCost.csproj", "{ED7259D7-7E0A-407B-A2F6-86A3202C6C16}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurvivorTweaks", "SurvivorTweaks\SurvivorTweaks.csproj", "{ED9D129F-E21F-44B8-A063-4E863F483CC7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SurvivorTweaks", "SurvivorTweaks\SurvivorTweaks.csproj", "{ED9D129F-E21F-44B8-A063-4E863F483CC7}"
 	ProjectSection(ProjectDependencies) = postProject
 		{8EF62317-2F3A-4AF5-98DE-6CF766BB529A} = {8EF62317-2F3A-4AF5-98DE-6CF766BB529A}
 		{A26E602F-96DF-4914-A513-8BFBF9630967} = {A26E602F-96DF-4914-A513-8BFBF9630967}
@@ -75,6 +75,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SurvivorTweaks", "SurvivorT
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EliteReworks", "EliteReworks\EliteReworks.csproj", "{01BB7115-FCF1-442D-8E81-FB9EB056D5E6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{41A5BE5C-1379-4FED-B4DE-5920F0B4D9D5} = {41A5BE5C-1379-4FED-B4DE-5920F0B4D9D5}
+		{6D27C489-F96C-4E87-8515-62339EB61136} = {6D27C489-F96C-4E87-8515-62339EB61136}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

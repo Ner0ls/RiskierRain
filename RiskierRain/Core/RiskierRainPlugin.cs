@@ -42,13 +42,11 @@ namespace RiskierRain
     [BepInDependency(RainrotSharedUtils.SharedUtilsPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(NegativeRegenFix.NegativeRegenFix.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(SwanSongExtended.SwanSongPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency(SurvivorTweaks.SurvivorTweaksPlugin.guid, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Borbo.ArtifactGesture", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("com.Borbo.HuntressBuffULTIMATE", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency("com.Borbo.HuntressBuffULTIMATE", BepInDependency.DependencyFlags.SoftDependency)]
 
-    [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("Withor.AcridBiteLunge", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("HIFU.UltimateCustomRun", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Skell.DeathMarkChange", BepInDependency.DependencyFlags.SoftDependency)]
 
@@ -536,27 +534,6 @@ namespace RiskierRain
             {
                 AddTpBossWeaken();
             }
-
-            //overloading elite
-            if (GetConfigBool(true, "Elite: Overloading Elite Rework"))
-            {
-                OverloadingEliteChanges();
-            }
-
-            //Mending elite
-            if (GetConfigBool(true, "Elite: Mending Elite Rework"))
-            {
-                MendingEliteChanges();
-            }
-
-            //voidtouched elite
-            if (GetConfigBool(true, "Elite: Voidtouched Elite Rework"))
-            {
-                VoidtouchedEliteChanges();
-            }
-
-            //blazing elite
-            //BlazingEliteChanges();
 
             //newt shrine
             if (GetConfigBool(true, "Lunar: Newt Shrine"))

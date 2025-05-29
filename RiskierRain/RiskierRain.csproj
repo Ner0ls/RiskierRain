@@ -69,6 +69,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BetterSoulCost\BetterSoulCost.csproj" />
+    <ProjectReference Include="..\SurvivorTweaks\SurvivorTweaks.csproj" />
+    <ProjectReference Include="..\EliteReworks\EliteReworks.csproj" />
     <ProjectReference Include="..\BorboStatUtils\RainrotSharedUtils.csproj" />
     <ProjectReference Include="..\ChillRework\ChillRework.csproj" />
     <ProjectReference Include="..\MissileRework\MissileRework.csproj" />

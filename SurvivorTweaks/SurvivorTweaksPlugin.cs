@@ -66,7 +66,6 @@ namespace SurvivorTweaks
 
         #region mods loaded
         public static bool ModLoaded(string modGuid) { return modGuid != "" && BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey(modGuid); }
-        public static bool swanSongLoaded => ModLoaded(SwanSongExtended.SwanSongPlugin.guid);
         public static bool iabMissilesLoaded => ModLoaded(MissileRework.MissileReworkPlugin.guid);
         public static bool isAELoaded => ModLoaded("com.Borbo.ArtificerExtended");
         public static bool is2R4RLoaded => ModLoaded("com.HouseOfFruits.RiskierRain");
@@ -99,10 +98,6 @@ namespace SurvivorTweaks
             Modules.Config.Init();
             Log.Init(Logger);
 
-            if (swanSongLoaded)
-            {
-                SetExpansion();
-            }
             Modules.Language.Init();
             Modules.Hooks.Init();
             Modules.CommonAssets.Init();

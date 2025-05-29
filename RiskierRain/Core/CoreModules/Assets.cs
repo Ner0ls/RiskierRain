@@ -126,8 +126,6 @@ namespace RiskierRain.CoreModules
 
         public override void Init()
         {
-            CreateVoidtouchedSingularity();
-
             AddShatterspleenSpikeBuff();
             AddRazorwireCooldown();
             AddVoidCradleCurse();
@@ -161,39 +159,6 @@ namespace RiskierRain.CoreModules
             {
                 args.luckAdd += buffCount * RiskierRainPlugin.soulShrineLuckIncrease;
             }
-        }
-
-        public static GameObject voidtouchedSingularityDelay;
-        public static GameObject voidtouchedSingularity;
-        private void CreateVoidtouchedSingularity()
-        {
-            float singularityRadius = 8; //15
-            GameObject singularity = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/ElementalRingVoid/ElementalRingVoidBlackHole.prefab").WaitForCompletion();
-            voidtouchedSingularity = singularity.InstantiateClone("VoidtouchedSingularity", true);
-
-            ProjectileFuse singularityPf = voidtouchedSingularity.GetComponent<ProjectileFuse>();
-            if (singularityPf)
-            {
-                singularityPf.fuse = 3;
-            }
-            RadialForce singularityRF = voidtouchedSingularity.GetComponent<RadialForce>();
-            if (singularityRF)
-            {
-                singularityRF.radius = singularityRadius;
-                voidtouchedSingularity.transform.localScale *= (singularityRadius / 15);
-            }
-            R2API.ContentAddition.AddProjectile(voidtouchedSingularity);
-
-            GameObject willowispDelay = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ExplodeOnDeath/WilloWispDelay.prefab").WaitForCompletion();
-            voidtouchedSingularityDelay = willowispDelay.InstantiateClone("VoidtouchedDelayBlast", true);
-
-            DelayBlast singularityDelayDB = voidtouchedSingularityDelay.GetComponent<DelayBlast>();
-            if (singularityDelayDB)
-            {
-                singularityDelayDB.explosionEffect = voidtouchedSingularity;
-            }
-
-            R2API.ContentAddition.AddNetworkedObject(voidtouchedSingularityDelay);
         }
 
         public static BuffDef voidCradleCurse;
