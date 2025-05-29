@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using SwanSongExtended.Modules;
+using UnityEngine.Networking;
 
 namespace SwanSongExtended.Artifacts
 {
@@ -52,32 +53,34 @@ namespace SwanSongExtended.Artifacts
 
         public override void Hooks()
         {
-
+            On.RoR2.CharacterBody.Start += GiveQuickStart;
         }
 
         public override void OnArtifactEnabledServer()
         {
-            On.RoR2.CharacterBody.Start += GiveQuickStart;
         }
 
         public override void OnArtifactDisabledServer()
         {
-            On.RoR2.CharacterBody.Start -= GiveQuickStart;
         }
 
-        private void GiveQuickStart(On.RoR2.CharacterBody.orig_Start orig, CharacterBody self)
+        private void GiveQuickStart(On.RoR2.CharacterBody.orig_Start orig, RoR2.CharacterBody self)
         {
             orig(self);
-            bool isStageone = Run.instance.stageClearCount == 0;
-            if (!isStageone)
+            if (IsArtifactEnabled() && NetworkServer.active && Run.instance)
             {
-                return;
-            }
-            if (self.isPlayerControlled)
-            {
-                OnPlayerCharacterBodyStartServer(self);
+                bool isStageone = Run.instance.stageClearCount == 0 && Run.instance.GetRunStopwatch() <= 20;
+                if (!isStageone)
+                {
+                    return;
+                }
+                if (self.isPlayerControlled)
+                {
+                    OnPlayerCharacterBodyStartServer(self);
+                }
             }
         }
+
         private static void OnPlayerCharacterBodyStartServer(CharacterBody characterBody)
         {
             Inventory inventory = characterBody.inventory;

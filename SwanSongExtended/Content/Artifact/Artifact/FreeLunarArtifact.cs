@@ -95,9 +95,9 @@ namespace SwanSongExtended.Artifacts
         private void GiveQuickStart(On.RoR2.CharacterBody.orig_Start orig, RoR2.CharacterBody self)
         {
             orig(self);
-            if (IsArtifactEnabled() && NetworkServer.active)
+            if (IsArtifactEnabled() && NetworkServer.active && Run.instance)
             {
-                bool isStageone = Run.instance.stageClearCount == 0;
+                bool isStageone = Run.instance.stageClearCount == 0 && Run.instance.GetRunStopwatch() <= 20;
                 if (!isStageone)
                 {
                     return;
