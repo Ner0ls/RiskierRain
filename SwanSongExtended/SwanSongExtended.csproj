@@ -17,12 +17,6 @@
     <None Include="Content\Interactables\QuestInteractables\LunarBrandMaker.cs" />
     <None Include="Content\Interactables\QuestInteractables\SpineAltar.cs" />
     <None Include="Content\Interactables\QuestInteractables\SpineCharger.cs" />
-    <None Include="Content\Skills\Bandit\MinigunSkill.cs" />
-    <None Include="Content\Skills\Captain\ThermalCannonSkill.cs" />
-    <None Include="Content\Skills\Captain\VulcanSlugSkill.cs" />
-    <None Include="Content\Skills\Engineer\PlaceFlamerTurret.cs" />
-    <None Include="Content\Skills\Engineer\Turret\FireTurretFlamer.cs" />
-    <None Include="Content\Skills\Huntress\ExplosiveArrowSkill.cs" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -66,12 +60,6 @@
     <Compile Remove="Content\Interactables\QuestInteractables\LunarBrandMaker.cs" />
     <Compile Remove="Content\Interactables\QuestInteractables\SpineAltar.cs" />
     <Compile Remove="Content\Interactables\QuestInteractables\SpineCharger.cs" />
-    <Compile Remove="Content\Skills\Bandit\MinigunSkill.cs" />
-    <Compile Remove="Content\Skills\Captain\ThermalCannonSkill.cs" />
-    <Compile Remove="Content\Skills\Captain\VulcanSlugSkill.cs" />
-    <Compile Remove="Content\Skills\Engineer\PlaceFlamerTurret.cs" />
-    <Compile Remove="Content\Skills\Engineer\Turret\FireTurretFlamer.cs" />
-    <Compile Remove="Content\Skills\Huntress\ExplosiveArrowSkill.cs" />
   </ItemGroup>
 
   <ItemGroup>
