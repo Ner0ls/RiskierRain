@@ -19,6 +19,7 @@ using static R2API.RecalculateStatsAPI;
 using RainrotSharedUtils;
 using ChillRework;
 using MonoMod.RuntimeDetour;
+using UnityEngine.Networking;
 //using RiskierRain.Changes.Reworks.NerfsReworks.SpawnlistChanges; //idk if this is a good way of doing
 
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -105,6 +106,7 @@ namespace RiskierRain
             InitializeConfig();
             InitializeEverything();
 
+            On.RoR2.CharacterBody.RemoveBuff_BuffIndex += Gah;
             #region rework pending / priority removal
             RiskierRainPlugin.RetierItem(nameof(RoR2Content.Items.StunChanceOnHit)); //stun grenade
             RiskierRainPlugin.RetierItem(nameof(DLC1Content.Items.GoldOnHurt)); //penny roll/roll of pennies
@@ -126,6 +128,15 @@ namespace RiskierRain
 
             
             new ContentPacks().Initialize();
+        }
+
+        private void Gah(On.RoR2.CharacterBody.orig_RemoveBuff_BuffIndex orig, CharacterBody self, BuffIndex buffType)
+        {
+            if (!NetworkServer.active)
+            {
+                Debug.Log(BuffCatalog.GetBuffDef(buffType).name);
+            }
+            orig(self, buffType);
         }
 
         private void InitializeEverything()
