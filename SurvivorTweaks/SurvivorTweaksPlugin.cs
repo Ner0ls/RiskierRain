@@ -104,6 +104,9 @@ namespace SurvivorTweaks
             Modules.AllyCaps.Init();
 
             InitializeContent();
+
+            // this has to be last
+            new Modules.ContentPacks().Initialize();
         }
 
         [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
