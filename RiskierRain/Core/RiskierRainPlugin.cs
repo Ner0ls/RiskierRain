@@ -3,7 +3,6 @@ using BepInEx.Configuration;
 using R2API;
 using R2API.Utils;
 using RiskierRain.CoreModules;
-using RiskierRain.SurvivorTweaks;
 using RoR2;
 using RoR2.Projectile;
 using System;
@@ -694,7 +693,6 @@ namespace RiskierRain
             // ENEMIES: 
 
             RiskierRainPlugin.RemoveEquipment(nameof(RoR2Content.Equipment.Gateway));
-            InitializeSurvivorTweaks();
             #endregion
 
             ///summary 
@@ -877,25 +875,5 @@ namespace RiskierRain
             }
         }
         #endregion
-
-        void InitializeSurvivorTweaks()
-        {
-            var TweakTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(SurvivorTweakModule)));
-
-            foreach (var tweakType in TweakTypes)
-            {
-                SurvivorTweakModule module = (SurvivorTweakModule)Activator.CreateInstance(tweakType);
-
-                string name = module.survivorName == "" ? module.bodyName : module.survivorName;
-                bool isEnabled = CustomConfigFile.Bind<bool>("Survivor Tweaks",
-                    $"Enable Tweaks For: {module.survivorName}", true,
-                    $"Should DuckSurvivorTweaks change {module.survivorName}?").Value;
-                if (isEnabled)
-                {
-                    module.Init();
-                }
-                //TweakStatusDictionary.Add(module.ToString(), isEnabled);
-            }
-        }
     }
 }

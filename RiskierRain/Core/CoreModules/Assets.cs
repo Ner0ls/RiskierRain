@@ -13,7 +13,6 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using static RiskierRain.CoreModules.StatHooks;
 using System.Linq;
-using RiskierRain.SurvivorTweaks;
 using static MoreStats.StatHooks;
 
 namespace RiskierRain.CoreModules
@@ -129,22 +128,13 @@ namespace RiskierRain.CoreModules
         {
             CreateVoidtouchedSingularity();
 
-            AddBanditExecutionBuffs();
-            AddCaptainCooldownBuff();
             AddShatterspleenSpikeBuff();
             AddRazorwireCooldown();
-            AddAspdPenaltyDebuff();
             AddVoidCradleCurse();
-            AddJetpackSpeedBoost();
             AddShockDebuff();
             AddShockCooldown();
-            AddCommanderRollBuff();
 
             AddSoulShrineLuckBuff();
-
-            On.RoR2.CharacterBody.RecalculateStats += RecalcStats_Stats;
-            On.EntityStates.BaseState.AddRecoil += OnAddRecoil;
-            On.RoR2.CharacterBody.AddSpreadBloom += OnAddSpreadBloom;
         }
 
         public static BuffDef soulShrineLuckBuff;
@@ -171,58 +161,6 @@ namespace RiskierRain.CoreModules
             {
                 args.luckAdd += buffCount * RiskierRainPlugin.soulShrineLuckIncrease;
             }
-        }
-
-        private void AddBanditExecutionBuffs()
-        {
-            BanditTweaks.desperadoExecutionDebuff = ScriptableObject.CreateInstance<BuffDef>();
-            {
-                BanditTweaks.desperadoExecutionDebuff.buffColor = Color.black;
-                BanditTweaks.desperadoExecutionDebuff.canStack = false;
-                BanditTweaks.desperadoExecutionDebuff.isDebuff = true;
-                BanditTweaks.desperadoExecutionDebuff.flags |= BuffDef.Flags.ExcludeFromNoxiousThorns;
-                BanditTweaks.desperadoExecutionDebuff.name = "DesperadoExecutionDebuff";
-                BanditTweaks.desperadoExecutionDebuff.iconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texBuffCrippleIcon.tif").WaitForCompletion();
-            }
-            CoreModules.Assets.buffDefs.Add(BanditTweaks.desperadoExecutionDebuff);
-            BanditTweaks.lightsoutExecutionDebuff = ScriptableObject.CreateInstance<BuffDef>();
-            {
-                BanditTweaks.lightsoutExecutionDebuff.buffColor = Color.black;
-                BanditTweaks.lightsoutExecutionDebuff.canStack = false;
-                BanditTweaks.lightsoutExecutionDebuff.isDebuff = true;
-                BanditTweaks.lightsoutExecutionDebuff.flags |= BuffDef.Flags.ExcludeFromNoxiousThorns;
-                BanditTweaks.lightsoutExecutionDebuff.name = "LightsOutExecutionDebuff";
-                BanditTweaks.lightsoutExecutionDebuff.iconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texBuffCrippleIcon.tif").WaitForCompletion();
-            }
-            CoreModules.Assets.buffDefs.Add(BanditTweaks.lightsoutExecutionDebuff);
-        }
-
-        private void OnAddSpreadBloom(On.RoR2.CharacterBody.orig_AddSpreadBloom orig, CharacterBody self, float value)
-        {
-            if (self.HasBuff(commandoRollBuff))
-                return;
-            orig(self, value);
-        }
-
-        private void OnAddRecoil(On.EntityStates.BaseState.orig_AddRecoil orig, EntityStates.BaseState self, float verticalMin, float verticalMax, float horizontalMin, float horizontalMax)
-        {
-            if (self.HasBuff(commandoRollBuff))
-                return;
-            orig(self, verticalMin, verticalMax, horizontalMin, horizontalMax);
-        }
-
-        public static BuffDef commandoRollBuff;
-        private void AddCommanderRollBuff()
-        {
-            commandoRollBuff = ScriptableObject.CreateInstance<BuffDef>();
-            {
-                commandoRollBuff.buffColor = new Color(0.8f, 0.6f, 0.1f);
-                commandoRollBuff.canStack = false;
-                commandoRollBuff.iconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texMovespeedBuffIcon.tif").WaitForCompletion();
-                commandoRollBuff.isDebuff = false;
-                commandoRollBuff.name = "CommandoDualieRoll";
-            }
-            Assets.buffDefs.Add(commandoRollBuff);
         }
 
         public static GameObject voidtouchedSingularityDelay;
@@ -256,20 +194,6 @@ namespace RiskierRain.CoreModules
             }
 
             R2API.ContentAddition.AddNetworkedObject(voidtouchedSingularityDelay);
-        }
-
-        public static BuffDef jetpackSpeedBoost;
-        private void AddJetpackSpeedBoost()
-        {
-            jetpackSpeedBoost = ScriptableObject.CreateInstance<BuffDef>();
-            {
-                jetpackSpeedBoost.buffColor = new Color(0.9f, 0.2f, 0.2f);
-                jetpackSpeedBoost.canStack = false;
-                jetpackSpeedBoost.iconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texMovespeedBuffIcon.tif").WaitForCompletion();
-                jetpackSpeedBoost.isDebuff = false;
-                jetpackSpeedBoost.name = "MageJetpackSpeedBoost";
-            }
-            Assets.buffDefs.Add(jetpackSpeedBoost);
         }
 
         public static BuffDef voidCradleCurse;
@@ -322,59 +246,6 @@ namespace RiskierRain.CoreModules
             };
             buffDefs.Add(shockHealCooldown);
 
-        }
-
-        private void RecalcStats_Stats(On.RoR2.CharacterBody.orig_RecalculateStats orig, CharacterBody self)
-        {
-            orig(self);
-            if (self.HasBuff(Assets.aspdPenaltyDebuff))
-            {
-                self.attackSpeed *= (1 - Assets.aspdPenaltyPercent);
-            }
-            if (self.HasBuff(captainCdrBuff))
-            {
-                SkillLocator skillLocator = self.skillLocator;
-                if (skillLocator != null)
-                {
-                    float mult = (1 - captainCdrPercent);
-                    ApplyCooldownScale(skillLocator.primary, mult);
-                    ApplyCooldownScale(skillLocator.secondary, mult);
-                    ApplyCooldownScale(skillLocator.utility, mult);
-                    ApplyCooldownScale(skillLocator.special, mult);
-                }
-            }
-        }
-
-        public static BuffDef aspdPenaltyDebuff;
-        public static float aspdPenaltyPercent = 0.20f;
-        private void AddAspdPenaltyDebuff()
-        {
-            aspdPenaltyDebuff = ScriptableObject.CreateInstance<BuffDef>();
-            {
-                aspdPenaltyDebuff.buffColor = Color.red;
-                aspdPenaltyDebuff.canStack = false;
-                aspdPenaltyDebuff.isDebuff = false;
-                aspdPenaltyDebuff.name = "AttackSpeedPenalty";
-                aspdPenaltyDebuff.iconSprite = null;// LegacyResourcesAPI.Load<Sprite>("textures/bufficons/texBuffSlow50Icon");
-            }
-            buffDefs.Add(aspdPenaltyDebuff);
-        }
-
-
-        public static BuffDef captainCdrBuff;
-        public static float captainCdrPercent = 0.25f;
-
-        private void AddCaptainCooldownBuff()
-        {
-            captainCdrBuff = ScriptableObject.CreateInstance<BuffDef>();
-            {
-                captainCdrBuff.buffColor = Color.yellow;
-                captainCdrBuff.canStack = false;
-                captainCdrBuff.isDebuff = false;
-                captainCdrBuff.name = "CaptainBeaconCdr";
-                captainCdrBuff.iconSprite = Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texMovespeedBuffIcon.tif").WaitForCompletion();
-            }
-            buffDefs.Add(captainCdrBuff);
         }
 
         public static float survivorExecuteThreshold = 0.15f;

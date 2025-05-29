@@ -1,0 +1,77 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <LangVersion>preview</LangVersion>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <RestoreAdditionalProjectSources>
+      https://api.nuget.org/v3/index.json;
+      https://nuget.bepinex.dev/v3/index.json;
+      https://nuget.samboy.dev/v3/index.json
+    </RestoreAdditionalProjectSources>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Content\States\Bandit\FireMinigun.cs" />
+    <Compile Remove="Content\States\Captain\ThermalCannonFire.cs" />
+    <Compile Remove="Content\States\Captain\ThermalCannonPrep.cs" />
+    <Compile Remove="Content\States\Captain\VulcanSlug.cs" />
+    <Compile Remove="Content\States\Engineer\PlaceFlamer.cs" />
+    <Compile Remove="Content\States\Engineer\Turret\ThrowFlame.cs" />
+    <Compile Remove="Content\States\Huntress\ChargeExplosiveArrow.cs" />
+    <Compile Remove="Content\States\Huntress\FireExplosiveArrow.cs" />
+    <Compile Remove="Content\Skills\Bandit\MinigunSkill.cs" />
+    <Compile Remove="Content\Skills\Captain\ThermalCannonSkill.cs" />
+    <Compile Remove="Content\Skills\Captain\VulcanSlugSkill.cs" />
+    <Compile Remove="Content\Skills\Engineer\PlaceFlamerTurret.cs" />
+    <Compile Remove="Content\Skills\Engineer\Turret\FireTurretFlamer.cs" />
+    <Compile Remove="Content\Skills\Huntress\ExplosiveArrowSkill.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.3.8-r.0" />
+    <PackageReference Include="MMHOOK.RoR2" Version="2025.5.5" NoWarn="NU1701" />
+    <PackageReference Include="BepInEx.Analyzers" Version="1.0.8">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="BepInEx.Core" Version="5.4.*" />
+    <PackageReference Include="UnityEngine.Modules" Version="2021.3.33" />
+    <PackageReference Include="R2API" Version="5.0.5" />
+    <PackageReference Include="R2API.DamageType" Version="1.1.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="AncientScepter">
+      <HintPath>libs\AncientScepter.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Content\States\Bandit\FireMinigun.cs" />
+    <None Include="Content\States\Captain\ThermalCannonFire.cs" />
+    <None Include="Content\States\Captain\ThermalCannonPrep.cs" />
+    <None Include="Content\States\Captain\VulcanSlug.cs" />
+    <None Include="Content\States\Engineer\PlaceFlamer.cs" />
+    <None Include="Content\States\Engineer\Turret\ThrowFlame.cs" />
+    <None Include="Content\States\Huntress\ChargeExplosiveArrow.cs" />
+    <None Include="Content\States\Huntress\FireExplosiveArrow.cs" />
+    <None Include="Content\Skills\Bandit\MinigunSkill.cs" />
+    <None Include="Content\Skills\Captain\ThermalCannonSkill.cs" />
+    <None Include="Content\Skills\Captain\VulcanSlugSkill.cs" />
+    <None Include="Content\Skills\Engineer\PlaceFlamerTurret.cs" />
+    <None Include="Content\Skills\Engineer\Turret\FireTurretFlamer.cs" />
+    <None Include="Content\Skills\Huntress\ExplosiveArrowSkill.cs" />
+  </ItemGroup>
+  
+  <ItemGroup>
+    <ProjectReference Include="..\BorboStatUtils\RainrotSharedUtils.csproj" />
+    <ProjectReference Include="..\ChillRework\ChillRework.csproj" />
+    <ProjectReference Include="..\MissileRework\MissileRework.csproj" />
+    <ProjectReference Include="..\NegativeRegenFix\NegativeRegenFix.csproj" />
+    <ProjectReference Include="..\JumpRework\JumpRework.csproj" />
+    <ProjectReference Include="..\BarrierRework\BarrierRework.csproj" />
+    <ProjectReference Include="..\MoreStats\MoreStats.csproj" />
+    <ProjectReference Include="..\SwanSongExtended\SwanSongExtended.csproj" />
+  </ItemGroup>
+
+</Project>
