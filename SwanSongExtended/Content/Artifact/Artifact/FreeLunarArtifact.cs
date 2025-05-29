@@ -13,7 +13,7 @@ namespace SwanSongExtended.Artifacts
         const int _FreeLunarBlacklist = (int)ItemTag.SacrificeBlacklist;
         public static ItemTag FreeLunarBlacklist => (ItemTag)_FreeLunarBlacklist;
         ItemDef[] itemPool;
-        public override string ArtifactName => "Lunacy";
+        public override string ArtifactName => "the Zealot";
 
         public override string ArtifactDescription => "Begin each run with a random lunar. At the end of each stage, a blue portal always appears.";
 

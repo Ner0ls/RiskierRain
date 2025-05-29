@@ -41,7 +41,7 @@ namespace SwanSongExtended.Artifacts
         }
         #endregion
 
-        public override string ArtifactName => "Initiative";
+        public override string ArtifactName => "the Stillborn";
 
         public override string ArtifactDescription => $"Begin your run with an {GetRarityName()} item of your choice.";
 
