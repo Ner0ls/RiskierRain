@@ -29,6 +29,7 @@ namespace SurvivorTweaks.Modules
         {
             get
             {
+                return null;
                 if (_mainAssetBundle == null)
                     _mainAssetBundle = Assets.LoadAssetBundle("itmightbebad");
                 return _mainAssetBundle;
@@ -36,20 +37,6 @@ namespace SurvivorTweaks.Modules
             set
             {
                 _mainAssetBundle = value;
-            }
-        }
-        private static AssetBundle _orangeAssetBundle;
-        public static AssetBundle orangeAssetBundle
-        {
-            get
-            {
-                if (_orangeAssetBundle == null)
-                    _orangeAssetBundle = Assets.LoadAssetBundle("orangecontent");
-                return _orangeAssetBundle;
-            }
-            set
-            {
-                _orangeAssetBundle = value;
             }
         }
 
