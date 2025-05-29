@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class LoaderTweaks : SurvivorTweakBase<AcridTweaks>
+    class LoaderTweaks : SurvivorTweakBase<LoaderTweaks>
     {
         float chargeFistCooldown = 10;
         float chargeZapFistCooldown = 10;

@@ -20,7 +20,7 @@ using SurvivorTweaks.Modules;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class CaptainTweaks : SurvivorTweakBase<AcridTweaks>
+    class CaptainTweaks : SurvivorTweakBase<CaptainTweaks>
     {
         public static float microbotRechargeRate = 1.5f; //0.5
         public static float microbotRadius = 20f; //20

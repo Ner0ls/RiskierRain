@@ -14,7 +14,7 @@ using static R2API.RecalculateStatsAPI;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class ViendTweaks : SurvivorTweakBase<AcridTweaks>
+    class ViendTweaks : SurvivorTweakBase<ViendTweaks>
     {
         static float corruptModeArmor = 25;
 

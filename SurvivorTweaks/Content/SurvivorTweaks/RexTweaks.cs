@@ -12,7 +12,7 @@ using static MoreStats.StatHooks;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class RexTweaks : SurvivorTweakBase<AcridTweaks>
+    class RexTweaks : SurvivorTweakBase<RexTweaks>
     {
         GameObject syringeB = LegacyResourcesAPI.Load<GameObject>("prefabs/projectiles/SyringeProjectileHealing");
         float syringeDamageCoefficient = 0.8f; // 0.8f

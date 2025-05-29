@@ -19,7 +19,7 @@ using RainrotSharedUtils;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class BanditTweaks : SurvivorTweakBase<AcridTweaks>
+    class BanditTweaks : SurvivorTweakBase<BanditTweaks>
     {
         public static float shotgunDamageCoeff = 0.75f; //1
         public static float rifleDamageCoeff = 2.8f; // 3.3

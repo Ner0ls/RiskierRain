@@ -17,7 +17,7 @@ using UnityEngine.AddressableAssets;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class EngiTweaks : SurvivorTweakBase<AcridTweaks>
+    class EngiTweaks : SurvivorTweakBase<EngiTweaks>
     {
         public static float mineArmingDuration = 2f;//3f
         public static GameObject bubbleShieldPrefab;

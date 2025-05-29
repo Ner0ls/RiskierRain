@@ -13,7 +13,7 @@ using UnityEngine.Networking;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class MulTweaks : SurvivorTweakBase<AcridTweaks>
+    class MulTweaks : SurvivorTweakBase<MulTweaks>
     {
         float nailSpreadCoefficient = 1.2f;
 

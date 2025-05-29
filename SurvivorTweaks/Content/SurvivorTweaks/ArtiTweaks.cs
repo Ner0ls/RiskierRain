@@ -13,7 +13,7 @@ using static R2API.RecalculateStatsAPI;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class ArtiTweaks : SurvivorTweakBase<AcridTweaks>
+    class ArtiTweaks : SurvivorTweakBase<ArtiTweaks>
     {
         public static float flamethrowerDamage = 28; //20 vanilla, 34 pre-nerf glory
         public override string survivorName => "Artificer";

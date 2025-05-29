@@ -17,7 +17,7 @@ using UnityEngine.Networking;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class HuntressTweaks : SurvivorTweakBase<AcridTweaks>
+    class HuntressTweaks : SurvivorTweakBase<HuntressTweaks>
     {
         public static bool isLoaded;
         public static GameObject arrowRainPrefab;

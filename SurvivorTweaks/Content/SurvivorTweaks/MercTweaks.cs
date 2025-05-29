@@ -17,7 +17,7 @@ using UnityEngine.AddressableAssets;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
-    class MercTweaks : SurvivorTweakBase<AcridTweaks>
+    class MercTweaks : SurvivorTweakBase<MercTweaks>
     {
         public override string survivorName => "Mercenary";
         public override string bodyName => "MERCBODY";
