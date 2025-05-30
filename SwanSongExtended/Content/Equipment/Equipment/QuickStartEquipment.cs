@@ -27,7 +27,7 @@ namespace SwanSongExtended.Equipment
 
         public override GameObject EquipmentModel => LegacyResourcesAPI.Load<GameObject>("prefabs/NullModel");
 
-        public override Sprite EquipmentIcon => LegacyResourcesAPI.Load<Sprite>("textures/miscicons/texWIPIcon");
+        public override Sprite EquipmentIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/quickstartequipment.png");
         public override float BaseCooldown => 0;
         public override bool EnigmaCompatible => false;
         public override bool CanBeRandomlyActivated => false;

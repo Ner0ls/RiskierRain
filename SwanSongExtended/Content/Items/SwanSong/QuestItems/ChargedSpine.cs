@@ -38,7 +38,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlChargedSpine.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/texIconPickupITEM_CHARGED_MALACHITE_SPINE.png");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/chargedspine.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
