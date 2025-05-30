@@ -76,9 +76,9 @@ namespace SurvivorTweaks.SurvivorTweaks
             ShowReport.OnEnter += ResetTokens;
 
             //On.RoR2.CharacterBody.RecalculateStats += BackstabPassiveCritChance;
-            //On.RoR2.CharacterBody.Start += BackstabPassiveCritChance;
-            //LanguageAPI.Add("BANDIT2_PASSIVE_DESCRIPTION", "All attacks from <style=cIsDamage>behind</style> are <style=cIsDamage>Critical Strikes</style>. " +
-            //    "All <style=cIsDamage>Critical Strike Chance</style> is instead converted into <style=cIsDamage>Critical Strike Damage</style>.");
+            On.RoR2.CharacterBody.Start += BackstabPassiveCritChance;
+            LanguageAPI.Add("BANDIT2_PASSIVE_DESCRIPTION", "All attacks from <style=cIsDamage>behind</style> are <style=cIsDamage>Critical Strikes</style>. " +
+                "All <style=cIsDamage>Critical Strike Chance</style> is instead converted into <style=cIsDamage>Critical Strike Damage</style>.");
         }
 
         private void BanditCloakBuff(CharacterBody sender, StatHookEventArgs args)
