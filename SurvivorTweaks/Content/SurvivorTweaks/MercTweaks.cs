@@ -37,9 +37,9 @@ namespace SurvivorTweaks.SurvivorTweaks
         public static float focusDashCooldown = 11f; //8f
         public static float focusDashDamageCoefficient = 6f;//7f
 
-        public static float eviscCooldown = 12f; //6f
+        public static float eviscCooldown = 11f; //6f
         public static float eviscProcCoefficient = 0.4f; //1f
-        public static float eviscDuration = 3.5f; //2f
+        public static float eviscDuration = 2.5f; //2f
         public static float windsCooldown = 9f; //6f
         public static float windsProcCoefficient = 0.7f; //1f
 

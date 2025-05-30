@@ -16,6 +16,8 @@ using static MoreStats.StatHooks;
 using static MoreStats.OnHit;
 using UnityEngine.AddressableAssets;
 using RainrotSharedUtils;
+using static R2API.RecalculateStatsAPI;
+using static SurvivorTweaks.Modules.Language.Styling;
 
 namespace SurvivorTweaks.SurvivorTweaks
 {
@@ -24,24 +26,26 @@ namespace SurvivorTweaks.SurvivorTweaks
         public static float shotgunDamageCoeff = 0.75f; //1
         public static float rifleDamageCoeff = 2.8f; // 3.3
         public static float rifleSpreadBloom = 0.4f; //0.5f
-        public static float reloadBaseDuration = 0.7f; //0.5
+        public static float reloadBaseDuration = 0.6f; //0.5
 
         public static float daggerDamageCoeff = 6f; //3.6
         public static float daggerCooldown = 6f; //4 
         public static float daggerSelfForce = 1500f; //0
         public static float shivDamageCoeff = 4f; //2.4
-        public static float shivCooldown = 6f; //4
+        public static float shivCooldown = 7f; //4
+        public static int shivStock = 2; //1
 
         public static float stealthHopVelocity = 13f; //15
         public static float stealthDuration = 4f; //3
         public static float stealthCooldown = 9f; //6
+        public static float stealthAspdBonus = 2f; //0
 
         public static float lightsOutDamage = 7f; //6
         public static float lightsOutCooldown = 8f; //4
         public static float desperadoDamage = 2.5f; //6
         public static float desperadoCooldown = 3f; //4
 
-        public static float hemmorageDamageBase = 20;
+        public static float hemmorageDamageBase = 15;
         public static float hemmorageDamageMin = 0.5f;
         public static float hemmorageDamageMax = 2.5f;
 
@@ -59,6 +63,7 @@ namespace SurvivorTweaks.SurvivorTweaks
             ChangeVanillaUtilities(utility);
             ChangeVanillaSpecials(special);
 
+            GetStatCoefficients += BanditCloakBuff;
             On.RoR2.HealthComponent.TakeDamageProcess += BanditTweaksTakeDamage;
             LanguageAPI.Add("KEYWORD_SUPERBLEED", 
                 $"<style=cKeywordName>Hemorrhage</style>" +
@@ -74,6 +79,14 @@ namespace SurvivorTweaks.SurvivorTweaks
             On.RoR2.CharacterBody.Start += BackstabPassiveCritChance;
             LanguageAPI.Add("BANDIT2_PASSIVE_DESCRIPTION", "All attacks from <style=cIsDamage>behind</style> are <style=cIsDamage>Critical Strikes</style>. " +
                 "All <style=cIsDamage>Critical Strike Chance</style> is instead converted into <style=cIsDamage>Critical Strike Damage</style>.");
+        }
+
+        private void BanditCloakBuff(CharacterBody sender, StatHookEventArgs args)
+        {
+            if(sender.HasBuff(RoR2Content.Buffs.Cloak) && sender.bodyIndex == BodyCatalog.FindBodyIndex("Bandit2Body"))
+            {
+                args.attackSpeedMultAdd += stealthAspdBonus;
+            }
         }
 
         private void BackstabPassiveCritChance(On.RoR2.CharacterBody.orig_Start orig, CharacterBody self)
@@ -140,6 +153,9 @@ namespace SurvivorTweaks.SurvivorTweaks
 
         private void RecalculateTokenAmount(CharacterBody body)
         {
+            if (!NetworkServer.active)
+                return;
+
             if (body.isPlayerControlled && body.teamComponent.teamIndex == TeamIndex.Player)
             {
                 if(lastStageDesperadoTokens.Capacity == 0)
@@ -264,15 +280,19 @@ namespace SurvivorTweaks.SurvivorTweaks
         {
             //dagger secondary
             On.EntityStates.Bandit2.Weapon.SlashBlade.OnEnter += ModifyDaggerDamage;
-            family.variants[0].skillDef.baseRechargeInterval = daggerCooldown;
+            SkillDef dagger = family.variants[0].skillDef;
+            dagger.baseRechargeInterval = daggerCooldown;
             LanguageAPI.Add("BANDIT2_SECONDARY_DESCRIPTION", $"Lunge and slash for <style=cIsDamage>{Tools.ConvertDecimal(daggerDamageCoeff)} damage</style>. " +
                 $"Critical Strikes also cause <style=cIsHealth>hemorrhaging</style>.");
 
             //shiv secondary
             On.EntityStates.Bandit2.Weapon.Bandit2FireShiv.OnEnter += ModifyShivDamage;
-            family.variants[1].skillDef.baseRechargeInterval = shivCooldown;
+            SkillDef shiv = family.variants[1].skillDef;
+            shiv.baseRechargeInterval = shivCooldown;
+            shiv.baseMaxStock = shivStock;
+            shiv.rechargeStock = shivStock;
             LanguageAPI.Add("BANDIT2_SECONDARY_ALT_DESCRIPTION", $"Throw a hidden blade for <style=cIsDamage>{Tools.ConvertDecimal(shivDamageCoeff)} damage</style>. " +
-                $"Critical Strikes also cause <style=cIsHealth>hemorrhaging</style>.");
+                $"Critical Strikes also cause <style=cIsHealth>hemorrhaging</style>. " + (shivStock > 1 ? $"Hold up to {shivStock}." : ""));
         }
 
         private void ModifyDaggerDamage(On.EntityStates.Bandit2.Weapon.SlashBlade.orig_OnEnter orig, EntityStates.Bandit2.Weapon.SlashBlade self)
@@ -295,8 +315,9 @@ namespace SurvivorTweaks.SurvivorTweaks
             On.EntityStates.Bandit2.StealthMode.FireSmokebomb += ModifySmokeBomb;
             family.variants[0].skillDef.baseRechargeInterval = stealthCooldown;
 
-            //LanguageAPI.Add("BANDIT2_UTILITY_DESCRIPTION", $"Throw a hidden blade for <style=cIsDamage>{Tools.ConvertDecimal(shivDamageCoeff)}</style>. " +
-            //    $"Critical Strikes also cause <style=cIsHealth>hemorrhaging</style>.");
+            LanguageAPI.Add("BANDIT2_UTILITY_DESCRIPTION", $"<style=cIsDamage>Stunning</style>. " +
+                $"Deal <style=cIsDamage>200% damage</style>, become <style=cIsUtility>invisible</style>, then deal <style=cIsDamage>200% damage</style> again." +
+                $"While cloaked, gain +{DamageColor(ConvertDecimal(stealthAspdBonus))} attack speed.");
         }
 
         private void ModifySmokeBomb(On.EntityStates.Bandit2.StealthMode.orig_FireSmokebomb orig, EntityStates.Bandit2.StealthMode self)

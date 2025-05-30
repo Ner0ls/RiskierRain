@@ -16,15 +16,15 @@ namespace SurvivorTweaks.SurvivorTweaks
 {
     class ViendTweaks : SurvivorTweakBase<ViendTweaks>
     {
-        static float corruptModeArmor = 25;
+        static float corruptModeArmor = 100;
 
         static float minimumCorruptionPerVoidItem = 2; //2
         static float corruptionForFullDamage = 50; //50
-        static float corruptionForFullHeal = -100; //-100
+        static float corruptionForFullHeal = -50; //-100
         static float corruptionFractionPerSecondWhileCorrupted = -0.04f; //aka 25s; -0.06666667f aka 15s
         static float corruptionPerSecondInCombat = 1.5f; //aka 66.6s; 3 aka 33.3s
         static float corruptionPerSecondOutOfCombat = 1.5f; //3
-        static float corruptionPerCrit = 2; //2
+        static float corruptionPerCrit = 0; //2
         static float maxCorruption = 100; //100
 
         public static float primaryUnchargedDamage = 0.9f;
@@ -44,6 +44,7 @@ namespace SurvivorTweaks.SurvivorTweaks
             GetBodyObject();
             //CharacterBody body = bodyObject.GetComponent<CharacterBody>();
             //body.
+            On.RoR2.HealthComponent.Heal += ViendNoHealing;
             GetStatCoefficients += ViendStatCoefficients;
 
             #region passive
@@ -61,7 +62,7 @@ namespace SurvivorTweaks.SurvivorTweaks
                 $"<style=cIsDamage>{Tools.ConvertDecimal(primaryUnchargedDamage)}-{Tools.ConvertDecimal(primaryChargedDamage)} damage</style>.");
 
             On.EntityStates.VoidSurvivor.Weapon.FireCorruptHandBeam.OnEnter += FireCorruptHandBeam_OnEnter;
-            LanguageAPI.Add("VOIDSURVIVOR_PRIMARY_UPRADE_TOOLTIP",
+            LanguageAPI.Add("VOIDSURVIVOR_PRIMARY_UPRADE_TOOLTIP", //uprade is intentional
                 $"<style=cKeywordName>【Corruption Upgrade】</style><style=cSub>Transform into a " +
                 $"{Tools.ConvertDecimal(primaryCorruptDps)} damage short-range beam.</style>");
             #endregion
@@ -103,6 +104,13 @@ namespace SurvivorTweaks.SurvivorTweaks
                 viendSpecialHurt.baseRechargeInterval = 15;
             }
             #endregion
+        }
+
+        private float ViendNoHealing(On.RoR2.HealthComponent.orig_Heal orig, HealthComponent self, float amount, ProcChainMask procChainMask, bool nonRegen)
+        {
+            if (self.body.HasBuff(DLC1Content.Buffs.VoidSurvivorCorruptMode))
+                amount = 0;
+            return orig(self, amount, procChainMask, nonRegen);
         }
 
         private void ChargeCrushBase_OnEnter(On.EntityStates.VoidSurvivor.Weapon.ChargeCrushBase.orig_OnEnter orig, EntityStates.VoidSurvivor.Weapon.ChargeCrushBase self)
