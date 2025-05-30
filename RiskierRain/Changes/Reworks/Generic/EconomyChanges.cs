@@ -35,10 +35,11 @@ namespace RiskierRain
         int awuAdaptiveArmorCount = 1;
 
         static float costExponent = 1f;
-        static float goldRewardMultiplierGlobal = 0.8f;
+        static float goldRewardMultiplierGlobal = 0.6f;
         static float expRewardMultiplierGlobal = 1;
+        static float compensationForStartingLevel = 0;
 
-        public float interactableCreditsMultiplier = 1.2f;
+        public float interactableCreditsMultiplier = 1.5f;
         public float monsterCreditsMultiplier = 1.5f;
 
 
@@ -186,11 +187,13 @@ namespace RiskierRain
 
         static float GetCompensatedDifficultyFraction()
         {
-            float boost = GetAmbientLevelBoost();
-
-            float entryDiffCoeff = (Stage.instance.entryDifficultyCoefficient - boost);
+            float entryDiffCoeff = Stage.instance.entryDifficultyCoefficient;
             if (entryDiffCoeff <= 0)
                 return 1;
+            else if (compensationForStartingLevel > 0)
+            {
+                entryDiffCoeff = Mathf.Lerp(entryDiffCoeff, entryDiffCoeff - GetAmbientLevelBoost(), compensationForStartingLevel);
+            }
             return entryDiffCoeff / (Run.instance.compensatedDifficultyCoefficient);
         }
 
