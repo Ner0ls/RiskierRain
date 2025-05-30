@@ -76,9 +76,9 @@ namespace SurvivorTweaks.SurvivorTweaks
             ShowReport.OnEnter += ResetTokens;
 
             //On.RoR2.CharacterBody.RecalculateStats += BackstabPassiveCritChance;
-            On.RoR2.CharacterBody.Start += BackstabPassiveCritChance;
-            LanguageAPI.Add("BANDIT2_PASSIVE_DESCRIPTION", "All attacks from <style=cIsDamage>behind</style> are <style=cIsDamage>Critical Strikes</style>. " +
-                "All <style=cIsDamage>Critical Strike Chance</style> is instead converted into <style=cIsDamage>Critical Strike Damage</style>.");
+            //On.RoR2.CharacterBody.Start += BackstabPassiveCritChance;
+            //LanguageAPI.Add("BANDIT2_PASSIVE_DESCRIPTION", "All attacks from <style=cIsDamage>behind</style> are <style=cIsDamage>Critical Strikes</style>. " +
+            //    "All <style=cIsDamage>Critical Strike Chance</style> is instead converted into <style=cIsDamage>Critical Strike Damage</style>.");
         }
 
         private void BanditCloakBuff(CharacterBody sender, StatHookEventArgs args)
@@ -282,6 +282,7 @@ namespace SurvivorTweaks.SurvivorTweaks
             On.EntityStates.Bandit2.Weapon.SlashBlade.OnEnter += ModifyDaggerDamage;
             SkillDef dagger = family.variants[0].skillDef;
             dagger.baseRechargeInterval = daggerCooldown;
+            dagger.mustKeyPress = true;
             LanguageAPI.Add("BANDIT2_SECONDARY_DESCRIPTION", $"Lunge and slash for <style=cIsDamage>{Tools.ConvertDecimal(daggerDamageCoeff)} damage</style>. " +
                 $"Critical Strikes also cause <style=cIsHealth>hemorrhaging</style>.");
 
@@ -291,6 +292,7 @@ namespace SurvivorTweaks.SurvivorTweaks
             shiv.baseRechargeInterval = shivCooldown;
             shiv.baseMaxStock = shivStock;
             shiv.rechargeStock = shivStock;
+            shiv.mustKeyPress = true;
             LanguageAPI.Add("BANDIT2_SECONDARY_ALT_DESCRIPTION", $"Throw a hidden blade for <style=cIsDamage>{Tools.ConvertDecimal(shivDamageCoeff)} damage</style>. " +
                 $"Critical Strikes also cause <style=cIsHealth>hemorrhaging</style>. " + (shivStock > 1 ? $"Hold up to {shivStock}." : ""));
         }
