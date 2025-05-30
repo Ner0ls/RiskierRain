@@ -23,7 +23,7 @@ namespace SwanSongExtended.Items
         int maxBurnStacksStack = 3;
         int meatNuggets = 2;
         float healFraction = 0.00f;
-        float healFlat = 14f;
+        float healFlat = 25f;
         float chunkLifetime = 5f; //20
 
         public override string ItemName => "Chef \u2019Stache";
@@ -42,7 +42,7 @@ namespace SwanSongExtended.Items
 
         public override string ItemLore => "";
 
-        public override ItemTier Tier => ItemTier.Tier2;
+        public override ItemTier Tier => ItemTier.Tier3;
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Damage };
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlChefStache.prefab");
