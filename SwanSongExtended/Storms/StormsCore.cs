@@ -44,7 +44,7 @@ namespace SwanSongExtended.Storms
         public static float meteorTargetEnemyChance = 15f;
         public static float meteorTravelEffectDuration = 0f;
         public static float meteorImpactDelay = 2.5f;
-        public static float meteorBlastDamageCoefficient = 17;
+        public static float meteorBlastDamageCoefficient = 13;
         public static float meteorBlastDamageScalarPerLevel = 0.5f;
         public static float meteorBlastRadius = 10;
         public static float meteorBlastForce = 0;
