@@ -55,7 +55,7 @@ namespace SwanSongExtended.Storms
             ShelterUtilsModule.useShelterBuff = true;
             CreateStormEliteTiers();
             CreateStormsRunBehaviorPrefab();
-            LanguageAPI.Add(stormShelterObjectiveToken, "Seek shelter from the <style=cDeath>Storm... <sprite name=\"TP\" tint=1></style>");
+            LanguageAPI.Add(stormShelterObjectiveToken, "Seek <style=cDeath>shelter <sprite name=\"TP\" tint=1></style> from the Storm");
 
             //On.RoR2.HoldoutZoneController.OnEnable += RegisterHoldoutZone;
             //On.RoR2.HoldoutZoneController.OnDisable += UnregisterHoldoutZone;
