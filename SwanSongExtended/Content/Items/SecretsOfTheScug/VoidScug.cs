@@ -78,7 +78,7 @@ namespace SwanSongExtended.Items
         }
         private void ScugTakeDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
-            CharacterBody body = self.body;
+            CharacterBody body = self?.body;
             int scugItemCount = GetCount(body);
             orig(self, damageInfo);
 

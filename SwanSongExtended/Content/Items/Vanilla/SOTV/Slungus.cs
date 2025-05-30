@@ -120,15 +120,15 @@ FUN-GUYS Inc. is not liable for any illness, injury, death, extended or permanen
 
         private void RemoveSlungusBuff(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
-            if (!damageInfo.rejected)
+            orig(self, damageInfo);
+            if (NetworkServer.active && !damageInfo.rejected && self != null && self.alive)
             {
                 CharacterBody body = self.body;
-                if (body.HasBuff(slungusBuff) && body.hasAuthority)
+                if (body.HasBuff(slungusBuff))
                 {
                     body.RemoveBuff(slungusBuff);
                 }
             }
-            orig(self, damageInfo);
         }
 
         private void SlungusDamage(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)

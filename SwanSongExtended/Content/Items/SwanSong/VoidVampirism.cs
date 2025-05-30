@@ -78,7 +78,7 @@ namespace SwanSongExtended.Items
 
         private void TakeMoreDamageWhileBurning(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
-            if (damageInfo.attacker != null)
+            if (damageInfo.attacker != null && self && self.body)
             {
                 CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
                 int count = GetCount(attackerBody);

@@ -80,7 +80,7 @@ THE SOULS OF MY ????? WILL DRINK YOUR SCREAMS LIKE NECTAR.";
         private void StarVeilTakeDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
             orig(self, damageInfo);
-            if (!damageInfo.rejected)
+            if (!damageInfo.rejected && self.body)
             {
                 int itemCount = GetCount(self.body);
                 if (itemCount > 0 && !self.body.HasBuff(RoR2Content.Buffs.Immune) && !damageInfo.damageType.damageType.HasFlag(DamageType.Silent))
