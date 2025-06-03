@@ -37,8 +37,8 @@ namespace SurvivorTweaks.SurvivorTweaks
         static float arrowRainHitFrequency = 4f; //3f
         static float arrowRainLifetime = 8f; //6f
 
-        static int ballistaCooldown = 16; //12
-        static float ballistaDamageCoefficient = 13f; //9
+        static int ballistaCooldown = 18; //12
+        static float ballistaDamageCoefficient = 8f; //9
 
         public override void Init()
         {
@@ -64,6 +64,39 @@ namespace SurvivorTweaks.SurvivorTweaks
                 $"for <style=cIsDamage>{Tools.ConvertDecimal(glaiveBaseDamage)} damage</style>. " +
                 $"Damage increases by <style=cIsDamage>{Tools.ConvertDecimal(glaiveBounceDamage - 1)}</style> per bounce.");
             On.EntityStates.Huntress.HuntressWeapon.ThrowGlaive.OnEnter += BuffGlaive;
+            On.RoR2.Orbs.LightningOrb.PickNextTarget += ChangeGlaiveTargeting;
+        }
+
+        private HurtBox ChangeGlaiveTargeting(On.RoR2.Orbs.LightningOrb.orig_PickNextTarget orig, RoR2.Orbs.LightningOrb self, Vector3 position)
+        {
+            if(self.lightningType != RoR2.Orbs.LightningOrb.LightningType.HuntressGlaive)
+                return orig(self, position);
+
+            int i = self.bouncesRemaining % 2;
+            if(self.bouncedObjects.Count > i)
+            {
+                HealthComponent hc = self.bouncedObjects[i];
+                if (hc != null && hc.alive)
+                {
+                    HurtBox hb = hc.GetComponent<HurtBox>();
+                    if (hb)
+                    {
+                        return hb;
+                    }
+                    else
+                        Log.Error("glaive orb target has no hurtbox!");
+                }
+            }
+
+            HurtBox newTarget = orig(self, position);
+            if(newTarget != null)
+            {
+                if (self.bouncedObjects.Count > i)
+                    self.bouncedObjects[i] = newTarget.healthComponent;
+                else
+                    self.bouncedObjects.Add(newTarget.healthComponent);
+            }
+            return newTarget;
         }
 
         private void BuffGlaive(On.EntityStates.Huntress.HuntressWeapon.ThrowGlaive.orig_OnEnter orig, ThrowGlaive self)
@@ -100,11 +133,20 @@ namespace SurvivorTweaks.SurvivorTweaks
                 arrowRainDotZone.lifetime = arrowRainLifetime;
             }
 
-            family.variants[1].skillDef.baseRechargeInterval = ballistaCooldown;
+            SkillDef ballista = family.variants[1].skillDef;
+            ballista.baseRechargeInterval = ballistaCooldown;
+            ballista.keywordTokens = new string[] { "KEYWORD_SLAYER" };
             On.EntityStates.GenericBulletBaseState.OnEnter += BallistaBuff;
-            LanguageAPI.Add("HUNTRESS_SPECIAL_ALT1_DESCRIPTION", $"<style=cIsUtility>Teleport</style> backwards into the sky. " +
+            On.EntityStates.Huntress.Weapon.FireArrowSnipe.ModifyBullet += BallistaDamageType;
+            LanguageAPI.Add("HUNTRESS_SPECIAL_ALT1_DESCRIPTION", $"<style=cIsDamage>Slayer</style>. <style=cIsUtility>Teleport</style> backwards into the sky. " +
                 $"Fire up to <style=cIsDamage>3</style> energy bolts, " +
                 $"dealing <style=cIsDamage>3x{Tools.ConvertDecimal(ballistaDamageCoefficient)} damage</style>.");
+        }
+
+        private void BallistaDamageType(On.EntityStates.Huntress.Weapon.FireArrowSnipe.orig_ModifyBullet orig, FireArrowSnipe self, BulletAttack bulletAttack)
+        {
+            orig(self, bulletAttack);
+            bulletAttack.damageType.damageType |= DamageType.BonusToLowHealth;
         }
 
         private void AddHuntressUltProtection(On.EntityStates.Huntress.BaseArrowBarrage.orig_OnEnter orig, BaseArrowBarrage self)
