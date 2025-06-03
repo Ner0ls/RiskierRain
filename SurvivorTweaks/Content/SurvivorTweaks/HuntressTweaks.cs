@@ -78,7 +78,7 @@ namespace SurvivorTweaks.SurvivorTweaks
                 HealthComponent hc = self.bouncedObjects[i];
                 if (hc != null && hc.alive)
                 {
-                    HurtBox hb = hc.GetComponent<HurtBox>();
+                    HurtBox hb = hc.body.mainHurtBox;
                     if (hb)
                     {
                         return hb;
@@ -93,8 +93,6 @@ namespace SurvivorTweaks.SurvivorTweaks
             {
                 if (self.bouncedObjects.Count > i)
                     self.bouncedObjects[i] = newTarget.healthComponent;
-                else
-                    self.bouncedObjects.Add(newTarget.healthComponent);
             }
             return newTarget;
         }
