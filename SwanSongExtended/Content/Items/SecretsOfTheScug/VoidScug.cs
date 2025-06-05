@@ -28,9 +28,9 @@ namespace SwanSongExtended.Items
 
         public override string ItemLangTokenName => "VOIDSCUG";
 
-        public override string ItemPickupDesc => "Chill nearby enemies when hit and when low on health. Recharges outside of danger.";
+        public override string ItemPickupDesc => "Chill nearby enemies when hit. Recharges outside of danger.";
 
-        public override string ItemFullDescription => $"When hit, and when under 50% health, <style=cIsUtility>Chill</style> all enemies within " +
+        public override string ItemFullDescription => $"When hit, <style=cIsUtility>Chill</style> all enemies within " +
             $"<style=cIsUtility>{radiusBase}m</style> for " +
             $"<style=cIsUtility>{durationBase}</style> <style=cStack>(+{durationStack} per stack)</style> seconds. " +
             $"Recharges outside of danger.";
@@ -42,7 +42,7 @@ namespace SwanSongExtended.Items
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.Utility};
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/SecretsOfTheScug/mdlScug.prefab");
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/voidscug.png");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/texIconPickupITEM_VOIDSCUG.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
@@ -105,7 +105,7 @@ namespace SwanSongExtended.Items
                 origin = body.transform.position,
                 scale = radiusBase
             }, true);
-            ChillRework.ChillRework.ApplyChillSphere(body.corePosition, radiusBase, body.teamComponent.teamIndex, durationBase + durationStack * (itemCount - 1));
+            RainrotSharedUtils.Frost.FrostUtilsModule.ApplyChillSphere(body.corePosition, radiusBase, body.teamComponent.teamIndex, durationBase + durationStack * (itemCount - 1));
             BlastAttack scugNova = new BlastAttack()
             {
                 baseDamage = body.damage * (damageBase + damageStack * (itemCount - 1)),

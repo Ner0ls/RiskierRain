@@ -70,7 +70,7 @@ FUN-GUYS Inc. is not liable for any illness, injury, death, extended or permanen
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlSlungus.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/slungus.png");
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/texIconPickupITEM_SLUNGUS.png");
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {

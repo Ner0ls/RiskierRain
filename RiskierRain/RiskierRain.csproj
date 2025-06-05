@@ -72,7 +72,6 @@
     <ProjectReference Include="..\SurvivorTweaks\SurvivorTweaks.csproj" />
     <ProjectReference Include="..\EliteReworks\EliteReworks.csproj" />
     <ProjectReference Include="..\BorboStatUtils\RainrotSharedUtils.csproj" />
-    <ProjectReference Include="..\ChillRework\ChillRework.csproj" />
     <ProjectReference Include="..\MissileRework\MissileRework.csproj" />
     <ProjectReference Include="..\NegativeRegenFix\NegativeRegenFix.csproj" />
     <ProjectReference Include="..\SwanSongExtended\SwanSongExtended.csproj" />

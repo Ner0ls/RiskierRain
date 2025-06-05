@@ -47,7 +47,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlPearWiggler.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/pearwiggler.png");
+        public override Sprite ItemIcon => LoadItemIcon();
         public override ExpansionDef RequiredExpansion => SwanSongPlugin.expansionDefSOTS;
         #endregion
         public static BuffDef pearBuff;

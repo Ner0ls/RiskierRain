@@ -3,6 +3,7 @@ using Mono.Cecil.Cil;
 using MonoMod.Cil;
 using R2API;
 using R2API.Utils;
+using RainrotSharedUtils.Frost;
 using RainrotSharedUtils.Shelters;
 using RoR2;
 using System;
@@ -39,7 +40,9 @@ namespace RainrotSharedUtils
 
         public void Awake()
         {
+            Assets.Init();
             ShelterUtilsModule.Init();
+            FrostUtilsModule.Init();
             Hooks.DoHooks();
 
             LanguageAPI.Add(executeKeywordToken,

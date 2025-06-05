@@ -39,7 +39,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => Resources.Load<GameObject>("prefabs/NullModel");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/designanomaly.png");
+        public override Sprite ItemIcon => Resources.Load<Sprite>("textures/miscicons/texWIPIcon");
         public override ItemTag[] ItemTags => new ItemTag[] { ItemTag.BrotherBlacklist, ItemTag.WorldUnique, ItemTag.CannotSteal };
 
 

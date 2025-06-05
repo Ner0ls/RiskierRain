@@ -17,7 +17,6 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using static R2API.RecalculateStatsAPI;
 using RainrotSharedUtils;
-using ChillRework;
 using MonoMod.RuntimeDetour;
 using UnityEngine.Networking;
 //using RiskierRain.Changes.Reworks.NerfsReworks.SpawnlistChanges; //idk if this is a good way of doing
@@ -37,7 +36,6 @@ namespace RiskierRain
     [BepInDependency(R2API.EliteAPI.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
 
     //[BepInDependency("com.Borbo.ArtificerExtended", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency(ChillRework.ChillRework.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(MissileRework.MissileReworkPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(MoreStats.MoreStatsPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(RainrotSharedUtils.SharedUtilsPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]

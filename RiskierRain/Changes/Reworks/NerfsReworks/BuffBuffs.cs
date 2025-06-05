@@ -108,14 +108,9 @@ namespace RiskierRain
             args.attackSpeedDivAdd += aspdDecreaseAmt;
         }
 
-        [MethodImpl(MethodImplOptions.NoInlining | MethodImplOptions.NoOptimization)]
         private static float GetChillAspdSlowCoefficient(int chillCount)
         {
             float slowCoefficient = chillSlowAspdReduction;
-            if (Tools.isLoaded("com.HouseOfFruits.ChillRework"))
-            {
-                slowCoefficient = ChillRework.ChillRework.CalculateChillSlowCoefficient(chillCount, slowCoefficient);
-            }
             return slowCoefficient;
         }
         #endregion

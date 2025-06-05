@@ -44,7 +44,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlScugShaker.prefab");
 
-        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/scugshaker.png");
+        public override Sprite ItemIcon => LoadItemIcon();
         public override ExpansionDef RequiredExpansion => SwanSongPlugin.expansionDefSOTS;
         #endregion
         public static BuffDef storedScugBuff;
@@ -67,11 +67,11 @@ namespace SwanSongExtended.Items
         {
             scugBomb = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bomb/SpiteBomb.prefab").WaitForCompletion().InstantiateClone("ScugBomb", true);
 
-            ModdedDamageTypeHolderComponent mdthc = scugBomb.AddComponent<ModdedDamageTypeHolderComponent>();
-            if (mdthc)
-            {
-                mdthc.Add(ChillRework.ChillRework.ChillOnHit);
-            }
+            //ModdedDamageTypeHolderComponent mdthc = scugBomb.AddComponent<ModdedDamageTypeHolderComponent>();
+            //if (mdthc)
+            //{
+            //    mdthc.Add(ChillRework.ChillRework.ChillOnHit);
+            //}
         }
         private void ScugShakerOnHit(CharacterBody attackerBody, DamageInfo damageInfo, CharacterBody victimBody)
         {
@@ -152,6 +152,7 @@ namespace SwanSongExtended.Items
                 delayBlast.maxTimer = 8f;//BombArtifactManager.bombFuseTimeout;
                 delayBlast.timerStagger = 0f;
                 delayBlast.falloffModel = BlastAttack.FalloffModel.None;
+                delayBlast.damageType.damageType = DamageType.Frost;
                 component2.teamIndex = a.body.teamComponent.teamIndex;
                 NetworkServer.Spawn(gameObject);
             }
