@@ -67,8 +67,15 @@ namespace EliteReworks
         }
         void Awake()
         {
-            CustomConfigFile = new ConfigFile(Paths.ConfigPath + $"\\{modName}.cfg", true);
-            Assets.Init();
+            instance = this;
+
+            Modules.Config.Init();
+            Log.Init(Logger);
+
+            Modules.Language.Init();
+            Modules.Hooks.Init();
+            Modules.CommonAssets.Init();
+            InitializeContent();
 
             if(Bind("Change Elite Stats"))
             {

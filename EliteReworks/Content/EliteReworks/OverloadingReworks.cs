@@ -51,6 +51,18 @@ namespace EliteReworks.EliteReworks
             AssetReferenceT<GameObject> ref1 = new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_EliteLightning.LightningStake_prefab);
             AssetAsyncReferenceManager<GameObject>.LoadAsset(ref1).Completed += (ctx) => ChangeLightningStake(ctx.Result);
         }
+
+        private void ChangeLightningStake(GameObject overloadingBomb)
+        {
+            ProjectileStickOnImpact bombStick = overloadingBomb.GetComponent<ProjectileStickOnImpact>();
+            bombStick.ignoreCharacters = true;
+            bombStick.ignoreWorld = false;
+
+            ProjectileImpactExplosion bombPie = overloadingBomb.GetComponent<ProjectileImpactExplosion>();
+            bombPie.blastRadius = overloadingBombBlastRadius;
+            bombPie.lifetime = overloadingBombLifetime;
+        }
+
         private void OverloadingShieldConversion(ILContext il)
         {
             ILCursor c = new ILCursor(il);
@@ -181,17 +193,6 @@ namespace EliteReworks.EliteReworks
                 }
             }
             orig(self, damageInfo);
-        }
-
-        private void ChangeLightningStake(GameObject overloadingBomb)
-        {
-            ProjectileStickOnImpact bombStick = overloadingBomb.GetComponent<ProjectileStickOnImpact>();
-            bombStick.ignoreCharacters = true;
-            bombStick.ignoreWorld = false;
-
-            ProjectileImpactExplosion bombPie = overloadingBomb.GetComponent<ProjectileImpactExplosion>();
-            bombPie.blastRadius = overloadingBombBlastRadius;
-            bombPie.lifetime = overloadingBombLifetime;
         }
     }
 }
