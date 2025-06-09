@@ -128,17 +128,6 @@ namespace RiskierRain
             }
 
             SummonEggs.maxSummonCount = 2;
-
-            GameObject sunderPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Beetle/Sunder.prefab").WaitForCompletion();
-            if (sunderPrefab)
-            {
-                ProjectileController pc = sunderPrefab.GetComponent<ProjectileController>();
-                ProjectileDamage pd = sunderPrefab.GetComponent<ProjectileDamage>();
-                OnHitAllInterval ohai = sunderPrefab.AddComponent<OnHitAllInterval>();
-                ohai.pc = pc;
-                ohai.pd = pd;
-                ohai.interval = 0.25f;
-            }
         }
         #endregion
         #region gup

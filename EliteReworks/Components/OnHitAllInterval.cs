@@ -8,7 +8,7 @@ using UnityEngine;
 /// <summary>
 /// used for things like adding lightning elite bombs to beetle guard's sunder projectile
 /// </summary>
-namespace RiskierRain.Components
+namespace EliteReworks.Components
 {
     [RequireComponent(typeof(ProjectileController))]
     class OnHitAllInterval : MonoBehaviour

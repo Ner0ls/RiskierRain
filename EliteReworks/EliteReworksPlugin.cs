@@ -1,5 +1,6 @@
 ﻿using BepInEx;
 using BepInEx.Configuration;
+using EliteReworks.Components;
 using EliteReworks.EliteReworks;
 using EliteReworks.Equipment;
 using EliteReworks.Modules;
@@ -18,6 +19,7 @@ using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace EliteReworks
@@ -81,11 +83,25 @@ namespace EliteReworks
             {
                 RoR2Application.onLoad += ChangeEliteTierStats;
             }
+            if(Bind("Add Periodical OnHitAll To BeetleGuard Sunder (Affects Overloading Orbs)"))
+            {
+                BuffSunder(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Beetle/Sunder.prefab").WaitForCompletion());
+            }
 
             bool Bind(string configName, string configDesc = "")
             {
                 return CustomConfigFile.Bind<bool>("Elite Reworks", configName, true, configDesc).Value;
             }
+        }
+
+        private void BuffSunder(GameObject sunderPrefab)
+        {
+            ProjectileController pc = sunderPrefab.GetComponent<ProjectileController>();
+            ProjectileDamage pd = sunderPrefab.GetComponent<ProjectileDamage>();
+            OnHitAllInterval ohai = sunderPrefab.AddComponent<OnHitAllInterval>();
+            ohai.pc = pc;
+            ohai.pd = pd;
+            ohai.interval = 0.25f;
         }
 
         private void InitializeContent()
