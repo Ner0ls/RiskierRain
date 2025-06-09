@@ -44,7 +44,6 @@ namespace RiskierRain
     [BepInDependency(SurvivorTweaks.SurvivorTweaksPlugin.guid, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(EliteReworks.EliteReworksPlugin.guid, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("com.Borbo.ArtifactGesture", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Borbo.HuntressBuffULTIMATE", BepInDependency.DependencyFlags.SoftDependency)]
 
     [BepInDependency("HIFU.UltimateCustomRun", BepInDependency.DependencyFlags.SoftDependency)]

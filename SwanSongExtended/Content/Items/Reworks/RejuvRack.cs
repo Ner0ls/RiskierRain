@@ -136,7 +136,7 @@ namespace SwanSongExtended.Items
             });*/
         }
 
-        private void RepeatHealWhileHurt(On.RoR2.HealthComponent.RepeatHealComponent.orig_FixedUpdate orig, MonoBehaviour mono)
+        private void RepeatHealWhileHurt(On.RoR2.HealthComponent.RepeatHealComponent.orig_FixedUpdate orig, RoR2.HealthComponent.RepeatHealComponent mono)
         {
             RepeatHealComponent self = (mono as RepeatHealComponent);
             HealthComponent hc = self.healthComponent;

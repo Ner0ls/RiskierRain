@@ -698,7 +698,7 @@ namespace RiskierRain
             doubleChestDropTable.equipmentWeight = 0;
         }
 
-        private void DoubleChestOnInteract(On.RoR2.RouletteChestController.Cycling.orig_OnEnter orig, EntityStates.EntityState self)
+        private void DoubleChestOnInteract(On.RoR2.RouletteChestController.Cycling.orig_OnEnter orig, RoR2.RouletteChestController.Cycling self)
         {
             RouletteChestController chestController = self.gameObject.GetComponent<RouletteChestController>();
             //chestController.dropTable = RoR2.MultiShopController.drop

@@ -256,7 +256,7 @@ namespace SurvivorTweaks.SurvivorTweaks
         }
 
         public static List<GameObject> activeBeacons = new List<GameObject>();
-        private void CaptainBeaconRefresh(On.RoR2.TeleporterInteraction.IdleToChargingState.orig_OnEnter orig, BaseState self)
+        private void CaptainBeaconRefresh(On.RoR2.TeleporterInteraction.IdleToChargingState.orig_OnEnter orig, RoR2.TeleporterInteraction.IdleToChargingState self)
         {
             orig(self);
 

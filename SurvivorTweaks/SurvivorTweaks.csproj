@@ -26,11 +26,15 @@
     <Compile Remove="Content\Skills\Engineer\PlaceFlamerTurret.cs" />
     <Compile Remove="Content\Skills\Engineer\Turret\FireTurretFlamer.cs" />
     <Compile Remove="Content\Skills\Huntress\ExplosiveArrowSkill.cs" />
+    <Compile Remove="Modules\ItemDisplayCheck.cs" />
+    <Compile Remove="Modules\ItemDisplays.cs" />
+    <Compile Remove="Modules\Skins.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.3.8-r.0" />
-    <PackageReference Include="MMHOOK.RoR2" Version="2025.5.5" NoWarn="NU1701" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.3.9-r.0" />
+    <PackageReference Include="MMHOOK.RoR2" Version="2025.6.3" NoWarn="NU1701" />
+    <PackageReference Include="RoR2BepInExPack" Version="1.30.0" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -61,6 +65,9 @@
     <None Include="Content\Skills\Engineer\PlaceFlamerTurret.cs" />
     <None Include="Content\Skills\Engineer\Turret\FireTurretFlamer.cs" />
     <None Include="Content\Skills\Huntress\ExplosiveArrowSkill.cs" />
+    <None Include="Modules\ItemDisplayCheck.cs" />
+    <None Include="Modules\ItemDisplays.cs" />
+    <None Include="Modules\Skins.cs" />
   </ItemGroup>
   
   <ItemGroup>
