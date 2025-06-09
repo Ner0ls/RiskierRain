@@ -164,6 +164,7 @@ namespace SwanSongExtended.Storms
                 On.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
                 EnableDirector();
             }
+
             public override void OnExit()
             {
                 base.OnExit();
@@ -274,10 +275,9 @@ namespace SwanSongExtended.Storms
                 }.Fire();
             }
 
-            //teleporter safe zone
-            private object MeteorWave_GetNextMeteor(On.RoR2.MeteorStormController.MeteorWave.orig_GetNextMeteor orig, object self)
+            private MeteorStormController.Meteor MeteorWave_GetNextMeteor(On.RoR2.MeteorStormController.MeteorWave.orig_GetNextMeteor orig, MeteorStormController.MeteorWave self)
             {
-                object meteor = orig.Invoke(self);
+                MeteorStormController.Meteor meteor = orig.Invoke(self);
                 if (stormController.holdoutZones.Count == 0)
                     return meteor;
 
@@ -318,6 +318,7 @@ namespace SwanSongExtended.Storms
                     return (a - b).sqrMagnitude <= dist * dist;
                 }
             }
+
             public override InterruptPriority GetMinimumInterruptPriority()
             {
                 return InterruptPriority.Death;
