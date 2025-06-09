@@ -93,18 +93,8 @@ namespace EliteReworks
 
             bool Bind(string configName, string configDesc = "")
             {
-                return CustomConfigFile.Bind<bool>("Elite Reworks", configName, true, configDesc).Value;
+                return GetConfigBool(true, configName, configDesc);// CustomConfigFile.Bind<bool>("Elite Reworks", configName, true, configDesc).Value;
             }
-        }
-
-        private void BuffSunder(GameObject sunderPrefab)
-        {
-            ProjectileController pc = sunderPrefab.GetComponent<ProjectileController>();
-            ProjectileDamage pd = sunderPrefab.GetComponent<ProjectileDamage>();
-            OnHitAllInterval ohai = sunderPrefab.AddComponent<OnHitAllInterval>();
-            ohai.pc = pc;
-            ohai.pd = pd;
-            ohai.interval = 0.25f;
         }
 
         private void InitializeContent()
@@ -174,6 +164,16 @@ namespace EliteReworks
         #endregion
 
 
+        private void BuffSunder(GameObject sunderPrefab)
+        {
+            ProjectileController pc = sunderPrefab.GetComponent<ProjectileController>();
+            ProjectileDamage pd = sunderPrefab.GetComponent<ProjectileDamage>();
+            OnHitAllInterval ohai = sunderPrefab.AddComponent<OnHitAllInterval>();
+            ohai.pc = pc;
+            ohai.pd = pd;
+            ohai.interval = 0.25f;
+        }
+
         private void ChangeEliteTierStats()
         {
             RoR2Content.Elites.Fire.damageBoostCoefficient = baseEliteDamageBoostCoefficient;
@@ -201,6 +201,19 @@ namespace EliteReworks
             DLC2Content.Elites.AurelioniteHonor.damageBoostCoefficient = rareEliteDamageBoostCoefficient;
             DLC2Content.Elites.AurelioniteHonor.healthBoostCoefficient = rareEliteHealthBoostCoefficient / 2;
 
+        }
+        public static bool GetConfigBool(bool defaultValue, string packetTitle, string desc = "")
+        {
+            return ConfigManager.DualBindToConfig<bool>(packetTitle, Modules.Config.MyConfig, "Should This Content Be Enabled", defaultValue, desc);
+            //if (desc != "")
+            //{
+            //    return CustomConfigFile.Bind<bool>("Packets - See README For Details.",
+            //        packetTitle + " Packet", defaultValue,
+            //        $"The changes in this Packet will be enabled if set to true.").Value;
+            //}
+            //return CustomConfigFile.Bind<bool>("Packets",
+            //    packetTitle + " Packet", defaultValue,
+            //    "(The following changes will be enabled if set to true) " + desc).Value;
         }
 
         #region modify items and equipments
