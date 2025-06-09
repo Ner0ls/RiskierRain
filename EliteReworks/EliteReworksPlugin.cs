@@ -10,6 +10,7 @@ using MonoMod.Cil;
 using R2API;
 using R2API.Utils;
 using RoR2;
+using RoR2.ContentManagement;
 using RoR2.ExpansionManagement;
 using RoR2.Orbs;
 using RoR2.Projectile;
@@ -85,7 +86,9 @@ namespace EliteReworks
             }
             if(Bind("Add Periodical OnHitAll To BeetleGuard Sunder (Affects Overloading Orbs)"))
             {
-                BuffSunder(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Beetle/Sunder.prefab").WaitForCompletion());
+                //BuffSunder(Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Beetle/Sunder.prefab").WaitForCompletion());
+                AssetReferenceT<GameObject> ref1 = new AssetReferenceT<GameObject>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_BeetleGuard.Sunder_prefab);
+                AssetAsyncReferenceManager<GameObject>.LoadAsset(ref1).Completed += (ctx) => BuffSunder(ctx.Result);
             }
 
             bool Bind(string configName, string configDesc = "")
