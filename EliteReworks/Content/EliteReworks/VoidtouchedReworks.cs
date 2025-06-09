@@ -16,7 +16,6 @@ namespace EliteReworks.EliteReworks
 {
     class VoidtouchedReworks : EliteReworkBase<VoidtouchedReworks>
     {
-        static GameObject voidSingularityPrefab;
         [AutoConfig("Nullify Base Duration", 12)]
         public static float voidtouchedNullifyBaseDuration = 12;
         public override string eliteName => "Voidtouched";
@@ -56,7 +55,7 @@ namespace EliteReworks.EliteReworks
                         procChainMask = procChainMask6,
                         force = 6000f,
                         owner = victimBody.gameObject,
-                        projectilePrefab = Assets.voidtouchedSingularity,
+                        projectilePrefab = Modules.CommonAssets.voidtouchedSingularity,
                         rotation = Quaternion.identity,
                         target = null,
                     });

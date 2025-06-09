@@ -45,6 +45,40 @@ namespace EliteReworks.Modules
         public static string eliteMaterialsPath = "Assets/Textures/Materials/Elite/";
         public static void Init()
         {
+            CreateVoidtouchedSingularity();
+        }
+
+        public static GameObject voidtouchedSingularityDelay;
+        public static GameObject voidtouchedSingularity;
+        private static void CreateVoidtouchedSingularity()
+        {
+            float singularityRadius = 8; //15
+            GameObject singularity = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/ElementalRingVoid/ElementalRingVoidBlackHole.prefab").WaitForCompletion();
+            voidtouchedSingularity = singularity.InstantiateClone("VoidtouchedSingularity", true);
+
+            ProjectileFuse singularityPf = voidtouchedSingularity.GetComponent<ProjectileFuse>();
+            if (singularityPf)
+            {
+                singularityPf.fuse = 3;
+            }
+            RadialForce singularityRF = voidtouchedSingularity.GetComponent<RadialForce>();
+            if (singularityRF)
+            {
+                singularityRF.radius = singularityRadius;
+                voidtouchedSingularity.transform.localScale *= (singularityRadius / 15);
+            }
+            R2API.ContentAddition.AddProjectile(voidtouchedSingularity);
+
+            GameObject willowispDelay = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/ExplodeOnDeath/WilloWispDelay.prefab").WaitForCompletion();
+            voidtouchedSingularityDelay = willowispDelay.InstantiateClone("VoidtouchedDelayBlast", true);
+
+            DelayBlast singularityDelayDB = voidtouchedSingularityDelay.GetComponent<DelayBlast>();
+            if (singularityDelayDB)
+            {
+                singularityDelayDB.explosionEffect = voidtouchedSingularity;
+            }
+
+            R2API.ContentAddition.AddNetworkedObject(voidtouchedSingularityDelay);
         }
     }
 
