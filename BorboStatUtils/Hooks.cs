@@ -14,6 +14,33 @@ namespace RainrotSharedUtils
         {
             On.RoR2.IcicleAuraController.Awake += AuraControllerFix;
             On.RoR2.BuffWard.BuffTeam += ApplyDotWard;
+            On.RoR2.Projectile.ProjectileOverlapLimitHits.CountOverlapHits += DecayProjectileOverlapDamage;
+            On.RoR2.Projectile.ProjectileOverlapLimitHits.OnEnable += DecayProjectileRecordInitialDamage;
+        }
+
+        private static void DecayProjectileRecordInitialDamage(On.RoR2.Projectile.ProjectileOverlapLimitHits.orig_OnEnable orig, RoR2.Projectile.ProjectileOverlapLimitHits self)
+        {
+            orig(self);
+            if (self is ProjectileOverlapDecayDamage)
+            {
+                (self as ProjectileOverlapDecayDamage).initialDamageCoefficient = self.projectileOverlapAttack.damageCoefficient;
+                (self as ProjectileOverlapDecayDamage).initialProcCoefficient = self.projectileOverlapAttack.overlapProcCoefficient;
+            }
+        }
+
+        private static void DecayProjectileOverlapDamage(On.RoR2.Projectile.ProjectileOverlapLimitHits.orig_CountOverlapHits orig, RoR2.Projectile.ProjectileOverlapLimitHits self)
+        {
+            orig(self);
+            if(self is ProjectileOverlapDecayDamage)
+            {
+                ProjectileOverlapDecayDamage decayDamage = self as ProjectileOverlapDecayDamage;
+                if (self.hitCount >= self.hitLimit)
+                    return;
+                self.projectileOverlapAttack.damageCoefficient = decayDamage.initialDamageCoefficient 
+                    * decayDamage.firstHitDamageMultiplier * Mathf.Pow(decayDamage.onHitDamageMultiplier, self.hitCount - 1);
+                self.projectileOverlapAttack.overlapProcCoefficient = decayDamage.initialProcCoefficient 
+                    * decayDamage.firstHitDamageMultiplier * Mathf.Pow(decayDamage.onHitDamageMultiplier, self.hitCount - 1);
+            }
         }
 
         private static void AuraControllerFix(On.RoR2.IcicleAuraController.orig_Awake orig, IcicleAuraController self)
