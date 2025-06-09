@@ -12,12 +12,22 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Content\Equipment\Aspects\FrenziedAspect.cs" />
+    <Compile Remove="Content\Equipment\Aspects\LeechingAspect.cs" />
+    <Compile Remove="Content\Equipment\Aspects\SimulatedAspect.cs" />
+    <Compile Remove="Content\Equipment\Aspects\VolatileAspect.cs" />
+    <Compile Remove="Content\States\Misc\LeechingHealNovaPulse.cs" />
     <Compile Remove="Modules\ItemDisplayCheck.cs" />
     <Compile Remove="Modules\ItemDisplays.cs" />
     <Compile Remove="Modules\Skins.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Include="Content\Equipment\Aspects\FrenziedAspect.cs" />
+    <None Include="Content\Equipment\Aspects\LeechingAspect.cs" />
+    <None Include="Content\Equipment\Aspects\SimulatedAspect.cs" />
+    <None Include="Content\Equipment\Aspects\VolatileAspect.cs" />
+    <None Include="Content\States\Misc\LeechingHealNovaPulse.cs" />
     <None Include="Modules\ItemDisplayCheck.cs" />
     <None Include="Modules\ItemDisplays.cs" />
     <None Include="Modules\Skins.cs" />
