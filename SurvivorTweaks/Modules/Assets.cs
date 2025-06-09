@@ -31,7 +31,7 @@ namespace SurvivorTweaks.Modules
             {
                 return null;
                 if (_mainAssetBundle == null)
-                    _mainAssetBundle = Assets.LoadAssetBundle("itmightbebad");
+                    _mainAssetBundle = Assets.LoadAssetBundle("survivortweaks");
                 return _mainAssetBundle;
             }
             set
