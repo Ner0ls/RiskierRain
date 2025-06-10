@@ -15,12 +15,19 @@ namespace RainrotSharedUtils.Frost
 {
     public static class FrostUtilsModule
     {
+        public const int maxIceExplosionsPerSecond = 5;
+        public static int iceExplosionsThisSecond = 0;
         public const int chillStacksMax = 6;
         public const float chillProcDuration = 6f;
         public static GameObject iceExplosion => Assets.iceExplosion;
         public static void Init()
         {
             FixSnapfreeze();
+        }
+
+        public static void FixedUpdate()
+        {
+
         }
         public static void FixSnapfreeze()
         {

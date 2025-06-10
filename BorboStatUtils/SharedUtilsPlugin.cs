@@ -18,7 +18,7 @@ using UnityEngine;
 #pragma warning disable 
 namespace RainrotSharedUtils
 {
-    [BepInDependency(MoreStats.MoreStatsPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
+    //[BepInDependency(MoreStats.MoreStatsPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(R2API.LanguageAPI.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
 
     [BepInPlugin(guid, modName, version)]
@@ -30,7 +30,7 @@ namespace RainrotSharedUtils
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
         public const string modName = "RainrotSharedUtils";
-        public const string version = "1.0.2";
+        public const string version = "1.0.3";
         #endregion
 
         public const string shelterKeywordToken = "2R4R_SHELTER_KEYWORD";
@@ -58,5 +58,9 @@ namespace RainrotSharedUtils
                 $"<style=cKeywordName>Shelter</style>" +
                 $"<style=cSub>Protects from storms and fog.</style>");
         }
+        //public void FixedUpdate()
+        //{
+        //    FrostUtilsModule.FixedUpdate();
+        //}
     }
 }

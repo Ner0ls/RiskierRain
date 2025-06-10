@@ -38,28 +38,35 @@ namespace EliteReworks.EliteReworks
 
         private void VoidtouchedSingularity(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
         {
-            CharacterBody victimBody = damageReport.victimBody;
-            if (victimBody != null)
+            if (CommonAssets.voidtouchedSingularity != null)
             {
-                if (victimBody.HasBuff(DLC1Content.Buffs.EliteVoid))
+                CharacterBody victimBody = damageReport.victimBody;
+                if (victimBody != null)
                 {
-                    ProcChainMask procChainMask6 = damageReport.damageInfo.procChainMask;
-                    procChainMask6.AddProc(ProcType.Rings);
-                    float damageCoefficient10 = 0;
-                    ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                    if (victimBody.HasBuff(DLC1Content.Buffs.EliteVoid))
                     {
-                        damage = damageCoefficient10,
-                        crit = false,
-                        damageColorIndex = DamageColorIndex.Void,
-                        position = victimBody.previousPosition,
-                        procChainMask = procChainMask6,
-                        force = 6000f,
-                        owner = victimBody.gameObject,
-                        projectilePrefab = Modules.CommonAssets.voidtouchedSingularity,
-                        rotation = Quaternion.identity,
-                        target = null,
-                    });
+                        ProcChainMask procChainMask6 = damageReport.damageInfo.procChainMask;
+                        procChainMask6.AddProc(ProcType.Rings);
+                        float damageCoefficient10 = 0;
+                        ProjectileManager.instance.FireProjectile(new FireProjectileInfo
+                        {
+                            damage = damageCoefficient10,
+                            crit = false,
+                            damageColorIndex = DamageColorIndex.Void,
+                            position = victimBody.previousPosition,
+                            procChainMask = procChainMask6,
+                            force = 6000f,
+                            owner = victimBody.gameObject,
+                            projectilePrefab = Modules.CommonAssets.voidtouchedSingularity,
+                            rotation = Quaternion.identity,
+                            target = null,
+                        });
+                    }
                 }
+            }
+            else
+            {
+                Log.Error("Voidtouched singularity null!!");
             }
             orig(self, damageReport);
         }
