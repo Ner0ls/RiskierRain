@@ -34,7 +34,7 @@ namespace SwanSongExtended.Items
         public override string ItemFullDescription => $"Attacks dealing 400% or more damage store " +
             $"up to 3 {StackText("+3")} {DamageColor("Scugs")}. When struck, " +
             $"release 1 scug per 5% max hp lost for {DamageValueText(damageBase)} {StackText($"+{ConvertDecimal(damageBase)}")} " +
-            $"and {UtilityColor("chilling")} enemies. {VoidColor("Corrupts all Pear Wigglers")}.";
+            $"and {UtilityColor("frosting")} enemies. {VoidColor("Corrupts all Pear Wigglers")}.";
 
         public override string ItemLore => "Shake 'em and sic 'em.";
 
