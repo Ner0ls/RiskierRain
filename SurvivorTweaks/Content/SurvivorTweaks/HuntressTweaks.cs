@@ -31,14 +31,15 @@ namespace SurvivorTweaks.SurvivorTweaks
 
 
         static int arrowRainCooldown = 22; //12
-        static float arrowRainRadius = 12; // 7.5f
-        static float arrowRainProcCoeff = 0.5f; //0.2f
-        static float arrowRainDamageCoeff = 0.25f; //0.5f
+        static float arrowRainRadius = 14; // 7.5f
+        static float arrowRainProcCoeff = 0.3f; //0.2f
+        static float arrowRainDamageCoeffPerSecond = 4f; //3.3f
         static float arrowRainHitFrequency = 4f; //3f
         static float arrowRainLifetime = 8f; //6f
 
         static int ballistaCooldown = 18; //12
         static float ballistaDamageCoefficient = 8f; //9
+        static float ballistaProcCoefficient = 2.0f; //1.0f
 
         public override void Init()
         {
@@ -122,11 +123,11 @@ namespace SurvivorTweaks.SurvivorTweaks
             ProjectileDotZone arrowRainDotZone = arrowRainPrefab?.GetComponent<ProjectileDotZone>();
             if(arrowRainDotZone != null)
             {
-                arrowRainDotZone.damageCoefficient = arrowRainDamageCoeff;
+                arrowRainDotZone.damageCoefficient = arrowRainDamageCoeffPerSecond / (2.2f * arrowRainHitFrequency);
                 arrowRainDotZone.resetFrequency = arrowRainHitFrequency;
                 LanguageAPI.Add("HUNTRESS_SPECIAL_DESCRIPTION", $"<style=cIsUtility>Teleport</style> into the sky. " +
                     $"Target an area to rain arrows, <style=cIsUtility>slowing</style> all enemies and " +
-                    $"dealing <style=cIsDamage>{Tools.ConvertDecimal(2.2f * arrowRainDamageCoeff * arrowRainHitFrequency)} damage per second</style>.");
+                    $"dealing <style=cIsDamage>{Tools.ConvertDecimal(arrowRainDamageCoeffPerSecond)} damage per second</style>.");
                 arrowRainDotZone.overlapProcCoefficient = arrowRainProcCoeff;
                 arrowRainDotZone.lifetime = arrowRainLifetime;
             }
@@ -170,6 +171,7 @@ namespace SurvivorTweaks.SurvivorTweaks
             if(self is FireArrowSnipe)
             {
                 self.damageCoefficient = ballistaDamageCoefficient;
+                self.procCoefficient = ballistaProcCoefficient;
             }
             orig(self);
         }
