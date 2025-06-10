@@ -44,7 +44,7 @@ namespace EliteReworks
         public static EliteReworksPlugin instance;
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
-        public const string modName = "EliteReworks";
+        public const string modName = "FruityAspectGaming";
         public const string version = "1.0.0";
 
         public const string DEVELOPER_PREFIX = "FRUIT";
@@ -191,6 +191,12 @@ namespace EliteReworks
             RoR2Content.Elites.LightningHonor.damageBoostCoefficient = baseEliteDamageBoostCoefficient;
             RoR2Content.Elites.LightningHonor.healthBoostCoefficient = baseEliteHealthBoostCoefficient / 2;
 
+            RoR2Content.Elites.Poison.damageBoostCoefficient = T2EliteDamageBoostCoefficient;
+            RoR2Content.Elites.Poison.healthBoostCoefficient = T2EliteHealthBoostCoefficient;
+
+            RoR2Content.Elites.Haunted.damageBoostCoefficient = T2EliteDamageBoostCoefficient;
+            RoR2Content.Elites.Haunted.healthBoostCoefficient = T2EliteHealthBoostCoefficient;
+
             DLC1Content.Elites.Earth.damageBoostCoefficient = baseEliteDamageBoostCoefficient;
             DLC1Content.Elites.Earth.healthBoostCoefficient = softEliteHealthBoostCoefficient;
             DLC1Content.Elites.EarthHonor.damageBoostCoefficient = baseEliteDamageBoostCoefficient;
@@ -201,6 +207,8 @@ namespace EliteReworks
             DLC2Content.Elites.AurelioniteHonor.damageBoostCoefficient = rareEliteDamageBoostCoefficient;
             DLC2Content.Elites.AurelioniteHonor.healthBoostCoefficient = rareEliteHealthBoostCoefficient / 2;
 
+            DLC2Content.Elites.Bead.damageBoostCoefficient = T2EliteDamageBoostCoefficient;
+            DLC2Content.Elites.Bead.healthBoostCoefficient = T2EliteHealthBoostCoefficient;
         }
         public static bool GetConfigBool(bool defaultValue, string packetTitle, string desc = "")
         {

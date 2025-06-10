@@ -17,15 +17,6 @@ namespace RiskierRain
 {
     internal partial class RiskierRainPlugin : BaseUnityPlugin
     {
-        float softEliteHealthBoostCoefficient = 2f; //3
-        float rareEliteHealthBoostCoefficient = 4f; //5
-        float baseEliteHealthBoostCoefficient = 3f; //4
-        float T2EliteHealthBoostCoefficient = 9; //18
-        float rareEliteDamageBoostCoefficient = 2f; //2.5f
-        float baseEliteDamageBoostCoefficient = 1.5f; //2
-        float T2EliteDamageBoostCoefficient = 4f; //6
-        public static float overloadingBombDamage = 1.5f; //0.5f
-
         public static int Tier2EliteMinimumStageDefault = 5;
         public static int Tier2EliteMinimumStageDrizzle = 10;
         public static int Tier2EliteMinimumStageRainstorm = 5;
@@ -55,13 +46,6 @@ namespace RiskierRain
                 //Debug.Log(etd.eliteTypes[0].name);
                 if (etd.eliteTypes[0] == RoR2Content.Elites.Poison || etd.eliteTypes[0] == RoR2Content.Elites.Haunted)
                 {
-                    //Debug.LogError("gwagwag");
-                    foreach (EliteDef elite in etd.eliteTypes)
-                    {
-                        elite.healthBoostCoefficient = Mathf.Pow(baseEliteHealthBoostCoefficient, 2); //18
-                        elite.damageBoostCoefficient = 4.5f; //6
-                    }
-
                     etd.isAvailable = (SpawnCard.EliteRules rules) =>
                     (Run.instance.stageClearCount >= Tier2EliteMinimumStageDrizzle && rules == SpawnCard.EliteRules.Default && Run.instance.selectedDifficulty <= DifficultyIndex.Easy)
                     || (Run.instance.stageClearCount >= Tier2EliteMinimumStageRainstorm && rules == SpawnCard.EliteRules.Default && Run.instance.selectedDifficulty == DifficultyIndex.Normal)
