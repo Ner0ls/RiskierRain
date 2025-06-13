@@ -67,6 +67,11 @@ namespace SwanSongExtended.Items
 
         private void ChargedSpineTakeDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
+            if (!self)
+            {
+                orig(self, damageInfo);
+                return;
+            }
             bool hadShieldBefore = HasShield(self);
             CharacterBody body = self.body;
             int spineItemCount = GetCount(body);
@@ -75,9 +80,9 @@ namespace SwanSongExtended.Items
 
             if (hadShieldBefore && !HasShield(self) && self.alive)
             {
-                if (spineItemCount > 0 && !body.HasBuff(RoR2Content.Buffs.HealingDisabled))
+                if (spineItemCount > 0)
                 {
-                    self.body.AddTimedBuff(RoR2Content.Buffs.HealingDisabled, baseDuration + stackDuration * (spineItemCount - 1));
+                    body.AddTimedBuff(RoR2Content.Buffs.HealingDisabled, baseDuration + stackDuration * (spineItemCount - 1));
                 }
             }
         }

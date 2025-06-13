@@ -57,7 +57,7 @@ namespace SwanSongExtended.Items
 
             bool isFreeze = (damageInfo.damageType & DamageType.Freeze2s) > DamageType.Generic;
             bool isPermafrost = isFreeze && damageInfo.procCoefficient == freezeProcCoefficient;
-            if (self.alive && damageInfo.attacker != null && !isPermafrost)
+            if (self && self.alive && damageInfo.attacker != null && !isPermafrost)
             {
                 CharacterBody attackerBody = damageInfo.attacker.GetComponent<CharacterBody>();
 

@@ -3,7 +3,6 @@ using BepInEx.Configuration;
 using R2API;
 using R2API.Utils;
 using RiskierRain.CoreModules;
-using RiskierRain.SurvivorTweaks;
 using RoR2;
 using RoR2.Projectile;
 using System;
@@ -18,8 +17,8 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using static R2API.RecalculateStatsAPI;
 using RainrotSharedUtils;
-using ChillRework;
 using MonoMod.RuntimeDetour;
+using UnityEngine.Networking;
 //using RiskierRain.Changes.Reworks.NerfsReworks.SpawnlistChanges; //idk if this is a good way of doing
 
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -37,19 +36,16 @@ namespace RiskierRain
     [BepInDependency(R2API.EliteAPI.PluginGUID, BepInDependency.DependencyFlags.HardDependency)]
 
     //[BepInDependency("com.Borbo.ArtificerExtended", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency(ChillRework.ChillRework.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(MissileRework.MissileReworkPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(MoreStats.MoreStatsPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
     [BepInDependency(RainrotSharedUtils.SharedUtilsPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency(NegativeRegenFix.NegativeRegenFix.guid, BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency(NegativeRegenFix.NegativeRegenFix.guid, BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency(SwanSongExtended.SwanSongPlugin.guid, BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.HardDependency)]
-    [BepInDependency("com.Borbo.ArtifactGesture", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("com.Borbo.HuntressBuffULTIMATE", BepInDependency.DependencyFlags.HardDependency)]
+    [BepInDependency(SurvivorTweaks.SurvivorTweaksPlugin.guid, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency(EliteReworks.EliteReworksPlugin.guid, BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.Borbo.GreenAlienHead", BepInDependency.DependencyFlags.SoftDependency)]
+    [BepInDependency("com.Borbo.HuntressBuffULTIMATE", BepInDependency.DependencyFlags.SoftDependency)]
 
-    [BepInDependency("com.DestroyedClone.AncientScepter", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("Withor.AcridBiteLunge", BepInDependency.DependencyFlags.SoftDependency)]
-    [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("HIFU.UltimateCustomRun", BepInDependency.DependencyFlags.SoftDependency)]
     [BepInDependency("com.Skell.DeathMarkChange", BepInDependency.DependencyFlags.SoftDependency)]
 
@@ -107,6 +103,7 @@ namespace RiskierRain
             InitializeConfig();
             InitializeEverything();
 
+            On.RoR2.CharacterBody.RemoveBuff_BuffIndex += Gah;
             #region rework pending / priority removal
             RiskierRainPlugin.RetierItem(nameof(RoR2Content.Items.StunChanceOnHit)); //stun grenade
             RiskierRainPlugin.RetierItem(nameof(DLC1Content.Items.GoldOnHurt)); //penny roll/roll of pennies
@@ -128,6 +125,15 @@ namespace RiskierRain
 
             
             new ContentPacks().Initialize();
+        }
+
+        private void Gah(On.RoR2.CharacterBody.orig_RemoveBuff_BuffIndex orig, CharacterBody self, BuffIndex buffType)
+        {
+            if (!NetworkServer.active)
+            {
+                Debug.Log(BuffCatalog.GetBuffDef(buffType).name);
+            }
+            orig(self, buffType);
         }
 
         private void InitializeEverything()
@@ -538,27 +544,6 @@ namespace RiskierRain
                 AddTpBossWeaken();
             }
 
-            //overloading elite
-            if (GetConfigBool(true, "Elite: Overloading Elite Rework"))
-            {
-                OverloadingEliteChanges();
-            }
-
-            //Mending elite
-            if (GetConfigBool(true, "Elite: Mending Elite Rework"))
-            {
-                MendingEliteChanges();
-            }
-
-            //voidtouched elite
-            if (GetConfigBool(true, "Elite: Voidtouched Elite Rework"))
-            {
-                VoidtouchedEliteChanges();
-            }
-
-            //blazing elite
-            //BlazingEliteChanges();
-
             //newt shrine
             if (GetConfigBool(true, "Lunar: Newt Shrine"))
             {
@@ -694,7 +679,6 @@ namespace RiskierRain
             // ENEMIES: 
 
             RiskierRainPlugin.RemoveEquipment(nameof(RoR2Content.Equipment.Gateway));
-            InitializeSurvivorTweaks();
             #endregion
 
             ///summary 
@@ -877,25 +861,5 @@ namespace RiskierRain
             }
         }
         #endregion
-
-        void InitializeSurvivorTweaks()
-        {
-            var TweakTypes = Assembly.GetExecutingAssembly().GetTypes().Where(type => !type.IsAbstract && type.IsSubclassOf(typeof(SurvivorTweakModule)));
-
-            foreach (var tweakType in TweakTypes)
-            {
-                SurvivorTweakModule module = (SurvivorTweakModule)Activator.CreateInstance(tweakType);
-
-                string name = module.survivorName == "" ? module.bodyName : module.survivorName;
-                bool isEnabled = CustomConfigFile.Bind<bool>("Survivor Tweaks",
-                    $"Enable Tweaks For: {module.survivorName}", true,
-                    $"Should DuckSurvivorTweaks change {module.survivorName}?").Value;
-                if (isEnabled)
-                {
-                    module.Init();
-                }
-                //TweakStatusDictionary.Add(module.ToString(), isEnabled);
-            }
-        }
     }
 }

@@ -27,8 +27,8 @@ namespace SwanSongExtended.Equipment
         #region config
         public override string ConfigName => "Reworks : Old Guillotine";
 
-        [AutoConfig("Bonus Aspect Drop Chance", 0.05f)]
-        public static float aspectDropChance = 0.05f;
+        [AutoConfig("Bonus Aspect Drop Chance", 0.1f)]
+        public static float aspectDropChance = 0.1f;
 
         [AutoConfig("Base Execution Threshold", 0.20f)]
         public static float newExecutionThresholdBase = 0.20f;

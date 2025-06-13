@@ -17,6 +17,7 @@ namespace SwanSongExtended.Storms
 {
     public static class StormsCore
     {
+        public const string stormShelterObjectiveToken = "OBJECTIVE_SHELTER";
         public static GameObject StormsRunBehaviorPrefab;
         public static GameObject StormsControllerPrefab;
         public static EliteTierDef StormEliteT1;
@@ -37,13 +38,13 @@ namespace SwanSongExtended.Storms
         //meteors:
         public static GameObject meteorWarningEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Meteor/MeteorStrikePredictionEffect.prefab").WaitForCompletion();
         public static GameObject meteorImpactEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Meteor/MeteorStrikeImpact.prefab").WaitForCompletion();
-        public static float waveMinInterval = 0.6f;
-        public static float waveMaxInterval = 0.9f;
+        public static float waveMinInterval = 0.7f;
+        public static float waveMaxInterval = 1.0f;
         public static float waveMissChance = 0.6f;
         public static float meteorTargetEnemyChance = 15f;
         public static float meteorTravelEffectDuration = 0f;
         public static float meteorImpactDelay = 2.5f;
-        public static float meteorBlastDamageCoefficient = 17;
+        public static float meteorBlastDamageCoefficient = 13;
         public static float meteorBlastDamageScalarPerLevel = 0.5f;
         public static float meteorBlastRadius = 10;
         public static float meteorBlastForce = 0;
@@ -54,6 +55,7 @@ namespace SwanSongExtended.Storms
             ShelterUtilsModule.useShelterBuff = true;
             CreateStormEliteTiers();
             CreateStormsRunBehaviorPrefab();
+            LanguageAPI.Add(stormShelterObjectiveToken, "Seek <style=cDeath>shelter <sprite name=\"TP\" tint=1></style> from the Storm");
 
             //On.RoR2.HoldoutZoneController.OnEnable += RegisterHoldoutZone;
             //On.RoR2.HoldoutZoneController.OnDisable += UnregisterHoldoutZone;

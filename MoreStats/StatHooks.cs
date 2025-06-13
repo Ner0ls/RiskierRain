@@ -104,6 +104,8 @@ namespace MoreStats
                         return baseLuck;
 
                     CharacterBody body = master.GetBody();
+                    if (body == null)
+                        return baseLuck;
                     MoreStatCoefficients msc = GetMoreStatsFromBody(body);
                     float newLuck = baseLuck + msc.luckAdd;
                     float remainder = newLuck % 1;

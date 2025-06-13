@@ -47,6 +47,7 @@ namespace SwanSongExtended.Storms
         protected List<HoldoutZoneController> holdoutZones => StormRunBehavior.holdoutZones;
         internal float stormDelayTime = 0;
         internal float stormWarningTime = 0;
+        bool shelterObjectiveActive = false;
 
 
         public void Awake()
@@ -54,6 +55,41 @@ namespace SwanSongExtended.Storms
             combatDirector = GetComponent<CombatDirector>();
             combatDirector.enabled = false;
             mainStateMachine = GetComponent<EntityStateMachine>();
+        }
+        void OnDestroy()
+        {
+            SetShelterObjective(false);
+        }
+
+        public void SetShelterObjective(bool enable)
+        {
+            if (enable)
+            {
+                if (!shelterObjectiveActive)
+                {
+                    Log.Debug("Enabling storm shelter objective");
+                    ObjectivePanelController.collectObjectiveSources += this.OnCollectObjectiveSources;
+                    shelterObjectiveActive = true;
+                }
+            }
+            else
+            {
+                if (shelterObjectiveActive)
+                {
+                    Log.Debug("Disabling storm shelter objective");
+                    ObjectivePanelController.collectObjectiveSources -= this.OnCollectObjectiveSources;
+                    shelterObjectiveActive = false;
+                }
+            }
+        }
+        private void OnCollectObjectiveSources(CharacterMaster master, List<ObjectivePanelController.ObjectiveSourceDescriptor> objectiveSourcesList)
+        {
+            objectiveSourcesList.Add(new ObjectivePanelController.ObjectiveSourceDescriptor
+            {
+                master = master,
+                objectiveType = typeof(StormObjectiveTracker),
+                source = base.gameObject
+            });
         }
 
         public void BeginStormApproach(float stormDelayTime, float stormWarningTime)
@@ -79,6 +115,23 @@ namespace SwanSongExtended.Storms
             {
                 base.OnEnter();
                 this.stormController = base.GetComponent<StormController>();
+            }
+
+            public override void FixedUpdate()
+            {
+                base.FixedUpdate();
+                if(this.stormState >= StormState.ApproachWarning && TeleporterInteraction.instance)
+                {
+                    if (TeleporterInteraction.instance)
+                    {
+                        //if charging, hide objective. if not charging, show objective
+                        stormController.SetShelterObjective(!TeleporterInteraction.instance.isCharging);
+                    }
+                }
+                else
+                {
+                    stormController.SetShelterObjective(false);
+                }
             }
 
             public void EnableDirector()
@@ -108,9 +161,10 @@ namespace SwanSongExtended.Storms
                 this.meteorsToDetonate = new List<MeteorStormController.Meteor>();
                 this.meteorWaves = new List<MeteorStormController.MeteorWave>();
 
-                //On.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
+                On.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
                 EnableDirector();
             }
+
             public override void OnExit()
             {
                 base.OnExit();
@@ -119,6 +173,7 @@ namespace SwanSongExtended.Storms
             public override void FixedUpdate()
             {
                 base.FixedUpdate();
+
                 //thisa is just for meteor stuff; we can make it work for the other storsm when they start existing lol.
                 this.waveTimer -= Time.fixedDeltaTime;
                 if (this.waveTimer <= 0f)
@@ -193,6 +248,9 @@ namespace SwanSongExtended.Storms
 
             private void DetonateMeteor(MeteorStormController.Meteor meteor)
             {
+                int level = 1;
+                if (Run.instance)
+                    level = Run.instance.ambientLevelFloor;
                 EffectData effectData = new EffectData
                 {
                     origin = meteor.impactPosition
@@ -201,7 +259,7 @@ namespace SwanSongExtended.Storms
                 new BlastAttack
                 {
                     inflictor = base.gameObject,
-                    baseDamage = meteorBlastDamageCoefficient * (1 + meteorBlastDamageScalarPerLevel * Run.instance.ambientLevel),//multiplies by ambient level. if this is unsatisfactory change later
+                    baseDamage = meteorBlastDamageCoefficient * (1 + meteorBlastDamageScalarPerLevel * level),//multiplies by ambient level. if this is unsatisfactory change later
                     baseForce = meteorBlastForce,
                     attackerFiltering = AttackerFiltering.Default,
                     crit = false,
@@ -217,10 +275,9 @@ namespace SwanSongExtended.Storms
                 }.Fire();
             }
 
-            //teleporter safe zone
-            private object MeteorWave_GetNextMeteor(On.RoR2.MeteorStormController.MeteorWave.orig_GetNextMeteor orig, object self)
+            private MeteorStormController.Meteor MeteorWave_GetNextMeteor(On.RoR2.MeteorStormController.MeteorWave.orig_GetNextMeteor orig, MeteorStormController.MeteorWave self)
             {
-                object meteor = orig.Invoke(self);
+                MeteorStormController.Meteor meteor = orig.Invoke(self);
                 if (stormController.holdoutZones.Count == 0)
                     return meteor;
 
@@ -261,6 +318,7 @@ namespace SwanSongExtended.Storms
                     return (a - b).sqrMagnitude <= dist * dist;
                 }
             }
+
             public override InterruptPriority GetMinimumInterruptPriority()
             {
                 return InterruptPriority.Death;
@@ -334,7 +392,6 @@ namespace SwanSongExtended.Storms
 
                     outer.SetNextState(new StormActive());
                 }
-
 
                 if (stormType == StormType.None || !Run.instance)
                 {

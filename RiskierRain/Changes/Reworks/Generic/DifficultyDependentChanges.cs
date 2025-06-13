@@ -59,7 +59,7 @@ namespace RiskierRain
 
             On.RoR2.TeleporterInteraction.BaseTeleporterState.OnEnter += TeleporterParticleScale;
         }
-        private void TeleporterParticleScale(On.RoR2.TeleporterInteraction.BaseTeleporterState.orig_OnEnter orig, BaseState self)
+        private void TeleporterParticleScale(On.RoR2.TeleporterInteraction.BaseTeleporterState.orig_OnEnter orig, RoR2.TeleporterInteraction.BaseTeleporterState self)
         {
             orig(self);
             float particleScale = 1f;
@@ -607,7 +607,7 @@ namespace RiskierRain
         }
 
         static bool wasTpCharged = false;
-        private void WeakenBossPostTpCharge(On.RoR2.TeleporterInteraction.ChargingState.orig_FixedUpdate orig, BaseState baseState)
+        private void WeakenBossPostTpCharge(On.RoR2.TeleporterInteraction.ChargingState.orig_FixedUpdate orig, RoR2.TeleporterInteraction.ChargingState baseState)
         {
             orig(baseState);
             if (NetworkServer.active)

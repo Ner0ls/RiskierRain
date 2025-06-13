@@ -28,9 +28,9 @@ namespace SwanSongExtended.Items
 
         public override string ItemLangTokenName => "VOIDSCUG";
 
-        public override string ItemPickupDesc => "Chill nearby enemies when hit. Recharges outside of danger.";
+        public override string ItemPickupDesc => "Frost nearby enemies when hit. Recharges outside of danger.";
 
-        public override string ItemFullDescription => $"When hit, <style=cIsUtility>Chill</style> all enemies within " +
+        public override string ItemFullDescription => $"When hit, <style=cIsUtility>Frost</style> all enemies within " +
             $"<style=cIsUtility>{radiusBase}m</style> for " +
             $"<style=cIsUtility>{durationBase}</style> <style=cStack>(+{durationStack} per stack)</style> seconds. " +
             $"Recharges outside of danger.";
@@ -78,7 +78,7 @@ namespace SwanSongExtended.Items
         }
         private void ScugTakeDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
-            CharacterBody body = self.body;
+            CharacterBody body = self?.body;
             int scugItemCount = GetCount(body);
             orig(self, damageInfo);
 
@@ -105,7 +105,7 @@ namespace SwanSongExtended.Items
                 origin = body.transform.position,
                 scale = radiusBase
             }, true);
-            ChillRework.ChillRework.ApplyChillSphere(body.corePosition, radiusBase, body.teamComponent.teamIndex, durationBase + durationStack * (itemCount - 1));
+            RainrotSharedUtils.Frost.FrostUtilsModule.ApplyChillSphere(body.corePosition, radiusBase, body.teamComponent.teamIndex, durationBase + durationStack * (itemCount - 1));
             BlastAttack scugNova = new BlastAttack()
             {
                 baseDamage = body.damage * (damageBase + damageStack * (itemCount - 1)),

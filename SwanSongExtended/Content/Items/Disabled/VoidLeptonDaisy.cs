@@ -75,7 +75,7 @@ namespace SwanSongExtended.Items
             On.RoR2.Items.ContagiousItemManager.Init += CreateTransformation;
         }
 
-        private void PhrygianLilyEnrage(On.RoR2.TeleporterInteraction.ChargingState.orig_OnEnter orig, BaseState self)
+        private void PhrygianLilyEnrage(On.RoR2.TeleporterInteraction.ChargingState.orig_OnEnter orig, RoR2.TeleporterInteraction.ChargingState self)
         {
             orig(self);
 

@@ -74,9 +74,10 @@ namespace SwanSongExtended.Equipment
 
         private void NinjaGearDodge(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
-            if(self.body.equipmentSlot)
+            if(self && self.body)
             {
-                if (self.body.equipmentSlot.equipmentIndex == EquipDef.equipmentIndex)
+                EquipmentSlot equipmentSlot = self.body.equipmentSlot;
+                if (equipmentSlot && equipmentSlot.equipmentIndex == EquipDef.equipmentIndex)
                 {
                     if(Util.CheckRoll(dodgeChance, 0f, null))
                     {

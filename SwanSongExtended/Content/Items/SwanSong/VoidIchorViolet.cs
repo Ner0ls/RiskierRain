@@ -68,8 +68,10 @@ namespace SwanSongExtended.Items
         {
             orig(self, damageInfo);
 
+            if (!self || !self.alive)
+                return;
             CharacterBody body = self.body;
-            if (body == null || !self.alive)
+            if (body == null )
                 return;      
             
             int itemCount = GetCount(body);

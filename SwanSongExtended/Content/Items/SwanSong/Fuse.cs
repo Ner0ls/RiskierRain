@@ -81,6 +81,12 @@ namespace SwanSongExtended.Items
 
         private void FuseTakeDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
+            if (!self)
+            {
+                orig(self, damageInfo);
+                return;
+            }
+
             bool hadShieldBefore = HasShield(self);
             CharacterBody body = self.body;
             int fuseItemCount = GetCount(body);
@@ -123,6 +129,8 @@ namespace SwanSongExtended.Items
 
         public static bool HasShield(HealthComponent hc)
         {
+            if (hc == null)
+                return false;
             return hc.shield > 1;
         }
     }

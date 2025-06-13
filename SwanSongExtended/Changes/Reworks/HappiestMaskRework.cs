@@ -16,6 +16,7 @@ using UnityEngine.Networking;
 using static R2API.RecalculateStatsAPI;
 using static MoreStats.StatHooks;
 using SwanSongExtended.Modules;
+using static SwanSongExtended.Modules.Language.Styling;
 
 namespace SwanSongExtended
 {
@@ -37,7 +38,8 @@ namespace SwanSongExtended
                 $"<style=cIsDamage>Haunt</style> a nearby non-boss enemy, marking them for Execution " +
                 $"below <style=cIsHealth>{Tools.ConvertDecimal(hauntExecutionThreshold)}</style> health. " +
                 $"Execution <style=cIsDamage>spawns a ghost</style> of the killed enemy with <style=cIsDamage>1500%</style> damage, " +
-                $"lasting for <style=cIsDamage>{ghostDurationPerStack}s</style> <style=cStack>(+{ghostDurationPerStack}s per stack)</style>.");
+                $"lasting for <style=cIsDamage>{ghostDurationPerStack}s</style> <style=cStack>(+{ghostDurationPerStack}s per stack)</style> " +
+                $"{UtilityColor("(double for Haunted enemies)")}.");
             LanguageAPI.Add("ITEM_GHOSTONKILL_LORE", 
                 "<style=cMono>\r\n\u002F\u002F--AUTO-TRANSCRIPTION FROM RALLYPOINT DELTA --\u002F\u002F</style>\r\n\r\n" +
                 "\u201CSir, the ghosts are back." +
@@ -83,6 +85,8 @@ namespace SwanSongExtended
                     int maskCount = inventory.GetItemCount(RoR2Content.Items.GhostOnKill);
                     if (maskCount > 0 && victimBody && Util.CheckRoll(ghostSpawnChanceOnExecute, attackerBody.master))
                     {
+                        if (victimBody.HasBuff(CommonAssets.hauntDebuff))
+                            maskCount *= 2;
                         Util.TryToCreateGhost(victimBody, attackerBody, Mathf.CeilToInt(maskCount * ghostDurationPerStack));
                     }
                 }

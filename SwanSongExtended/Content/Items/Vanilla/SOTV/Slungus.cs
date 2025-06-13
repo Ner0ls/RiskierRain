@@ -32,7 +32,7 @@ namespace SwanSongExtended.Items
 
         public override string ItemLangTokenName => "SLUNGUS";
 
-        public override string ItemPickupDesc => "Standing still increases you damage while slowing nearby enemies and projectiles.";
+        public override string ItemPickupDesc => "Standing still shelters you, slowing nearby enemies and projectiles. Move faster until hit.";
 
         public override string ItemFullDescription => $"While stationary, create a sheltering " +
             $"<style=cIsUtility>stasis field</style> reaching {radiusBase}m around you, " +
@@ -120,15 +120,15 @@ FUN-GUYS Inc. is not liable for any illness, injury, death, extended or permanen
 
         private void RemoveSlungusBuff(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
-            if (!damageInfo.rejected)
+            orig(self, damageInfo);
+            if (NetworkServer.active && !damageInfo.rejected && self != null && self.alive)
             {
                 CharacterBody body = self.body;
-                if (body.HasBuff(slungusBuff) && body.hasAuthority)
+                if (body.HasBuff(slungusBuff))
                 {
                     body.RemoveBuff(slungusBuff);
                 }
             }
-            orig(self, damageInfo);
         }
 
         private void SlungusDamage(CharacterBody sender, RecalculateStatsAPI.StatHookEventArgs args)

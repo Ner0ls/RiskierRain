@@ -37,6 +37,10 @@ namespace RiskierRain
         static float costExponent = 1f;
         static float goldRewardMultiplierGlobal = 0.6f;
         static float expRewardMultiplierGlobal = 1;
+        static float compensationForStartingLevel = 0;
+
+        public float interactableCreditsMultiplier = 1.5f;
+        public float monsterCreditsMultiplier = 1.5f;
 
 
         PurchaseInteraction smallChest = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Chest1/Chest1.prefab").WaitForCompletion().GetComponent<PurchaseInteraction>();
@@ -183,11 +187,13 @@ namespace RiskierRain
 
         static float GetCompensatedDifficultyFraction()
         {
-            float boost = GetAmbientLevelBoost();
-
-            float entryDiffCoeff = (Stage.instance.entryDifficultyCoefficient - boost);
+            float entryDiffCoeff = Stage.instance.entryDifficultyCoefficient;
             if (entryDiffCoeff <= 0)
                 return 1;
+            else if (compensationForStartingLevel > 0)
+            {
+                entryDiffCoeff = Mathf.Lerp(entryDiffCoeff, entryDiffCoeff - GetAmbientLevelBoost(), compensationForStartingLevel);
+            }
             return entryDiffCoeff / (Run.instance.compensatedDifficultyCoefficient);
         }
 
@@ -310,8 +316,6 @@ namespace RiskierRain
         #endregion
 
         #region Stage Credits
-        public float interactableCreditsMultiplier = 1.5f;
-        public float monsterCreditsMultiplier = 1.5f;
         public void IncreaseStageInteractableCredits(DirectorAPI.StageSettings settings, DirectorAPI.StageInfo currentStage)
         {
             settings.SceneDirectorInteractableCredits = (int)(settings.SceneDirectorInteractableCredits * interactableCreditsMultiplier);
@@ -694,7 +698,7 @@ namespace RiskierRain
             doubleChestDropTable.equipmentWeight = 0;
         }
 
-        private void DoubleChestOnInteract(On.RoR2.RouletteChestController.Cycling.orig_OnEnter orig, EntityStates.EntityState self)
+        private void DoubleChestOnInteract(On.RoR2.RouletteChestController.Cycling.orig_OnEnter orig, RoR2.RouletteChestController.Cycling self)
         {
             RouletteChestController chestController = self.gameObject.GetComponent<RouletteChestController>();
             //chestController.dropTable = RoR2.MultiShopController.drop

@@ -103,6 +103,12 @@ namespace SwanSongExtended.Items
             }
             damageInfo.damage = 0;//janky hack mate
             damageInfo.rejected = true;
+            EffectData effectData = new EffectData
+            {
+                origin = damageInfo.position,
+                rotation = Util.QuaternionSafeLookRotation((damageInfo.force != Vector3.zero) ? damageInfo.force : UnityEngine.Random.onUnitSphere)
+            };
+            EffectManager.SpawnEffect(HealthComponent./*private*/AssetReferences.bearEffectPrefab, effectData, true);
             orig(self, damageInfo);
             ShellShieldBarrier(self, itemCount);
         }

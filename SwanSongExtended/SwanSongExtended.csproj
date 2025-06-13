@@ -2,6 +2,17 @@
 
   <ItemGroup>
     <None Include="..\.editorconfig" Link=".editorconfig" />
+    <None Include="Content\Equipment\Reworks\GuillotineEquipment.cs" />
+    <None Include="Content\Interactables\Interactables\CurseStatue.cs" />
+    <None Include="Content\Interactables\Interactables\FakeShrine.cs" />
+    <None Include="Content\Interactables\QuestInteractables\EnergyCrystalAltar.cs" />
+    <None Include="Content\Interactables\QuestInteractables\FlameAltar.cs" />
+    <None Include="Content\Interactables\QuestInteractables\LunarBrandMaker.cs" />
+    <None Include="Content\Interactables\QuestInteractables\SpineAltar.cs" />
+    <None Include="Content\Interactables\QuestInteractables\SpineCharger.cs" />
+    <None Include="Content\Items\SwanSong\QuestItems\EnergyCrystal.cs" />
+    <None Include="Content\Items\SwanSong\QuestItems\FlameOrb.cs" />
+    <None Include="Content\Items\SwanSong\QuestItems\MalachiteSpine.cs" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -16,8 +27,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.3.8-r.0" />
-    <PackageReference Include="MMHOOK.RoR2" Version="2025.5.5" NoWarn="NU1701" />
+    <PackageReference Include="RiskOfRain2.GameLibs" Version="1.3.9-r.0" />
+    <PackageReference Include="MMHOOK.RoR2" Version="2025.6.3" NoWarn="NU1701" />
+    <PackageReference Include="RoR2BepInExPack" Version="1.30.0" />
     <PackageReference Include="BepInEx.Analyzers" Version="1.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -28,8 +40,19 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Compile Remove="Content\Equipment\Reworks\GuillotineEquipment.cs" />
     <Compile Remove="Content\Interactables\Interactables\CombatShrineLunar.cs" />
     <Compile Remove="Content\Interactables\Interactables\ConstructConstruct.cs" />
+    <Compile Remove="Content\Interactables\Interactables\CurseStatue.cs" />
+    <Compile Remove="Content\Interactables\Interactables\FakeShrine.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\EnergyCrystalAltar.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\FlameAltar.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\LunarBrandMaker.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\SpineAltar.cs" />
+    <Compile Remove="Content\Interactables\QuestInteractables\SpineCharger.cs" />
+    <Compile Remove="Content\Items\SwanSong\QuestItems\EnergyCrystal.cs" />
+    <Compile Remove="Content\Items\SwanSong\QuestItems\FlameOrb.cs" />
+    <Compile Remove="Content\Items\SwanSong\QuestItems\MalachiteSpine.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -47,7 +70,6 @@
   <ItemGroup>
     <ProjectReference Include="..\BetterSoulCost\BetterSoulCost.csproj" />
     <ProjectReference Include="..\BorboStatUtils\RainrotSharedUtils.csproj" />
-    <ProjectReference Include="..\ChillRework\ChillRework.csproj" />
     <ProjectReference Include="..\MissileRework\MissileRework.csproj" />
     <ProjectReference Include="..\NegativeRegenFix\NegativeRegenFix.csproj" />
     <ProjectReference Include="..\JumpRework\JumpRework.csproj" />
@@ -58,6 +80,7 @@
 
   <ItemGroup>
     <Folder Include="Content\Items\Vanilla\SOTS\" />
+    <Folder Include="Content\Orbs\" />
   </ItemGroup>
 
   <ItemGroup>

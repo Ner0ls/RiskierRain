@@ -104,10 +104,13 @@ namespace SwanSongExtended.Items
 
         private void RemoveDamageForce(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
-            int itemCount = GetCount(self.body);
-            if(self.body != null && itemCount > 0)
+            if (self && self.body)
             {
-                damageInfo.force *= 0;
+                int itemCount = GetCount(self.body);
+                if (self.body != null && itemCount > 0)
+                {
+                    damageInfo.force = Vector3.zero;
+                }
             }
 
             orig(self, damageInfo);

@@ -75,7 +75,7 @@ namespace SwanSongExtended.Items
 
         private void CauterizeBuffBehavior(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
         {
-            int buffCount = self.body.GetBuffCount(CauterizeBuff.buffIndex);
+            int buffCount = self && self.body ? self.body.GetBuffCount(CauterizeBuff.buffIndex) : 0;
             if (buffCount <= 0)
             {
                 orig(self, damageInfo);

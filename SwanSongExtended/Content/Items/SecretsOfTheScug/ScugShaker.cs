@@ -34,7 +34,7 @@ namespace SwanSongExtended.Items
         public override string ItemFullDescription => $"Attacks dealing 400% or more damage store " +
             $"up to 3 {StackText("+3")} {DamageColor("Scugs")}. When struck, " +
             $"release 1 scug per 5% max hp lost for {DamageValueText(damageBase)} {StackText($"+{ConvertDecimal(damageBase)}")} " +
-            $"and {UtilityColor("chilling")} enemies. {VoidColor("Corrupts all Pear Wigglers")}.";
+            $"and {UtilityColor("frosting")} enemies. {VoidColor("Corrupts all Pear Wigglers")}.";
 
         public override string ItemLore => "Shake 'em and sic 'em.";
 
@@ -67,11 +67,11 @@ namespace SwanSongExtended.Items
         {
             scugBomb = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Bomb/SpiteBomb.prefab").WaitForCompletion().InstantiateClone("ScugBomb", true);
 
-            ModdedDamageTypeHolderComponent mdthc = scugBomb.AddComponent<ModdedDamageTypeHolderComponent>();
-            if (mdthc)
-            {
-                mdthc.Add(ChillRework.ChillRework.ChillOnHit);
-            }
+            //ModdedDamageTypeHolderComponent mdthc = scugBomb.AddComponent<ModdedDamageTypeHolderComponent>();
+            //if (mdthc)
+            //{
+            //    mdthc.Add(ChillRework.ChillRework.ChillOnHit);
+            //}
         }
         private void ScugShakerOnHit(CharacterBody attackerBody, DamageInfo damageInfo, CharacterBody victimBody)
         {
@@ -152,6 +152,7 @@ namespace SwanSongExtended.Items
                 delayBlast.maxTimer = 8f;//BombArtifactManager.bombFuseTimeout;
                 delayBlast.timerStagger = 0f;
                 delayBlast.falloffModel = BlastAttack.FalloffModel.None;
+                delayBlast.damageType.damageType = DamageType.Frost;
                 component2.teamIndex = a.body.teamComponent.teamIndex;
                 NetworkServer.Spawn(gameObject);
             }
