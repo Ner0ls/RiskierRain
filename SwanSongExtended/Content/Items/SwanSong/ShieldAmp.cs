@@ -74,8 +74,6 @@ namespace SwanSongExtended.Items
                             float amplifyDamageScale = Mathf.Lerp(1, amplifyDamageMultiplierForFullShield, maxShield / healthComponent.fullCombinedHealth);
                             damageInfo.damage += attackerBody.damage * amplifyBaseDamage * amplifyDamageScale;
 
-                            Debug.Log(maxShield);
-                            Debug.Log(maxShield * shieldDrainFraction);
                             DrainShield(healthComponent, maxShield * shieldDrainFraction);
                         }
                     }
@@ -98,6 +96,13 @@ namespace SwanSongExtended.Items
                 damageInfo.damageColorIndex = DamageColorIndex.Fragile;
                 damageInfo.procCoefficient = 0;
                 damageInfo.position = healthComponent.transform.position;
+
+
+                TeamDef teamDef = TeamCatalog.GetTeamDef(healthComponent.body.teamComponent.teamIndex);
+                if (teamDef != null)
+                {
+                    damageInfo.damage /= teamDef.friendlyFireScaling;
+                }
                 healthComponent.TakeDamage(damageInfo);
 
                 healthComponent.Networkbarrier = barrier;
