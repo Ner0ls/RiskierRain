@@ -1,4 +1,5 @@
 ﻿using R2API;
+using RainrotSharedUtils.Components;
 using RoR2;
 using System;
 using System.Collections.Generic;
@@ -75,6 +76,8 @@ namespace SwanSongExtended.Items
                             damageInfo.damage += attackerBody.damage * amplifyBaseDamage * amplifyDamageScale;
 
                             DrainShield(healthComponent, maxShield * shieldDrainFraction);
+
+                            NebulaPickup.CreateBoosterPickup(damageInfo.position, attackerBody.teamComponent.teamIndex, RainrotSharedUtils.Assets.sparkBoosterObject, 2);
                         }
                     }
                 }

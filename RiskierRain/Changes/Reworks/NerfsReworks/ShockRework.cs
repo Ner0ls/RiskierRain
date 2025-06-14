@@ -14,6 +14,7 @@ using RiskierRain.CoreModules;
 using System.Runtime.CompilerServices;
 using MonoMod.RuntimeDetour;
 using System.Reflection;
+using RainrotSharedUtils.Components;
 
 namespace RiskierRain
 {
@@ -38,9 +39,19 @@ namespace RiskierRain
 
         private void ShockSparkOnExit(On.EntityStates.ShockState.orig_OnExit orig, EntityStates.ShockState self)
         {
-            if (self.healthFraction - self.characterBody.healthComponent.combinedHealthFraction > ShockState.healthFractionToForceExit)
+            //entry health fraction
+            float damageTaken = self.healthFraction - self.healthComponent.combinedHealthFraction;
+            if (damageTaken >= ShockState.healthFractionToForceExit)
             {
-
+                GameObject lastHitAttacker = self.healthComponent.lastHitAttacker;
+                if (lastHitAttacker != null)
+                {
+                    CharacterBody attackerBody = lastHitAttacker.GetComponent<CharacterBody>();
+                    if (attackerBody)
+                    {
+                        NebulaPickup.CreateBoosterPickup(self.transform.position, attackerBody.teamComponent.teamIndex, RainrotSharedUtils.Assets.sparkBoosterObject, 1);
+                    }
+                }
             }
             orig(self);
         }

@@ -227,7 +227,7 @@ namespace RiskierRain
             //shock restores shield
             if (GetConfigBool(true, "Shock Buff"))
             {
-                //ShockBuff();
+                ShockBuff();
             }
             #endregion
 
