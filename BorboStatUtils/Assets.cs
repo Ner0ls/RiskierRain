@@ -69,18 +69,80 @@ namespace RainrotSharedUtils
         #endregion
         public static void Init()
         {
-            CreateIceNovaAssets();
+            CreateFrostNovaAssets();
         }
 
-        #region chillrework
-        internal static GameObject iceExplosion;
-        private static Texture2D iceBombTex;
-        public static void CreateIceNovaAssets()
+        #region chill rework
+        internal static GameObject iceDelayBlastPrefab;
+
+        public static GameObject iceNovaEffectStrong;
+        public static GameObject iceNovaEffectWeak;
+        public static GameObject iceNovaEffectLowPriority;
+
+        public static Texture2D iceNovaRamp;
+        public static Texture2D iceNovaRampPersistent;
+        private static void CreateFrostNovaAssets()
         {
-            iceExplosion = CreateIceExplosion();
-            R2API.ContentAddition.AddProjectile(iceExplosion);
+            iceNovaRamp = GetIceRemap(1.1f);
+            iceNovaRampPersistent = GetIceRemap(0.4f, 0.1f);
+
+            iceNovaEffectStrong = CreateSingleIceNova(iceNovaRamp, "Strong", 1.2f);
+            iceNovaEffectWeak = CreateSingleIceNova(iceNovaRamp, "Weak", 0.85f);
+            iceNovaEffectLowPriority = CreateSingleIceNova(iceNovaRamp, "LowPriority", 0.3f);
+
+            iceDelayBlastPrefab = CreateIceDelayBlastPrefab();
+
+            Texture2D GetIceRemap(float alphaMod = 1, float alphaAdd = 0.0f)
+            {
+                Gradient iceGrad = new Gradient
+                {
+                    mode = GradientMode.Blend,
+                    alphaKeys = new GradientAlphaKey[8]
+                    {
+                        new GradientAlphaKey( 0f * alphaMod + alphaAdd, 0f ),
+                        new GradientAlphaKey( 0f * alphaMod + alphaAdd, 0.14f ),
+                        new GradientAlphaKey( 0.22f * alphaMod + alphaAdd, 0.46f ),
+                        new GradientAlphaKey( 0.22f * alphaMod + alphaAdd, 0.61f),
+                        new GradientAlphaKey( 0.72f * alphaMod + alphaAdd, 0.63f ),
+                        new GradientAlphaKey( 0.72f * alphaMod + alphaAdd, 0.8f ),
+                        new GradientAlphaKey( 0.87f * alphaMod + alphaAdd, 0.81f ),
+                        new GradientAlphaKey( 0.87f * alphaMod + alphaAdd, 1f )
+                    },
+                    colorKeys = new GradientColorKey[8]
+                    {
+                        new GradientColorKey( new Color( 0f + alphaAdd, 0 + alphaAdd, 0f + alphaAdd ), 0f ),
+                        new GradientColorKey( new Color( 0f + alphaAdd, 0f + alphaAdd, 0f + alphaAdd ), 0.14f ),
+                        new GradientColorKey( new Color( 0.179f + alphaAdd , 0.278f + alphaAdd, 0.250f + alphaAdd ), 0.46f ),
+                        new GradientColorKey( new Color( 0.179f + alphaAdd, 0.278f + alphaAdd, 0.250f + alphaAdd ), 0.61f ),
+                        new GradientColorKey( new Color( 0.5f + alphaAdd, 0.8f + alphaAdd, 0.75f + alphaAdd ), 0.63f ),
+                        new GradientColorKey( new Color( 0.5f + alphaAdd, 0.8f + alphaAdd, 0.75f + alphaAdd ), 0.8f ),
+                        new GradientColorKey( new Color( 0.6f + alphaAdd, 0.9f + alphaAdd, 0.85f + alphaAdd ), 0.81f ),
+                        new GradientColorKey( new Color( 0.6f + alphaAdd, 0.9f + alphaAdd, 0.85f + alphaAdd ), 1f )
+                    }
+                };
+                return CreateNewRampTex(iceGrad);
+            }
         }
-        private static GameObject CreateIceExplosion()
+
+        private static GameObject CreateSingleIceNova(Texture2D remapTex, string s, float alphaMod)
+        {
+            GameObject obj = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/AffixWhiteExplosion").InstantiateClone("IceExplosion" + s, false);
+            ParticleSystemRenderer sphere = obj.transform.Find("Nova Sphere").GetComponent<ParticleSystemRenderer>();
+
+            Material mat = UnityEngine.Object.Instantiate<Material>(sphere.material);
+
+            mat.SetTexture("_RemapTex", remapTex);
+            Color c = mat.GetColor("_TintColor");
+            c.a *= alphaMod;
+            mat.SetColor("_TintColor", c);
+
+            sphere.material = mat;
+            RegisterEffect(obj);
+
+            return obj;
+        }
+
+        private static GameObject CreateIceDelayBlastPrefab()
         {
             GameObject blast = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/GenericDelayBlast").InstantiateClone("IceDelayBlast", false);
             DelayBlast component = blast.GetComponent<DelayBlast>();
@@ -88,7 +150,7 @@ namespace RainrotSharedUtils
             component.procCoefficient = 1.0f;
             component.maxTimer = 0.2f;
             component.falloffModel = BlastAttack.FalloffModel.None;
-            component.explosionEffect = CreateIceExplosionEffect();
+            component.explosionEffect = iceNovaEffectWeak;
             component.delayEffect = CreateIceDelayEffect();
             component.damageType = DamageType.Freeze2s;
             component.baseForce = 250f;
@@ -97,82 +159,30 @@ namespace RainrotSharedUtils
 
             //AltArtiPassive.iceBlast = blast;
             //projectilePrefabs.Add(blast);
+
+            R2API.ContentAddition.AddProjectile(blast);
+
             return blast;
         }
-        //called by CreateIceExplosion
+        //called by CreateIceDelayBlastPrefab
         private static GameObject CreateIceDelayEffect()
         {
-            CreateIceBombTex();
-
             GameObject obj = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/AffixWhiteDelayEffect").InstantiateClone("iceDelay", false);
             obj.GetComponent<DestroyOnTimer>().duration = 0.2f;
 
             ParticleSystemRenderer sphere = obj.transform.Find("Nova Sphere").GetComponent<ParticleSystemRenderer>();
             Material mat = UnityEngine.Object.Instantiate<Material>(sphere.material);
-            mat.SetTexture("_RemapTex", iceBombTex);
+            mat.SetTexture("_RemapTex", iceNovaRamp);
             sphere.material = mat;
 
             RegisterEffect(obj);
 
             return obj;
-        }
-        //called by CreateIceExplosion
-        private static GameObject CreateIceExplosionEffect()
-        {
-            CreateIceBombTex();
-
-            GameObject obj = RoR2.LegacyResourcesAPI.Load<GameObject>("Prefabs/Effects/ImpactEffects/AffixWhiteExplosion").InstantiateClone("IceExplosion", false);
-            ParticleSystemRenderer sphere = obj.transform.Find("Nova Sphere").GetComponent<ParticleSystemRenderer>();
-            Material mat = UnityEngine.Object.Instantiate<Material>(sphere.material);
-            mat.SetTexture("_RemapTex", iceBombTex);
-            sphere.material = mat;
-
-            RegisterEffect(obj);
-
-            return obj;
-        }
-        //called by CreateIce____Effect
-        private static void CreateIceBombTex()
-        {
-            if (iceBombTex != null)
-            {
-                return;
-            }
-
-            var iceGrad = new Gradient
-            {
-                mode = GradientMode.Blend,
-                alphaKeys = new GradientAlphaKey[8]
-                {
-                    new GradientAlphaKey( 0f, 0f ),
-                    new GradientAlphaKey( 0f, 0.14f ),
-                    new GradientAlphaKey( 0.22f, 0.46f ),
-                    new GradientAlphaKey( 0.22f, 0.61f),
-                    new GradientAlphaKey( 0.72f, 0.63f ),
-                    new GradientAlphaKey( 0.72f, 0.8f ),
-                    new GradientAlphaKey( 0.87f, 0.81f ),
-                    new GradientAlphaKey( 0.87f, 1f )
-                },
-                colorKeys = new GradientColorKey[8]
-                {
-                    new GradientColorKey( new Color( 0f, 0f, 0f ), 0f ),
-                    new GradientColorKey( new Color( 0f, 0f, 0f ), 0.14f ),
-                    new GradientColorKey( new Color( 0.179f, 0.278f, 0.250f ), 0.46f ),
-                    new GradientColorKey( new Color( 0.179f, 0.278f, 0.250f ), 0.61f ),
-                    new GradientColorKey( new Color( 0.5f, 0.8f, 0.75f ), 0.63f ),
-                    new GradientColorKey( new Color( 0.5f, 0.8f, 0.75f ), 0.8f ),
-                    new GradientColorKey( new Color( 0.6f, 0.9f, 0.85f ), 0.81f ),
-                    new GradientColorKey( new Color( 0.6f, 0.9f, 0.85f ), 1f )
-                }
-            };
-
-            iceBombTex = CreateNewRampTex(iceGrad);
         }
         #endregion
-    }
 
-    public static class ChillAssets
-    {
+        #region shock rework
 
+        #endregion
     }
 }
