@@ -13,6 +13,11 @@
     <None Include="Content\Items\SwanSong\QuestItems\EnergyCrystal.cs" />
     <None Include="Content\Items\SwanSong\QuestItems\FlameOrb.cs" />
     <None Include="Content\Items\SwanSong\QuestItems\MalachiteSpine.cs" />
+    <None Include="Content\TwistedScavengers\BoboScav.cs" />
+    <None Include="Content\TwistedScavengers\CunningScav.cs" />
+    <None Include="Content\TwistedScavengers\GreedyScav.cs" />
+    <None Include="Content\TwistedScavengers\SadistScav.cs" />
+    <None Include="Content\TwistedScavengers\SpeedScav.cs" />
   </ItemGroup>
 
   <PropertyGroup>
@@ -53,6 +58,11 @@
     <Compile Remove="Content\Items\SwanSong\QuestItems\EnergyCrystal.cs" />
     <Compile Remove="Content\Items\SwanSong\QuestItems\FlameOrb.cs" />
     <Compile Remove="Content\Items\SwanSong\QuestItems\MalachiteSpine.cs" />
+    <Compile Remove="Content\TwistedScavengers\BoboScav.cs" />
+    <Compile Remove="Content\TwistedScavengers\CunningScav.cs" />
+    <Compile Remove="Content\TwistedScavengers\GreedyScav.cs" />
+    <Compile Remove="Content\TwistedScavengers\SadistScav.cs" />
+    <Compile Remove="Content\TwistedScavengers\SpeedScav.cs" />
   </ItemGroup>
 
   <ItemGroup>
