@@ -25,9 +25,11 @@ namespace SurvivorTweaks.SurvivorTweaks
         public static float microbotRechargeRate = 1.5f; //0.5
         public static float microbotRadius = 20f; //20
 
+        public bool attackSpeedDamageAdditive = false;
         public static float shotgunCooldown = 1.5f;
         public static int shotgunStock = 2;
-        public static float shotgunWindDown = 0.35f;
+        public static float shotgunChargeDuration = 0.6f; //1.2
+        public static float shotgunWindDownDuration = 0.35f; //1.0
         public static float shotgunPelletDamageCoeff = 1f; //1.2
         public static float shotgunPelletProcCoeff = 0.5f; //0.75
 
@@ -89,10 +91,6 @@ namespace SurvivorTweaks.SurvivorTweaks
 
             //primary
             ChangeVanillaPrimaries(primary);
-            On.EntityStates.Captain.Weapon.FireCaptainShotgun.OnEnter += CaptainShotgunFixes;
-            LanguageAPI.Add("CAPTAIN_PRIMARY_DESCRIPTION", 
-                $"Fire a blast of pellets that deal <style=cIsDamage>8x{Tools.ConvertDecimal(shotgunPelletDamageCoeff)} damage</style>. " +
-                $"Charging the attack narrows the <style=cIsUtility>spread</style>. Hold up to {shotgunStock} charges.");
 
             //secondary
             ChangeVanillaSecondaries(secondary);
@@ -324,20 +322,43 @@ namespace SurvivorTweaks.SurvivorTweaks
         #region primary
         private void ChangeVanillaPrimaries(SkillFamily family)
         {
-            family.variants[0].skillDef.baseRechargeInterval = shotgunCooldown;
-            family.variants[0].skillDef.beginSkillCooldownOnSkillEnd = true;
-            family.variants[0].skillDef.baseMaxStock = shotgunStock;
-            family.variants[0].skillDef.rechargeStock = shotgunStock;
-            family.variants[0].skillDef.stockToConsume = 1;
-            family.variants[0].skillDef.resetCooldownTimerOnUse = true;
-            family.variants[0].skillDef.mustKeyPress = false;
+            SkillDef shotgun = family.variants[0].skillDef;
+            shotgun.baseRechargeInterval = shotgunCooldown;
+            shotgun.beginSkillCooldownOnSkillEnd = true;
+            shotgun.baseMaxStock = shotgunStock;
+            shotgun.rechargeStock = shotgunStock;
+            shotgun.stockToConsume = 1;
+            shotgun.resetCooldownTimerOnUse = true;
+            shotgun.mustKeyPress = false;
+            shotgun.keywordTokens = new string[] { RainrotSharedUtils.SharedUtilsPlugin.noAttackSpeedKeywordToken };
+
+            On.EntityStates.Captain.Weapon.ChargeCaptainShotgun.OnEnter += CaptainShotgunCharge;
+            On.EntityStates.Captain.Weapon.FireCaptainShotgun.OnEnter += CaptainShotgunFixes;
+            LanguageAPI.Add("CAPTAIN_PRIMARY_DESCRIPTION",
+                $"<style=cIsUtility>Exacting</style>. Fire a blast of pellets that deal <style=cIsDamage>8x{Tools.ConvertDecimal(shotgunPelletDamageCoeff)} damage</style>. " +
+                $"Charging the attack narrows the <style=cIsUtility>spread</style>. Hold up to {shotgunStock} charges.");
+        }
+
+        private void CaptainShotgunCharge(On.EntityStates.Captain.Weapon.ChargeCaptainShotgun.orig_OnEnter orig, ChargeCaptainShotgun self)
+        {
+            orig(self);
+            self.chargeDuration = shotgunChargeDuration;
+            self.minChargeDuration = 0.05f;
         }
 
         private void CaptainShotgunFixes(On.EntityStates.Captain.Weapon.FireCaptainShotgun.orig_OnEnter orig, FireCaptainShotgun self)
         {
             self.damageCoefficient = shotgunPelletDamageCoeff;
+            if (attackSpeedDamageAdditive)
+            {
+                self.damageCoefficient += self.characterBody.baseDamage * self.attackSpeedStat;
+            }
+            else
+            {
+                self.damageCoefficient  *= self.attackSpeedStat;
+            }
             self.procCoefficient = shotgunPelletProcCoeff;
-            self.baseDuration = shotgunWindDown;
+            self.baseDuration = shotgunWindDownDuration;
             orig(self);
         }
         #endregion
