@@ -78,7 +78,7 @@ namespace RainrotSharedUtils
 
         #region spark pickup
         public const int maxNebulaBoosterStackCount = 5;
-        public static float nebulaBoosterBuffDuration = 8;
+        public static float nebulaBoosterBuffDuration = 5;
         public static float nebulaBoosterBuffRadius = 50;
 
         public static GameObject sparkBoosterObject;
@@ -97,7 +97,7 @@ namespace RainrotSharedUtils
                 sparkBoosterBuff.iconSprite = ctx.Result;
             R2API.ContentAddition.AddBuffDef(sparkBoosterBuff);
 
-            sparkBoosterObject = NewNebulaBooster("SparkBoosterPickup", sparkBoosterBuff, sparkBoosterColor, sparkBoosterDuration, 0.9f);
+            sparkBoosterObject = NewNebulaBooster("SparkBoosterPickup", sparkBoosterBuff, sparkBoosterColor, sparkBoosterDuration, 0.9f, 1.8f);
 
             GetStatCoefficients += SparkBoosterStats;
         }
@@ -109,7 +109,7 @@ namespace RainrotSharedUtils
                 args.attackSpeedMultAdd += sparkBoosterAspdBonus * buffCount;
         }
 
-        static GameObject NewNebulaBooster(string boosterName, BuffDef boosterBuff, Color32 boosterColor, float boosterDuration, float antiGravity = 1)
+        static GameObject NewNebulaBooster(string boosterName, BuffDef boosterBuff, Color32 boosterColor, float boosterDuration, float antiGravity = 1, float pickupRangeMultiplier = 3f)
         {
             GameObject baseObject = Addressables.LoadAssetAsync<GameObject>("7f9217d45f824f245862e65716abc746").WaitForCompletion();
 
@@ -221,12 +221,12 @@ namespace RainrotSharedUtils
             GravitatePickup boosterGravitate = newBooster.GetComponentInChildren<GravitatePickup>();
             if (boosterGravitate != null)
             {
-                boosterGravitate.acceleration = 3;
+                boosterGravitate.acceleration = 2f;
                 boosterGravitate.maxSpeed = 50;
                 Collider gravitateTrigger = boosterGravitate.gameObject.GetComponent<Collider>();
                 if (gravitateTrigger.isTrigger)
                 {
-                    gravitateTrigger.transform.localScale *= 3;
+                    gravitateTrigger.transform.localScale *= pickupRangeMultiplier;
                 }
             }
             else

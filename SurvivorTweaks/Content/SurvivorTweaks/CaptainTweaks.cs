@@ -26,21 +26,21 @@ namespace SurvivorTweaks.SurvivorTweaks
         public static float microbotRadius = 20f; //20
 
         public bool attackSpeedDamageAdditive = false;
-        public static float shotgunCooldown = 1.5f;
+        public static float shotgunCooldown = 2f;
         public static int shotgunStock = 2;
-        public static float shotgunChargeDuration = 0.6f; //1.2
-        public static float shotgunWindDownDuration = 0.35f; //1.0
-        public static float shotgunPelletDamageCoeff = 1f; //1.2
+        public static float shotgunChargeDuration = 0.8f; //1.2
+        public static float shotgunWindDownDuration = 0.2f; //1.0
+        public static float shotgunPelletDamageCoeff = 0.85f; //1.2
         public static float shotgunPelletProcCoeff = 0.5f; //0.75
 
         public static GameObject tazerPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/projectiles/CaptainTazer");
-        public static float tazerAoeRadius = 6; //2
+        public static float tazerAoeRadius = 2; //2
         public static float tazerDamage = 2f; //1
-        public static float tazerDamageBonus = 2f; 
+        public static float tazerDamageBonus = 3f; 
         public static float tazerCooldown = 5; //6
 
         public static GameObject diabloPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/ExplosionDroneDeath");
-        float diabloMaxDuration = 20;
+        float diabloMaxDuration = 40; //40
 
 
         public static bool refreshSupplyDrops = true;
@@ -51,8 +51,9 @@ namespace SurvivorTweaks.SurvivorTweaks
 
         public static GameObject shockBeacon = LegacyResourcesAPI.Load<GameObject>("prefabs/networkedobjects/captainsupplydrops/CaptainSupplyDrop, Shocking");
         public static float shockRadius = 12;
-        public static float shockDamageCoefficient = 1f; //0
-        public static float shockRate = 2f; //3
+        public static float shockDamageCoefficient = 3f; //0
+        public static float shockTimeInSeconds = 8f; //3
+        public static float shockProcCoefficient = 1.0f;
         public static float shockForce = 500f; //0
 
         public static GameObject hackBeacon = LegacyResourcesAPI.Load<GameObject>("prefabs/networkedobjects/captainsupplydrops/CaptainSupplyDrop, Hacking");
@@ -334,6 +335,7 @@ namespace SurvivorTweaks.SurvivorTweaks
 
             On.EntityStates.Captain.Weapon.ChargeCaptainShotgun.OnEnter += CaptainShotgunCharge;
             On.EntityStates.Captain.Weapon.FireCaptainShotgun.OnEnter += CaptainShotgunFixes;
+            On.EntityStates.Captain.Weapon.FireCaptainShotgun.ModifyBullet += CaptainShotgunModifyBullet;
             LanguageAPI.Add("CAPTAIN_PRIMARY_DESCRIPTION",
                 $"<style=cIsUtility>Exacting</style>. Fire a blast of pellets that deal <style=cIsDamage>8x{Tools.ConvertDecimal(shotgunPelletDamageCoeff)} damage</style>. " +
                 $"Charging the attack narrows the <style=cIsUtility>spread</style>. Hold up to {shotgunStock} charges.");
@@ -349,17 +351,22 @@ namespace SurvivorTweaks.SurvivorTweaks
         private void CaptainShotgunFixes(On.EntityStates.Captain.Weapon.FireCaptainShotgun.orig_OnEnter orig, FireCaptainShotgun self)
         {
             self.damageCoefficient = shotgunPelletDamageCoeff;
-            if (attackSpeedDamageAdditive)
-            {
-                self.damageCoefficient += self.characterBody.baseDamage * self.attackSpeedStat;
-            }
-            else
-            {
-                self.damageCoefficient  *= self.attackSpeedStat;
-            }
             self.procCoefficient = shotgunPelletProcCoeff;
             self.baseDuration = shotgunWindDownDuration;
             orig(self);
+        }
+
+        private void CaptainShotgunModifyBullet(On.EntityStates.Captain.Weapon.FireCaptainShotgun.orig_ModifyBullet orig, FireCaptainShotgun self, BulletAttack bulletAttack)
+        {
+            orig(self, bulletAttack);
+            if (attackSpeedDamageAdditive)
+            {
+                bulletAttack.damage += self.characterBody.baseDamage * self.attackSpeedStat;
+            }
+            else
+            {
+                bulletAttack.damage *= self.attackSpeedStat;
+            }
         }
         #endregion
 
@@ -402,7 +409,7 @@ namespace SurvivorTweaks.SurvivorTweaks
         private void ShockZoneChanges(On.EntityStates.CaptainSupplyDrop.ShockZoneMainState.orig_OnEnter orig, EntityStates.CaptainSupplyDrop.ShockZoneMainState self)
         {
             ShockZoneMainState.shockRadius = shockRadius;
-            ShockZoneMainState.shockFrequency = 1 / shockRate;
+            ShockZoneMainState.shockFrequency = 1 / shockTimeInSeconds;
 
             ProjectileDamage pd = self.gameObject.GetComponent<ProjectileDamage>();
             if (pd != null)
@@ -429,7 +436,7 @@ namespace SurvivorTweaks.SurvivorTweaks
                 position = self.transform.position,
                 //baseForce = shockForce,
                 bonusForce = Vector3.up * shockForce,
-                procCoefficient = (shockRate / 5)
+                procCoefficient = shockProcCoefficient
             }.Fire();
             if (ShockZoneMainState.shockEffectPrefab)
             {
