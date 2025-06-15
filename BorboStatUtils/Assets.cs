@@ -97,7 +97,7 @@ namespace RainrotSharedUtils
                 sparkBoosterBuff.iconSprite = ctx.Result;
             R2API.ContentAddition.AddBuffDef(sparkBoosterBuff);
 
-            sparkBoosterObject = NewNebulaBooster("SparkBoosterPickup", sparkBoosterBuff, sparkBoosterColor, sparkBoosterDuration, 0.9f, 1.8f);
+            sparkBoosterObject = NewNebulaBooster("SparkBoosterPickup", sparkBoosterBuff, sparkBoosterColor, sparkBoosterDuration, 0.8f, 1.8f);
 
             GetStatCoefficients += SparkBoosterStats;
         }

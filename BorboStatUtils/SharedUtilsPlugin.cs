@@ -61,7 +61,7 @@ namespace RainrotSharedUtils
             LanguageAPI.Add(sparkPickupKeywordToken,
                 $"<style=cKeywordName>Energizing Sparks</style>" +
                 $"<style=cSub>Creates <style=cIsDamage>spark pickups</style> that increase the " +
-                $"<style=cIsDamage>attack speed</style> of all allies within <style=cIsDamage>{Assets.nebulaBoosterBuffRadius}m/style> " +
+                $"<style=cIsDamage>attack speed</style> of all allies within <style=cIsDamage>{Assets.nebulaBoosterBuffRadius}m</style> " +
                 $"by <style=cIsDamage>{Assets.sparkBoosterAspdBonus * 100}%</style> for {Assets.nebulaBoosterBuffDuration} seconds. " +
                 $"Can stack up to {Assets.maxNebulaBoosterStackCount} times.</style>");
         }

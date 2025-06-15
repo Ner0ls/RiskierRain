@@ -30,7 +30,7 @@ namespace SurvivorTweaks.SurvivorTweaks
         public static int shotgunStock = 2;
         public static float shotgunChargeDuration = 0.8f; //1.2
         public static float shotgunWindDownDuration = 0.2f; //1.0
-        public static float shotgunPelletDamageCoeff = 0.85f; //1.2
+        public static float shotgunPelletDamageCoeff = 1f; //1.2
         public static float shotgunPelletProcCoeff = 0.5f; //0.75
 
         public static GameObject tazerPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/projectiles/CaptainTazer");
@@ -52,7 +52,7 @@ namespace SurvivorTweaks.SurvivorTweaks
         public static GameObject shockBeacon = LegacyResourcesAPI.Load<GameObject>("prefabs/networkedobjects/captainsupplydrops/CaptainSupplyDrop, Shocking");
         public static float shockRadius = 12;
         public static float shockDamageCoefficient = 3f; //0
-        public static float shockTimeInSeconds = 8f; //3
+        public static float shockTimeInSeconds = 6f; //3
         public static float shockProcCoefficient = 1.0f;
         public static float shockForce = 500f; //0
 
@@ -373,7 +373,9 @@ namespace SurvivorTweaks.SurvivorTweaks
         #region secondary
         private void ChangeVanillaSecondaries(SkillFamily family)
         {
-            family.variants[0].skillDef.baseRechargeInterval = tazerCooldown;
+            SkillDef tazer = family.variants[0].skillDef;
+            tazer.baseRechargeInterval = tazerCooldown;
+            tazer.keywordTokens = new string[] { "KEYWORD_SHOCKING", RainrotSharedUtils.SharedUtilsPlugin.sparkPickupKeywordToken };
         }
 
         private void CaptainTazerBuff(On.EntityStates.Captain.Weapon.FireTazer.orig_OnEnter orig, FireTazer self)

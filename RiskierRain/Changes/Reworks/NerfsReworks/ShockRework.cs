@@ -29,7 +29,7 @@ namespace RiskierRain
                 $"The stun is broken if the target takes more than " +
                 $"<style=cIsHealth>{Tools.ConvertDecimal(shockForceExitFraction)}</style> " +
                 $"of their maximum health in damage. " +
-                $"</style>");
+                $"Breaking shock creates <style=cIsUtility>Energizing Sparks</style>.</style>");
             ShockState.healthFractionToForceExit = shockForceExitFraction;
             On.EntityStates.ShockState.OnExit += ShockSparkOnExit;
             //On.EntityStates.ShockState.OnEnter += ShockBuffEnter;
