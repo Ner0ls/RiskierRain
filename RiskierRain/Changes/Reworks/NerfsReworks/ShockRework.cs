@@ -41,6 +41,7 @@ namespace RiskierRain
         {
             //entry health fraction
             float damageTaken = self.healthFraction - self.healthComponent.combinedHealthFraction;
+            Debug.Log(damageTaken);
             if (damageTaken >= ShockState.healthFractionToForceExit)
             {
                 GameObject lastHitAttacker = self.healthComponent.lastHitAttacker;
@@ -49,7 +50,8 @@ namespace RiskierRain
                     CharacterBody attackerBody = lastHitAttacker.GetComponent<CharacterBody>();
                     if (attackerBody)
                     {
-                        NebulaPickup.CreateBoosterPickup(self.transform.position, attackerBody.teamComponent.teamIndex, RainrotSharedUtils.Assets.sparkBoosterObject, 1);
+                        Debug.Log("break make spark");
+                        NebulaPickup.CreateBoosterPickup(self.transform.position, attackerBody.teamComponent.teamIndex, RainrotSharedUtils.Assets.sparkBoosterObject, 2);
                     }
                 }
             }

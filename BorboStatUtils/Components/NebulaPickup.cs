@@ -52,7 +52,7 @@ namespace RainrotSharedUtils.Components
             }
 
             Debug.Log("giving booster buffs");
-            targetBody.AddTimedBuff(buffDef, nebulaBoosterBuffDuration, maxNebulaBoosterStackCount);
+            AddBoosterBuff(buffDef, targetBody);
 
             IEnumerable<TeamComponent> recipients = TeamComponent.GetTeamMembers(targetBody.teamComponent.teamIndex);
 
@@ -64,10 +64,14 @@ namespace RainrotSharedUtils.Components
                     CharacterBody body = teamComponent.body;//.GetComponent<CharacterBody>();
                     if (body)
                     {
-                        body.AddTimedBuff(buffDef, nebulaBoosterBuffDuration, maxNebulaBoosterStackCount);
+                        AddBoosterBuff(buffDef, body);
                     }
                 }
             }
+        }
+        public static void AddBoosterBuff(BuffDef buffDef, CharacterBody body)
+        {
+            body.AddTimedBuff(buffDef, nebulaBoosterBuffDuration, maxNebulaBoosterStackCount);
         }
         public static void CreateBoosterPickup(Vector3 spawnPoint, TeamIndex team, GameObject boosterPrefab, int boosterCount = 1)
         {

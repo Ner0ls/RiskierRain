@@ -93,11 +93,11 @@ namespace RainrotSharedUtils
             sparkBoosterBuff.name = "bdSparkBoost";
             sparkBoosterBuff.buffColor = sparkBoosterColor;
             sparkBoosterBuff.canStack = maxNebulaBoosterStackCount > 1 ? true : false;
-            sparkBoosterBuff.iconSprite = LegacyResourcesAPI.Load<Sprite>("textures/bufficons/texBuffTeslaIcon");
-            sparkBoosterBuff.iconPath = "1597fa78f3a39cc4c9c58e8ed2cd42f0";
+            Addressables.LoadAssetAsync<Sprite>("1597fa78f3a39cc4c9c58e8ed2cd42f0").Completed += ctx => 
+                sparkBoosterBuff.iconSprite = ctx.Result;
             R2API.ContentAddition.AddBuffDef(sparkBoosterBuff);
 
-            sparkBoosterObject = NewNebulaBooster("SparkBoosterPickup", sparkBoosterBuff, sparkBoosterColor, sparkBoosterDuration);
+            sparkBoosterObject = NewNebulaBooster("SparkBoosterPickup", sparkBoosterBuff, sparkBoosterColor, sparkBoosterDuration, 0.9f);
 
             GetStatCoefficients += SparkBoosterStats;
         }
@@ -109,7 +109,7 @@ namespace RainrotSharedUtils
                 args.attackSpeedMultAdd += sparkBoosterAspdBonus * buffCount;
         }
 
-        static GameObject NewNebulaBooster(string boosterName, BuffDef boosterBuff, Color32 boosterColor, float boosterDuration)
+        static GameObject NewNebulaBooster(string boosterName, BuffDef boosterBuff, Color32 boosterColor, float boosterDuration, float antiGravity = 1)
         {
             GameObject baseObject = Addressables.LoadAssetAsync<GameObject>("7f9217d45f824f245862e65716abc746").WaitForCompletion();
 
@@ -187,8 +187,21 @@ namespace RainrotSharedUtils
                 Debug.Log(boosterName + " HAS NO BRAAD????");
             }
 
-            Rigidbody rb = newBooster.GetComponent<Rigidbody>();
-            rb.useGravity = false;
+            if(antiGravity != 0)
+            {
+                Rigidbody rb = newBooster.GetComponent<Rigidbody>();
+                if (antiGravity == 1)
+                {
+                    rb.useGravity = true;
+                }
+                else
+                {
+                    AntiGravityForce antiGrav = newBooster.AddComponent<AntiGravityForce>();
+                    antiGrav.rb = rb;
+                    antiGrav.antiGravityCoefficient = antiGravity;
+                }
+            }
+
 
             HealthPickup healthpickup = newBooster.GetComponentInChildren<HealthPickup>();
             NebulaPickup boosterPickup = healthpickup.gameObject.AddComponent<NebulaPickup>();
