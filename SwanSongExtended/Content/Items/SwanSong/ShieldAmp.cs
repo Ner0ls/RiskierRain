@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using static MoreStats.OnHit;
 using static R2API.RecalculateStatsAPI;
+using static SwanSongExtended.Modules.Language.Styling;
 
 namespace SwanSongExtended.Items
 {
@@ -23,9 +24,15 @@ namespace SwanSongExtended.Items
 
         public override string ItemLangTokenName => "SHIELDAMP";
 
-        public override string ItemPickupDesc => "Gain a small shield. While shields are full, dealing damage drains shield and creates energizing sparks.";
+        public override string ItemPickupDesc => "While shields are full, dealing damage drains shield and creates energizing sparks.";
 
-        public override string ItemFullDescription => $"";
+        public override string ItemFullDescription => $"Gain {HealingColor(shieldFlatBase + " shield")}. " +
+            $"While shields are full, damage from your next skill " +
+            $"{DamageColor($"drains {Tools.ConvertDecimal(shieldDrainFraction)}")} of your shield, " +
+            $"{DamageColor("amplifying")} damage dealt by {DamageColor(ConvertDecimal(amplifyDamageIncreaseBase))} " +
+            $"{StackText($"+{ConvertDecimal(amplifyDamageIncreaseStack)}")}. " +
+            $"{DamageColor("Amplified")} hits create {UtilityColor("Energizing Sparks")}, " +
+            $"temporarily increasing {DamageColor("attack speed")} by {DamageColor(ConvertDecimal(RainrotSharedUtils.Assets.sparkBoosterAspdBonus))}.";
 
         public override string ItemLore => "";
 
