@@ -14,11 +14,12 @@ namespace SwanSongExtended.Items
     class ShieldAmp : ItemBase<ShieldAmp>
     {
         public static float shieldPercentBase = 0.12f;
+        public static float shieldFlatBase = 40f;
         public static float shieldDrainFraction = 0.3f;
         public static float amplifyDamageIncreaseBase = 5f;
         public static float amplifyDamageIncreaseStack = 3f;
         public static float amplifyDamageMultiplierForFullShield = 1f;
-        public override string ItemName => "Megaphone";
+        public override string ItemName => "Jellyfish Necklace";
 
         public override string ItemLangTokenName => "SHIELDAMP";
 
@@ -53,7 +54,7 @@ namespace SwanSongExtended.Items
             int stack = GetCount(sender);
             if(stack > 0)
             {
-                args.baseShieldAdd += sender.maxHealth * shieldPercentBase;//(shieldPercentBase + (shieldPercentStack * (itemCount - 1)));
+                args.baseShieldAdd += shieldFlatBase;// sender.maxHealth * shieldPercentBase;//(shieldPercentBase + (shieldPercentStack * (itemCount - 1)));
             }
         }
 
