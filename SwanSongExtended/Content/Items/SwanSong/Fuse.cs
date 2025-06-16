@@ -18,7 +18,7 @@ namespace SwanSongExtended.Items
         public static BuffDef fuseRecharge;
         public static float fuseRechargeTime = 1;
 
-        public static float baseShield = 40;
+        public static float baseShield = 25;
         public static float radiusBase = 16;
         public static float radiusStack = 4;
 
