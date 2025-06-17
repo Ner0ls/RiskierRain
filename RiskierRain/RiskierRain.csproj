@@ -70,6 +70,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BetterSoulCost\BetterSoulCost.csproj" />
+    <ProjectReference Include="..\FruityCradles\FruityCradles.csproj" />
     <ProjectReference Include="..\SurvivorTweaks\SurvivorTweaks.csproj" />
     <ProjectReference Include="..\EliteReworks\EliteReworks.csproj" />
     <ProjectReference Include="..\BorboStatUtils\RainrotSharedUtils.csproj" />

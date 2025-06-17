@@ -26,7 +26,7 @@ namespace FruityCradles
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
         public const string modName = "FruityCradles";
-        public const string version = "1.0.3";
+        public const string version = "1.0.4";
         #endregion
 
         #region config
@@ -35,6 +35,7 @@ namespace FruityCradles
         public static ConfigEntry<float> CradleSoulPayCost { get; set; }
         public static ConfigEntry<bool> DoCradlePotential { get; set; }
         #endregion
+
 
         GameObject voidPotentialPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/OptionPickup/OptionPickup.prefab").WaitForCompletion();
         GameObject voidCradlePrefab;
