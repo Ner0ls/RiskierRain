@@ -20,7 +20,7 @@ namespace BetterSoulCost
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
         public const string modName = "BetterSoulCost";
-        public const string version = "1.0.3";
+        public const string version = "1.0.4";
         #endregion
         #region config
         internal static ConfigFile CustomConfigFile { get; set; }
@@ -58,20 +58,16 @@ namespace BetterSoulCost
             soulCost = Mathf.Min(soulCost, 0.99f);
             int currentBuffCount = body.GetBuffCount((BuffIndex)buffIndex);
             float buffsToAdd = soulCost * 10;
-            Debug.Log($"Adding {buffsToAdd} buffs");
             if (DoCradleSoulCost.Value)
             {
                 float currentHealthFraction = 1;
                 if(currentBuffCount > 0)
                     currentHealthFraction = 1 / (1 + 0.1f * currentBuffCount); //10 stacks = 0.5
-                Debug.Log($"Current health fraction: {currentHealthFraction}");
                 //float oneMinus = 1 - soulCost;
                 //float idealHealthFraction = currentHealthFraction * oneMinus;
                 float conversion = (buffsToAdd * buffsToAdd) / (currentHealthFraction * (10 - buffsToAdd));
-                Debug.Log(conversion);
                 buffsToAdd += conversion;
             }
-            Debug.Log($"Adding {buffsToAdd} buffs");
             body.SetBuffCount((BuffIndex)buffIndex, currentBuffCount + Mathf.CeilToInt(buffsToAdd));
         }
 
