@@ -65,6 +65,7 @@ namespace FruityCradles
                     {
                         cradleInteraction.costType = CostTypeIndex.SoulCost;
                         cradleInteraction.setUnavailableOnTeleporterActivated = true;
+                        cradleInteraction.saleStarCompatible = false;
                     }
                 }
 
