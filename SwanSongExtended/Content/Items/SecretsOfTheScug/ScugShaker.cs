@@ -44,7 +44,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlScugShaker.prefab");
 
-        public override Sprite ItemIcon => LoadItemIcon();
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/scugshaker.png");
         public override ExpansionDef RequiredExpansion => SwanSongPlugin.expansionDefSOTS;
         #endregion
         public static BuffDef storedScugBuff;

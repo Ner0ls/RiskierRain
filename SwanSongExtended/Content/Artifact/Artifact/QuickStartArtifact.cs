@@ -47,9 +47,9 @@ namespace SwanSongExtended.Artifacts
 
         public override string ArtifactLangTokenName => "QUICKSTART";
 
-        public override Sprite ArtifactSelectedIcon => LegacyResourcesAPI.Load<Sprite>("textures/miscicons/texWIPIcon");
+        public override Sprite ArtifactSelectedIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/quickstart.png");
 
-        public override Sprite ArtifactDeselectedIcon => LegacyResourcesAPI.Load<Sprite>("textures/miscicons/texWIPIcon");
+        public override Sprite ArtifactDeselectedIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/quickstartoff.png");
 
         public override void Hooks()
         {
