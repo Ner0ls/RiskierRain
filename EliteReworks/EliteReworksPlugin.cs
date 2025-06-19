@@ -210,7 +210,7 @@ namespace EliteReworks
         }
         public static bool GetConfigBool(bool defaultValue, string packetTitle, string desc = "")
         {
-            return ConfigManager.DualBindToConfig<bool>(packetTitle, Modules.Config.MyConfig, "Should This Content Be Enabled", defaultValue, desc);
+            return ConfigManager.DualBindToConfig<bool>("Elite Reworks", Modules.Config.MyConfig, packetTitle, defaultValue, desc);
             //if (desc != "")
             //{
             //    return CustomConfigFile.Bind<bool>("Packets - See README For Details.",
