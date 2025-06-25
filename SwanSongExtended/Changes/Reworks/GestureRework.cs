@@ -128,10 +128,14 @@ namespace SwanSongExtended
 
         private bool AddGestureUndercast(On.RoR2.EquipmentSlot.orig_ExecuteIfReady orig, EquipmentSlot self)
         {
-            if (NetworkServer.active && self.inventory?.GetItemCount(RoR2Content.Items.AutoCastEquipment) > 0 && self.inputBank.activateEquipment.justPressed && self.stock <= 0)
+            if (self.characterBody.hasAuthority && self.inventory?.GetItemCount(RoR2Content.Items.AutoCastEquipment) > 0 && self.inputBank.activateEquipment.justPressed && self.stock <= 0)
             {
                 self.stock += 1;
-                self.characterBody.AddBuff(Modules.CommonAssets.gestureQueueEquipBreak);
+                //authority isnt server? sol... i dont wanna network this
+                if (NetworkServer.active)
+                {
+                    self.characterBody.AddBuff(Modules.CommonAssets.gestureQueueEquipBreak);
+                }
             }
             return orig(self);
         }
