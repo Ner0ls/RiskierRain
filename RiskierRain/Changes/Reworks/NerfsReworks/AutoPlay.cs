@@ -18,10 +18,6 @@ namespace RiskierRain
 {
 	internal partial class RiskierRainPlugin : BaseUnityPlugin
 	{
-		float resdiscSpinPerKill = 0.015f; //0.025f
-		float resdiscDecayRate = 2f; //1.25f
-
-
 		private GameObject daggerPrefab = LegacyResourcesAPI.Load<GameObject>("Prefabs/Projectiles/DaggerProjectile");
 		private GameObject willowispPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/networkedobjects/WilloWispDelay");
 		private GameObject voidsentPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/ExplodeOnDeathVoid/ExplodeOnDeathVoidExplosion.prefab").WaitForCompletion();

@@ -242,6 +242,10 @@ namespace SwanSongExtended
             {
                 PlanulaChanges();
             }
+            if (GetConfigBool(true, "Reworks : Resonance Disc"))
+            {
+                DeworkResonanceDisc();
+            }
             if (GetConfigBool(true, "Reworks : Commencement"))
             {
                 MakePillarsFun();
