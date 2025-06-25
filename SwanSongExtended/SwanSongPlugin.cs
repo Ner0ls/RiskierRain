@@ -126,7 +126,8 @@ namespace SwanSongExtended
             Storms.StormsCore.Init();
 
             ConfigManager.HandleConfigAttributes(GetType(), "SwanSong", Modules.Config.MyConfig);
-            
+
+            InitializeChangesPreContent();
             InitializeContent();
             InitializeChanges();
             //RoR2Application.onLoad += InitializeChanges;
@@ -139,7 +140,6 @@ namespace SwanSongExtended
 
             ////refer to guide on how to build and distribute your mod with the proper folders
         }
-
 
         private void CreateExpansionDef()
         {
@@ -189,6 +189,15 @@ namespace SwanSongExtended
             BeginInitializing<SkillBase>(allTypes, "SwanSongSkills.txt");
 
             BeginInitializing<TwistedScavengerBase>(allTypes, "SwanSongScavengers.txt");
+        }
+
+        private void InitializeChangesPreContent()
+        {
+            if (GetConfigBool(true, "Reworks : Commencement"))
+            {
+                MakePillarsFun();
+                LunarExplodersDuringBrother();
+            }
         }
         private void InitializeChanges()
         {
@@ -245,11 +254,6 @@ namespace SwanSongExtended
             if (GetConfigBool(true, "Reworks : Resonance Disc"))
             {
                 DeworkResonanceDisc();
-            }
-            if (GetConfigBool(true, "Reworks : Commencement"))
-            {
-                MakePillarsFun();
-                LunarExplodersDuringBrother();
             }
             //interactables bc they need to load after items:
             //InitializeInteractables();

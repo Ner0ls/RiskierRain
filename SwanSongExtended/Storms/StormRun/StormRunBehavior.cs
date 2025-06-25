@@ -20,9 +20,9 @@ namespace SwanSongExtended.Storms
         public StormType stormType { get; private set; } = StormType.None;
 
 
-        private static StormType GetStormType()
+        public static StormType GetStormType(SceneDef currentScene)
         {
-            SceneDef currentScene = SceneCatalog.GetSceneDefForCurrentScene();
+            //SceneDef currentScene = SceneCatalog.GetSceneDefForCurrentScene();
             StormType st = StormType.None;
             if (currentScene.sceneType == SceneType.Stage && !currentScene.isFinalStage)
             {
@@ -62,8 +62,7 @@ namespace SwanSongExtended.Storms
 
         private void OnServerStageBegin(Stage obj)
         {
-
-            stormType = GetStormType();
+            stormType = GetStormType(obj.sceneDef);
             if (stormType == StormType.None)
                 return;
 
