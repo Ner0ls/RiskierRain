@@ -15,7 +15,7 @@ namespace SwanSongExtended.Components
 		public static float spinGeneratedOnKill = 0.025f; //0.025f
 		public static float spinDecayPerSecondAfterRefresh = 0.0125f; //0.0125f
 		public static float minSpin = 0.025f; //idk
-		public static float maxSpin = 0.1f; //idk
+		public static float maxSpin = 0.2f; //idk
 		public static float visualSpinRate = 7200f;
 
 		public float charge { get; private set; }

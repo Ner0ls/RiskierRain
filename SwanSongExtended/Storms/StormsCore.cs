@@ -61,7 +61,7 @@ namespace SwanSongExtended.Storms
             //On.RoR2.HoldoutZoneController.OnDisable += UnregisterHoldoutZone;
 
             meteorWarningEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Meteor/MeteorStrikePredictionEffect.prefab").WaitForCompletion().InstantiateClone("StormStrikePredictionEffect");
-            meteorWarningEffectPrefab.transform.localScale = Vector3.one * meteorBlastRadius * 0.85f;
+            meteorWarningEffectPrefab.transform.localScale =  new Vector3(meteorBlastRadius * 0.85f, meteorBlastRadius * 5, meteorBlastRadius * 0.85f);
             DestroyOnTimer DOT = meteorWarningEffectPrefab.GetComponent<DestroyOnTimer>();
             if (DOT)
             {

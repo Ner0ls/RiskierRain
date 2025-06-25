@@ -160,8 +160,8 @@ namespace SwanSongExtended.Storms
                 }
                 this.meteorsToDetonate = new List<MeteorStormController.Meteor>();
                 this.meteorWaves = new List<MeteorStormController.MeteorWave>();
+                //On.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
 
-                On.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
                 EnableDirector();
             }
 
@@ -243,7 +243,13 @@ namespace SwanSongExtended.Storms
                 Vector3 impactPosition = (Vector3)nextMeteor.GetType().GetField("impactPosition", 
                     System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public
                     ).GetValue(nextMeteor);
-                return !ShelterUtilsModule.IsPositionSheltered(impactPosition, meteorBlastRadius);
+                if (ShelterUtilsModule.IsPositionSheltered(impactPosition, meteorBlastRadius))
+                    return false;
+                //if (!Physics.Raycast(impactPosition + Vector3.up * 0.1f, Vector3.down, out RaycastHit hit, 3f, LayerIndex.world.mask))
+                //    return false;
+                //if (Vector3.Dot(hit.normal, Vector3.up) < 0.8f)
+                //    return false;
+                return true;
             }
 
             private void DetonateMeteor(MeteorStormController.Meteor meteor)
@@ -275,48 +281,18 @@ namespace SwanSongExtended.Storms
                 }.Fire();
             }
 
+            /// <summary>
+            /// deprecated
+            /// </summary>
+            /// <param name="orig"></param>
+            /// <param name="self"></param>
+            /// <returns></returns>
             private MeteorStormController.Meteor MeteorWave_GetNextMeteor(On.RoR2.MeteorStormController.MeteorWave.orig_GetNextMeteor orig, MeteorStormController.MeteorWave self)
             {
                 MeteorStormController.Meteor meteor = orig.Invoke(self);
-                if (stormController.holdoutZones.Count == 0)
-                    return meteor;
-
-                try
-                {
-                    foreach (HoldoutZoneController holdoutZone in stormController.holdoutZones)
-                    {
-                        if (holdoutZone == null)
-                        {
-                            stormController.holdoutZones.Remove(holdoutZone);
-                            continue;
-                        }
-                        if (!holdoutZone.isActiveAndEnabled || holdoutZone.charge <= 0)
-                        {
-                            continue;
-                        }
-
-                        //i have no goddamn clue what this does lmao
-                        //this uses reflection to find the impact position of the meteor that was spawned -borbo
-                        Vector3 impactPosition = (Vector3)meteor.GetType()
-                            .GetField("impactPosition", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public).GetValue(meteor);
-
-                        if (IsInRange(impactPosition, holdoutZone.transform.position, holdoutZone.currentRadius + meteorBlastRadius))
-                        {
-                            meteor = null;
-                        }
-                    }
-                }
-                catch (Exception ex)
-                {
-                    Log.Error(ex.Message);
-                }
-
+                if (meteor != null && meteor.impactPosition == self.targets[self.currentStep].corePosition)
+                    return null;
                 return meteor;
-
-                bool IsInRange(Vector3 a, Vector3 b, float dist)
-                {
-                    return (a - b).sqrMagnitude <= dist * dist;
-                }
             }
 
             public override InterruptPriority GetMinimumInterruptPriority()
