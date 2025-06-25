@@ -132,9 +132,9 @@ namespace SwanSongExtended.Items
         private void TryRegenerateElixir(On.RoR2.CharacterMaster.orig_OnServerStageBegin orig, CharacterMaster self, Stage stage)
         {
             orig(self, stage);
-            if (NetworkServer.active)
+            if (NetworkServer.active && self.inventory)
             {
-                int count = GetCount(self);
+                int count = self.inventory.GetItemCount(brokenItemDef);
                 if (count > 0)
                 {
                     RegeneratePotions(count, self);
