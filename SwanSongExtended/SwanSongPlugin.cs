@@ -344,9 +344,8 @@ namespace SwanSongExtended
             }
             return def;
         }
-        internal static void BlacklistSingleItem(string name, ItemTag itemTag = ItemTag.AIBlacklist)
+        internal static void BlacklistSingleItem(ItemDef itemDef, ItemTag itemTag = ItemTag.AIBlacklist)
         {
-            ItemDef itemDef = LoadItemDef(name);
             if (itemDef != null)
             {
                 List<ItemTag> itemTags = new List<ItemTag>(itemDef.tags);
@@ -356,8 +355,13 @@ namespace SwanSongExtended
             }
             else
             {
-                Log.Error($"ItemDef {name} failed to load - unable to blacklist");
+                Log.Error($"ItemDef null - unable to blacklist");
             }
+        }
+        internal static void BlacklistSingleItem(string name, ItemTag itemTag = ItemTag.AIBlacklist)
+        {
+            ItemDef itemDef = LoadItemDef(name);
+            BlacklistSingleItem(itemDef, itemTag);
         }
 
         public static void RemoveEquipment(string equipName)

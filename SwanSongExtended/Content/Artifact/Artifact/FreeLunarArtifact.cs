@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 
 namespace SwanSongExtended.Artifacts 
@@ -33,8 +34,12 @@ namespace SwanSongExtended.Artifacts
             SwanSongPlugin.BlacklistSingleItem(nameof(RoR2Content.Items.LunarSpecialReplacement), FreeLunarBlacklist);
             SwanSongPlugin.BlacklistSingleItem(nameof(RoR2Content.Items.RepeatHeal), FreeLunarBlacklist);
             SwanSongPlugin.BlacklistSingleItem(nameof(RoR2Content.Items.LunarTrinket), FreeLunarBlacklist);
-            SwanSongPlugin.BlacklistSingleItem(nameof(DLC1Content.Items.HalfAttackSpeedHalfCooldowns), FreeLunarBlacklist);
-            SwanSongPlugin.BlacklistSingleItem(nameof(DLC1Content.Items.HalfSpeedDoubleHealth), FreeLunarBlacklist);
+            Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPaths.RoR2_DLC1_LunarSun.LunarSun_asset).Completed += (ctx) =>
+                SwanSongPlugin.BlacklistSingleItem(ctx.Result, FreeLunarBlacklist);
+            Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPaths.RoR2_DLC1_HalfAttackSpeedHalfCooldowns.HalfAttackSpeedHalfCooldowns_asset).Completed += (ctx) =>
+                SwanSongPlugin.BlacklistSingleItem(ctx.Result, FreeLunarBlacklist);
+            Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPaths.RoR2_DLC1_HalfSpeedDoubleHealth.HalfSpeedDoubleHealth_asset).Completed += (ctx) =>
+                SwanSongPlugin.BlacklistSingleItem(ctx.Result, FreeLunarBlacklist);
         }
         public override void Hooks()
         {
