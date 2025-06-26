@@ -4,7 +4,9 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Events;
+using UnityEngine.Networking;
 using static SwanSongExtended.SwanSongPlugin;
 
 namespace SwanSongExtended.Components
@@ -21,6 +23,19 @@ namespace SwanSongExtended.Components
         }
         public PillarType pillarType = PillarType.None;
         public bool shouldDropItem = false;
+        public bool shouldDropPotential = false;
+        GameObject voidPotentialPrefab => Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.RoR2_DLC1_OptionPickup.OptionPickup_prefab).WaitForCompletion();
+        BasicPickupDropTable dtTier3 => Addressables.LoadAssetAsync<BasicPickupDropTable>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Common.dtTier3Item_asset).WaitForCompletion();
+        BasicPickupDropTable dtBoss => Addressables.LoadAssetAsync<BasicPickupDropTable>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_DuplicatorWild.dtDuplicatorWild_asset).WaitForCompletion();
+        private Xoroshiro128Plus rng;
+
+        void Start()
+        {
+            if (NetworkServer.active)
+            {
+                this.rng = new Xoroshiro128Plus(Run.instance.treasureRng.nextUlong);
+            }
+        }
 
         void OnEnable()
         {
@@ -59,11 +74,34 @@ namespace SwanSongExtended.Components
                 int i = 0;
                 while (i < num)
                 {
-                    PickupDropletController.CreatePickupDroplet(pickupIndex, dropPosition, vector);
+                    CreatePillarPickup(dropPosition, pickupIndex, vector);
                     i++;
                     vector = rotation * vector;
                 }
             }
+        }
+
+        private void CreatePillarPickup(Vector3 dropPosition, PickupIndex pickupIndex, Vector3 vector)
+        {
+            bool canDropPotential = shouldDropPotential;
+            if (!canDropPotential)
+            {
+                PickupDropletController.CreatePickupDroplet(pickupIndex, dropPosition, vector);
+                return;
+            }
+
+            PickupIndex pickupB = dtTier3.GenerateDrop(this.rng);
+            PickupIndex pickupC = dtBoss.GenerateDrop(this.rng);
+
+            GenericPickupController.CreatePickupInfo createPickupInfo = new GenericPickupController.CreatePickupInfo
+            {
+                pickerOptions = PickupPickerController.GenerateOptionsFromArray(new PickupIndex[3] { pickupIndex, pickupB, pickupC }),
+                prefabOverride = voidPotentialPrefab,
+                position = dropPosition,
+                rotation = Quaternion.identity,
+                pickupIndex = PickupCatalog.FindPickupIndex(ItemTier.Boss)
+            };
+            PickupDropletController.CreatePickupDroplet(createPickupInfo, createPickupInfo.position, vector);
         }
 
         public static PickupIndex GetPickupIndexFromPillarType(PillarType pillarType)

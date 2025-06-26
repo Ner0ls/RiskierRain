@@ -64,7 +64,9 @@ namespace SwanSongExtended.Artifacts
 
                 prefab = prefab.InstantiateClone(name);
 
-                prefab.GetComponent<PillarItemDropper>().shouldDropItem = true;
+                PillarItemDropper dropper = prefab.GetComponent<PillarItemDropper>();
+                dropper.shouldDropItem = true;
+                dropper.shouldDropPotential = true;
                 if (useBasicObjective)
                 {
                     GenericObjectiveProvider objective = prefab.AddComponent<GenericObjectiveProvider>();
