@@ -100,8 +100,12 @@ namespace SwanSongExtended
         private void AddGestureBreak(On.RoR2.EquipmentSlot.orig_OnEquipmentExecuted orig, EquipmentSlot self)
         {
             orig(self);
-            if (!gestureBreakBlacklist.Contains(self.equipmentIndex))
-                TryGestureEquipmentBreak(self);
+            if (NetworkServer.active)
+            {
+                self.characterBody.AddBuff(Modules.CommonAssets.gestureQueueEquipBreak);
+                if (!gestureBreakBlacklist.Contains(self.equipmentIndex))
+                    TryGestureEquipmentBreak(self);
+            }
         }
 
         private void AddPreonAccumulatorBreak(ILContext il)
@@ -131,11 +135,6 @@ namespace SwanSongExtended
             if (self.characterBody.hasAuthority && self.inventory?.GetItemCount(RoR2Content.Items.AutoCastEquipment) > 0 && self.inputBank.activateEquipment.justPressed && self.stock <= 0)
             {
                 self.stock += 1;
-                //authority isnt server? sol... i dont wanna network this
-                if (NetworkServer.active)
-                {
-                    self.characterBody.AddBuff(Modules.CommonAssets.gestureQueueEquipBreak);
-                }
             }
             return orig(self);
         }
