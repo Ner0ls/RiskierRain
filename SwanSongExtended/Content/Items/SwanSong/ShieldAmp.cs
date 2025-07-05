@@ -14,12 +14,12 @@ namespace SwanSongExtended.Items
 {
     class ShieldAmp : ItemBase<ShieldAmp>
     {
-        public static float shieldPercentBase = 0.12f;
         public static float shieldFlatBase = 40f;
-        public static float shieldDrainFraction = 0.3f;
-        public static float amplifyDamageIncreaseBase = 5f;
+        public static float shieldDrainFractionBase = 0.4f;
+        public static float shieldDrainFractionStack = -0.1f;
+        public static float amplifyDamageIncreaseBase = 12f;
         public static float amplifyDamageIncreaseStack = 3f;
-        public static float amplifyDamageMultiplierForFullShield = 1f;
+        public static float amplifyDamageMultiplierForFullShield = 2f;
         public override string ItemName => "Jellyfish Necklace";
 
         public override string ItemLangTokenName => "SHIELDAMP";
@@ -27,11 +27,12 @@ namespace SwanSongExtended.Items
         public override string ItemPickupDesc => "While shields are full, dealing damage drains shield and creates energizing sparks.";
 
         public override string ItemFullDescription => $"Gain {HealingColor(shieldFlatBase + " shield")}. " +
-            $"While shields are full, damage from your next skill " +
-            $"{DamageColor($"drains {Tools.ConvertDecimal(shieldDrainFraction)}")} of your shield, " +
-            $"{DamageColor("amplifying")} damage dealt by {DamageColor(ConvertDecimal(amplifyDamageIncreaseBase))} " +
-            $"{StackText($"+{ConvertDecimal(amplifyDamageIncreaseStack)}")}. " +
-            $"{DamageColor("Amplified")} hits create {UtilityColor("Energizing Sparks")}, " +
+            $"While shields are full, {DamageColor("amplify")} damage from skills. " +
+            $"{DamageColor("Amplified")} hits {DamageColor($"drain {Tools.ConvertDecimal(shieldDrainFractionBase)}")} of your max shield " +
+            $"{StackText($"{shieldDrainFractionStack}")}, " +
+            $"dealing {DamageColor($"+{ConvertDecimal(amplifyDamageIncreaseBase)} BASE damage")}" +
+            $"{StackText($"+{ConvertDecimal(amplifyDamageIncreaseStack)}")}, " +
+            $"and creating {UtilityColor("Energizing Sparks")}, " +
             $"temporarily increasing {DamageColor("attack speed")} by {DamageColor(ConvertDecimal(RainrotSharedUtils.Assets.sparkBoosterAspdBonus))}.";
 
         public override string ItemLore => "";
@@ -80,10 +81,11 @@ namespace SwanSongExtended.Items
                         if (healthComponent.shield >= maxShield - 1)
                         {
                             float amplifyBaseDamage = amplifyDamageIncreaseBase + amplifyDamageIncreaseStack * (stack - 1);
-                            float amplifyDamageScale = Mathf.Lerp(1, amplifyDamageMultiplierForFullShield, maxShield / healthComponent.fullCombinedHealth);
+                            float amplifyDamageScale = attackerBody.maxShield > shieldFlatBase ? Mathf.Lerp(1, amplifyDamageMultiplierForFullShield, maxShield / healthComponent.fullCombinedHealth) : 1;
                             damageInfo.damage += attackerBody.damage * amplifyBaseDamage * amplifyDamageScale;
 
-                            DrainShield(healthComponent, maxShield * shieldDrainFraction);
+                            float drainFraction = shieldDrainFractionBase * Mathf.Pow(1 + shieldDrainFractionStack, stack);
+                            DrainShield(healthComponent, maxShield * drainFraction);
 
                             NebulaPickup.CreateBoosterPickup(damageInfo.position, attackerBody.teamComponent.teamIndex, RainrotSharedUtils.Assets.sparkBoosterObject, 2);
                         }
