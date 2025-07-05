@@ -6,6 +6,7 @@ using R2API;
 using RoR2;
 using System;
 using UnityEngine;
+using UnityEngine.Networking;
 
 namespace BetterSoulCost
 {
@@ -55,6 +56,8 @@ namespace BetterSoulCost
 
         public static void AddSoulCostToBody(CharacterBody body, BuffIndex buffIndex, float soulCost)
         {
+            if (!NetworkServer.active)
+                return;
             soulCost = Mathf.Min(soulCost, 0.99f);
             int currentBuffCount = body.GetBuffCount((BuffIndex)buffIndex);
             float buffsToAdd = soulCost * 10;
