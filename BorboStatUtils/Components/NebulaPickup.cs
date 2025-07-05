@@ -51,7 +51,6 @@ namespace RainrotSharedUtils.Components
                 return;
             }
 
-            Debug.Log("giving booster buffs");
             AddBoosterBuff(buffDef, targetBody);
 
             IEnumerable<TeamComponent> recipients = TeamComponent.GetTeamMembers(targetBody.teamComponent.teamIndex);
@@ -79,7 +78,6 @@ namespace RainrotSharedUtils.Components
             {
                 for(int i = 0; i < boosterCount; i++)
                 {
-                    Debug.Log("Spawning booster pickup");
                     GameObject boosterToSpawn = UnityEngine.Object.Instantiate<GameObject>(boosterPrefab, spawnPoint, UnityEngine.Random.rotation);
                     boosterToSpawn.GetComponent<TeamFilter>().teamIndex = team;
                     VelocityRandomOnStart boosterVROS = boosterToSpawn.GetComponent<VelocityRandomOnStart>();
