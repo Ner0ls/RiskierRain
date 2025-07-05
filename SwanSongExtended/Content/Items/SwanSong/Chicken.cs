@@ -18,8 +18,8 @@ namespace SwanSongExtended.Items
         public static BuffDef foodPoisoning;
         public static float baseMaxHealth = 0.3f;
         public static float stackMaxHealth = 0.2f;
-        public static float baseRegenPenalty = 3f;
-        public static float stackRegenPenalty = 3f;
+        public static float baseRegenPenalty = 2f;
+        public static float stackRegenPenalty = 2f;
         public static float regenPenaltyChance = 40f;
         public override ExpansionDef RequiredExpansion => SwanSongPlugin.expansionDefSS2;
         public override string ItemName => "Raw Chicken";
