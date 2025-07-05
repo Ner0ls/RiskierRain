@@ -41,10 +41,10 @@ namespace RiskierRain
 		private static float voidsentBaseChance = 33f;
 		private static float voidsentStackChance = 0f;
 
-		private static float gasBaseBurnDamage = 0.5f;
-		private static float gasStackBurnDamage = 2f;
-		private static float gasBaseDamage = 0.5f;
-		private static float gasStackDamage = 0;
+		private static float gasBaseDamage = 0.5f; //1.5f
+		private static float gasStackDamage = 0; //0f
+		private static float gasBaseBurnDamage = 1f; //1.5f
+		private static float gasStackBurnDamage = 1f; //0.75f
 
 		float discipleDevilorbProc = 0.4f;
 		float opinionDevilorbProc = 0.75f;
@@ -104,8 +104,8 @@ namespace RiskierRain
                 $"<style=cIsDamage>12m</style> <style=cStack>(+4m per stack)</style> " +
                 $"for <style=cIsDamage>{Tools.ConvertDecimal(gasBaseDamage)}</style> base damage. " +
                 $"Additionally, enemies <style=cIsDamage>burn</style> " +
-                $"for <style=cIsDamage>{50 * (gasBaseBurnDamage + gasStackBurnDamage)}%</style> " +
-                $"<style=cStack>(+{50 * (gasStackBurnDamage)}% per stack)</style> base damage.");
+                $"for <style=cIsDamage>{100 * (gasBaseBurnDamage)}%</style> " +
+                $"<style=cStack>(+{100 * (gasStackBurnDamage)}% per stack)</style> base damage.");
         }
 
 
@@ -233,7 +233,7 @@ namespace RiskierRain
 			{
 				float newBurnDamage = currentDamage;
 
-				newBurnDamage = (gasBaseBurnDamage + gasStackBurnDamage * itemCount) * damageReport.attackerBody.damage;
+				newBurnDamage = (gasBaseBurnDamage + gasStackBurnDamage * (itemCount - 1)) * damageReport.attackerBody.damage;
 
 				return newBurnDamage;
 			});
@@ -270,7 +270,7 @@ namespace RiskierRain
 			{
 				float newDuration = currentDuration;
 
-				newDuration = gasBaseBurnDamage + gasStackBurnDamage * itemCount;
+				newDuration = gasBaseBurnDamage + gasStackBurnDamage * (itemCount - 1);
 
 				return newDuration;
 			});
