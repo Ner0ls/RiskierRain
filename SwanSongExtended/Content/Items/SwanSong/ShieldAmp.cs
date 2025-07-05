@@ -17,7 +17,7 @@ namespace SwanSongExtended.Items
         public static float shieldFlatBase = 40f;
         public static float shieldDrainFractionBase = 0.4f;
         public static float shieldDrainFractionStack = -0.08f;
-        public static float amplifyDamageIncreaseBase = 12f;
+        public static float amplifyDamageIncreaseBase = 9f;
         public static float amplifyDamageIncreaseStack = 3f;
         public static float amplifyDamageMultiplierForFullShield = 2f;
         public override string ItemName => "Jellyfish Necklace";
@@ -29,7 +29,7 @@ namespace SwanSongExtended.Items
         public override string ItemFullDescription => $"Gain {HealingColor(shieldFlatBase + " shield")}. " +
             $"While shields are full, {DamageColor("amplify")} damage from skills. " +
             $"{DamageColor("Amplified")} hits {DamageColor($"drain {Tools.ConvertDecimal(shieldDrainFractionBase)}")} of your max shield " +
-            $"{StackText($"{shieldDrainFractionStack}")}, " +
+            $"{StackText($"{ConvertDecimal(shieldDrainFractionStack)}")}, " +
             $"dealing {DamageColor($"+{ConvertDecimal(amplifyDamageIncreaseBase)} BASE damage")}" +
             $"{StackText($"+{ConvertDecimal(amplifyDamageIncreaseStack)}")}, " +
             $"and creating {UtilityColor("Energizing Sparks")}, " +
