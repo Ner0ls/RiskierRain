@@ -16,7 +16,7 @@ namespace SwanSongExtended.Items
     {
         public static float shieldFlatBase = 40f;
         public static float shieldDrainFractionBase = 0.4f;
-        public static float shieldDrainFractionStack = -0.1f;
+        public static float shieldDrainFractionStack = -0.08f;
         public static float amplifyDamageIncreaseBase = 12f;
         public static float amplifyDamageIncreaseStack = 3f;
         public static float amplifyDamageMultiplierForFullShield = 2f;
