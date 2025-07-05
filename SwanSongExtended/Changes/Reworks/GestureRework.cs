@@ -99,8 +99,19 @@ namespace SwanSongExtended
 
         private void AddGestureBreak(On.RoR2.EquipmentSlot.orig_OnEquipmentExecuted orig, EquipmentSlot self)
         {
+            if (!NetworkServer.active)
+                return;
+
+            bool undercast = false;
+            if (self.stock <= 0 && self.inventory.GetItemCount(RoR2Content.Items.AutoCastEquipment) > 0)
+            {
+                self.inventory.RestockEquipmentCharges(self.activeEquipmentSlot, 1);
+                undercast = true;
+            }
+
             orig(self);
-            if (NetworkServer.active)
+
+            if (undercast)
             {
                 self.characterBody.AddBuff(Modules.CommonAssets.gestureQueueEquipBreak);
                 if (!gestureBreakBlacklist.Contains(self.equipmentIndex))
@@ -128,15 +139,6 @@ namespace SwanSongExtended
             orig();
             gestureBreakBlacklist.Add(EquipmentIndex.None);
             gestureBreakBlacklist.Add(RoR2Content.Equipment.BFG.equipmentIndex);
-        }
-
-        private bool AddGestureUndercast(On.RoR2.EquipmentSlot.orig_ExecuteIfReady orig, EquipmentSlot self)
-        {
-            if (self.characterBody.hasAuthority && self.inventory?.GetItemCount(RoR2Content.Items.AutoCastEquipment) > 0 && self.inputBank.activateEquipment.justPressed && self.stock <= 0)
-            {
-                self.stock += 1;
-            }
-            return orig(self);
         }
 
         public static void TryGestureEquipmentBreak(EquipmentSlot self)
