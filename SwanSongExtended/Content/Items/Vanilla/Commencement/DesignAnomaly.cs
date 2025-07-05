@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
 using static R2API.RecalculateStatsAPI;
 using static SwanSongExtended.Modules.Language.Styling;
@@ -39,7 +40,7 @@ namespace SwanSongExtended.Items
             $"gain a stack of {DamageColor("Chimera Armor")}, up to {UtilityColor($"{maxBeetleArmorStacks}")} times. " +
             $"Each stack of {DamageColor("Chimera Armor")} " +
             $"increases {HealingColor("armor")} by {HealingColor($"{armorPerBuffBase}")} {StackText("+" + armorPerBuffStack)}. " +
-            $"Taking damage while protected strips 1 stack of {DamageColor("Chimera Armor")}," +
+            $"Taking damage while protected strips 1 stack of {DamageColor("Chimera Armor")}, " +
             $"{DamageColor("Crippling")} the enemy who attacked you for {retaliateCrippleDuration}s.";
 
         public override string ItemLore => "";
@@ -60,6 +61,9 @@ namespace SwanSongExtended.Items
         public override void Init()
         {
             base.Init();
+            beetleArmor = Content.CreateAndAddBuff("bdDesignArmor",
+                Addressables.LoadAssetAsync<Sprite>("RoR2/Base/LunarSkillReplacements/texBuffLunarDetonatorIcon.tif").WaitForCompletion(),
+                Color.cyan, false, false);
         }
 
         public override void Hooks()
