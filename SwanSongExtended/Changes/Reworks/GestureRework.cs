@@ -30,7 +30,6 @@ namespace SwanSongExtended
                 $"allowing it to be used {HealthColor($"with a {gestureEquipBreakChance}% chance to break")}. " +
                 $"{UtilityColor("Unaffected by luck.")}");
             On.RoR2.EquipmentCatalog.Init += CreateGestureBlacklist;
-            On.RoR2.EquipmentSlot.ExecuteIfReady += AddGestureUndercast;
             On.RoR2.EquipmentSlot.OnEquipmentExecuted += AddGestureBreak;
             IL.RoR2.EquipmentSlot.MyFixedUpdate += RemoveGestureAutocast;
             IL.RoR2.EquipmentSlot.MyFixedUpdate += AddPreonAccumulatorBreak;
