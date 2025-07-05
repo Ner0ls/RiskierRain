@@ -118,7 +118,7 @@ namespace SwanSongExtended.Items
 
         private float GetPoisonChance()
         {
-            if (body.bodyIndex == BodyCatalog.FindBodyIndex("FalseSonSurvivorBody"))
+            if (body.bodyIndex == BodyCatalog.FindBodyIndex("FalseSonBody"))
                 return 100;
             if (Run.instance.stageClearCount < 1)
                 return Math.Min(0.01f, Chicken.regenPenaltyChance);
