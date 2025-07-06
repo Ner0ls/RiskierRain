@@ -61,7 +61,7 @@ namespace RiskierRain
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
         public const string modName = "RiskierRain";
-        public const string version = "1.1.6";
+        public const string version = "1.1.8";
 
         public static PluginInfo PInfo { get; private set; }
 
@@ -647,6 +647,18 @@ namespace RiskierRain
             if (GetConfigBool(true, "Enemy: Xi Construct"))
             {
                 XiAIFix();
+            }
+
+            //xi construct
+            if (GetConfigBool(true, "Enemy: Templar"))
+            {
+                NerfTemplar();
+            }
+
+            //xi construct
+            if (GetConfigBool(true, "Enemy: Chimera Wisp"))
+            {
+                NerfChimeraWisp();
             }
 
             //gup
