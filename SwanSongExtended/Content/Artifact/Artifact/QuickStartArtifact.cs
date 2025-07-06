@@ -14,20 +14,20 @@ namespace SwanSongExtended.Artifacts
     {
         #region config
 
-        [AutoConfig("Wish Pickup Index", "2 is Common, 3 is Uncommon, 4 is Rare", 3)]
-        public static int wishPickupIndex = 3;
+        [AutoConfig("Wish Pickup Index", "0 is Common, 1 is Uncommon, 2 is Rare", 1)]
+        public static int wishPickupIndex = 1;
         public static string ConvertPickupIndexToRarityName(int n)
         {
             string rarityName = "";
             switch (n)
             {
-                case 2:
+                case 0:
                     rarityName = "Common";
                     break;
-                case 3:
+                case 1:
                     rarityName = "Uncommon";
                     break;
-                case 4:
+                case 2:
                     rarityName = "Rare";
                     break;
                 default:
