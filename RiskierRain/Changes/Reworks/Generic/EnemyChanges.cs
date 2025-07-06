@@ -310,5 +310,24 @@ namespace RiskierRain
             }
         }
         #endregion
+
+        #region templar and chwisp
+
+        GameObject templarPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/ClayBruiserBody");
+        GameObject chimeraWispPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/LunarWispBody");
+
+        void NerfTemplar()
+        {
+            CharacterBody templarBody = this.templarPrefab.GetComponent<CharacterBody>();
+            templarBody.baseAttackSpeed *= 1 + kitSlowAspdReduction;
+            templarBody.baseDamage = 9;//16
+        }
+        void NerfChimeraWisp()
+        {
+            CharacterBody wispBody = this.chimeraWispPrefab.GetComponent<CharacterBody>();
+            wispBody.baseAttackSpeed *= 1 + kitSlowAspdReduction;
+            wispBody.baseDamage = 8f;
+        }
+        #endregion
     }
 }
