@@ -294,7 +294,7 @@ namespace RiskierRain
 
                     if(sender.baseNameToken != "JELLYFISH_BODY_NAME")
                     {
-                        args.attackSpeedMultAdd += Mathf.Clamp01(compensatedLevel / 200f) * 9f;
+                        args.attackSpeedMultAdd += Mathf.Clamp01(compensatedLevel / 200f) * 4f;
                     }
 
                     if (sender.isChampion)
@@ -303,7 +303,7 @@ namespace RiskierRain
                     }
                     else
                     {
-                        args.moveSpeedMultAdd += Mathf.Clamp01(compensatedLevel / 200f) * 3f;
+                        args.moveSpeedMultAdd += Mathf.Clamp01(compensatedLevel / 200f) * 2f;
                     }
                 }
             }
