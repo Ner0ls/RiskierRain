@@ -158,6 +158,8 @@ namespace SwanSongExtended.Storms
                     outer.SetNextState(new StormController.IdleState());
                     return;
                 }
+                if (!NetworkServer.active)
+                    return;
                 this.meteorsToDetonate = new List<MeteorStormController.Meteor>();
                 this.meteorWaves = new List<MeteorStormController.MeteorWave>();
                 //On.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
@@ -173,6 +175,8 @@ namespace SwanSongExtended.Storms
             public override void FixedUpdate()
             {
                 base.FixedUpdate();
+                if (!NetworkServer.active)
+                    return;
 
                 //thisa is just for meteor stuff; we can make it work for the other storsm when they start existing lol.
                 this.waveTimer -= Time.fixedDeltaTime;

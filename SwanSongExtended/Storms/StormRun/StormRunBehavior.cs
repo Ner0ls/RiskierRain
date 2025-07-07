@@ -57,7 +57,7 @@ namespace SwanSongExtended.Storms
             }
             instance = this;
 
-            RoR2.Stage.onServerStageBegin += OnServerStageBegin;
+            RoR2.Stage.onStageStartGlobal += OnServerStageBegin;
         }
 
         private void OnServerStageBegin(Stage obj)
@@ -89,7 +89,7 @@ namespace SwanSongExtended.Storms
         {
             if(instance == this)
             {
-                RoR2.Stage.onServerStageBegin -= OnServerStageBegin;
+                RoR2.Stage.onStageStartGlobal -= OnServerStageBegin;
             }
         }
         #endregion
