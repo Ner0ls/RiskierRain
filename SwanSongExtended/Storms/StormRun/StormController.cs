@@ -182,7 +182,7 @@ namespace SwanSongExtended.Storms
                 this.waveTimer -= Time.fixedDeltaTime;
                 if (this.waveTimer <= 0f)
                 {
-                    this.waveTimer = UnityEngine.Random.Range(waveMinInterval, waveMaxInterval);
+                    this.waveTimer = UnityEngine.Random.Range(waveMinInterval, waveMaxInterval) * Mathf.Min(1 + fixedAge / (stormController.stormWarningTime * 2), 3);
                     MeteorStormController.MeteorWave item =
                         new MeteorStormController.MeteorWave(
                             CharacterBody.readOnlyInstancesList
