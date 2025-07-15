@@ -92,16 +92,16 @@ namespace SwanSongExtended.Interactables
 
             this.rng = new Xoroshiro128Plus(Run.instance.stageRng.nextUlong);
             int eggsToHide = 0;
-            using (IEnumerator<CharacterMaster> enumerator = CharacterMaster.readOnlyInstancesList.GetEnumerator())
+            foreach (CharacterMaster master in CharacterMaster.readOnlyInstancesList)
             {
-                while (enumerator.MoveNext())
+                if (master.inventory.GetItemCount(Egg.instance.ItemsDef) > 0)
                 {
-                    if (enumerator.Current.inventory.GetItemCount(Egg.instance.ItemsDef) > 0)
-                    {
-                        eggsToHide += eggsPerPlayer;
-                    }
+                    eggsToHide += eggsPerPlayer;
                 }
             }
+            if (eggsToHide <= 0)
+                return;
+
             for (int j = 0; j < eggsToHide; j++)
             {
                 DirectorCore.instance.TrySpawnObject(new DirectorSpawnRequest(EggPile.instance.customInteractable.spawnCard, new DirectorPlacementRule
