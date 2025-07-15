@@ -12,7 +12,7 @@ namespace SurvivorTweaks.States.Captain
 {
     public class FireWormhole : BaseSkillState
     {
-        public const float minDistance = 1;
+        public const float minDistance = 2;
         public Vector3 startPos;
         public Vector3 endpointPos;
 

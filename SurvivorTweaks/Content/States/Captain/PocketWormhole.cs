@@ -8,6 +8,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 using EntityStates.Mage.Weapon;
+using RoR2.UI;
 
 namespace SurvivorTweaks.States.Captain
 {
@@ -49,7 +50,23 @@ namespace SurvivorTweaks.States.Captain
 		}
 		GameObject endpointIndicatorInstance;
 		private bool disableIndicator = false;
-		bool invalid = false;
+		private CrosshairUtils.OverrideRequest crosshairOverrideRequest;
+		bool _validPlacement;
+		public bool validPlacement
+		{
+			get
+			{
+				return _validPlacement;
+			}
+			private set
+			{
+				UpdateCrosshair(value);
+				_validPlacement = value;
+				//if (endpointIndicatorInstance)
+				//	endpointIndicatorInstance.SetActive(value);
+			}
+		}
+
 
 		public override void OnEnter()
 		{
@@ -58,6 +75,7 @@ namespace SurvivorTweaks.States.Captain
 			{
 				this.endpointIndicatorInstance = UnityEngine.Object.Instantiate<GameObject>(endpointIndicatorPrefab);
 				UpdateEndpointIndicator();
+				UpdateCrosshair(false);
 			}
 			this.exitDuration = baseExitDuration / this.attackSpeedStat;
 			this.enterDuration = baseEnterDuration / this.attackSpeedStat;
@@ -79,6 +97,23 @@ namespace SurvivorTweaks.States.Captain
 			}
 		}
 
+		void UpdateCrosshair(bool newValue)
+        {
+			return;
+			if (fixedAge < this.enterDuration)
+				newValue = false;
+			if (validPlacement != newValue || this.crosshairOverrideRequest == null)
+			{
+				CrosshairUtils.OverrideRequest overrideRequest = this.crosshairOverrideRequest;
+				if (overrideRequest != null)
+				{
+					overrideRequest.Dispose();
+				}
+				GameObject crosshairPrefab = this.validPlacement ? PrepWall.goodCrosshairPrefab : PrepWall.badCrosshairPrefab;
+				this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(base.characterBody, crosshairPrefab, CrosshairUtils.OverridePriority.Skill);
+			}
+		}
+
 		private void UpdateAimInfo()
 		{
 			Vector3 footPosition = this.characterBody.footPosition;
@@ -89,6 +124,7 @@ namespace SurvivorTweaks.States.Captain
 			if (!attackerRigidbody)
 			{
 				//activatorSkillSlot.AddOneStock();
+				validPlacement = false;
 				return;
 			}
 
@@ -124,10 +160,18 @@ namespace SurvivorTweaks.States.Captain
 				if (raycastHit2.distance < num2)
 				{
 					//activatorSkillSlot.AddOneStock();
-					return;
+					validPlacement = false;
 				}
+                else
+                {
+					validPlacement = true;
+                }
 				pointBPosition = position + pointBDirection * raycastHit2.distance;
 			}
+            else
+            {
+				validPlacement = true;
+            }
 
 			startpointPosition = (position + pointBDirection * num);
 			endpointPosition = (pointBPosition);
@@ -146,10 +190,11 @@ namespace SurvivorTweaks.States.Captain
 				return;
 
 			base.StartAimMode(this.enterDuration, false);
-			UpdateAimInfo();
 			//if not fired 
 			if (base.fixedAge < this.enterDuration)
 				return;
+
+			UpdateAimInfo();
 
 			//if after min duration
 			if (!this.IsKeyDownAuthority())
@@ -164,6 +209,19 @@ namespace SurvivorTweaks.States.Captain
 		private void Fire()
 		{
 			this.endpointIndicatorInstance.SetActive(false);
+			CrosshairUtils.OverrideRequest overrideRequest = this.crosshairOverrideRequest;
+			if (overrideRequest != null)
+			{
+				overrideRequest.Dispose();
+			}
+
+			//Log.Warning(validPlacement);
+			//if (!validPlacement)
+            //{
+			//	activatorSkillSlot.AddOneStock();
+			//	this.outer.SetNextStateToMain();
+			//	return;
+            //}				
 			FireWormhole state = new FireWormhole();
 			state.activatorSkillSlot = this.activatorSkillSlot;
 			state.startPos = this.startpointPosition;
