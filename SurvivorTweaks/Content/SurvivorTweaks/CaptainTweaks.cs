@@ -96,17 +96,6 @@ namespace SurvivorTweaks.SurvivorTweaks
             //secondary
             ChangeVanillaSecondaries(secondary);
             On.EntityStates.Captain.Weapon.FireTazer.OnEnter += CaptainTazerBuff;
-            #region taser
-            ProjectileImpactExplosion taserPie = tazerPrefab.GetComponent<ProjectileImpactExplosion>();
-            taserPie.blastRadius = tazerAoeRadius;
-            tazerPrefab.AddComponent<ProjectileIncreaseDamageOnStick>().damageMultiplier = tazerDamageBonus;
-
-            On.RoR2.Projectile.ProjectileStickOnImpact.TrySticking += StickDamageBonus;
-            LanguageAPI.Add("CAPTAIN_SECONDARY_DESCRIPTION",
-                $"<style=cIsDamage>Shocking</style>. " +
-                $"Fire a fast tazer that deals <style=cIsDamage>{Tools.ConvertDecimal(tazerDamage)} damage</style>. " +
-                $"If bounced, it can travel further and gains up to <style=cIsDamage>{tazerDamageBonus}x damage</style>.");
-            #endregion
 
             //utility
             On.EntityStates.AimThrowableBase.ModifyProjectile += ModifyDiabloDuration;
@@ -376,6 +365,62 @@ namespace SurvivorTweaks.SurvivorTweaks
             SkillDef tazer = family.variants[0].skillDef;
             tazer.baseRechargeInterval = tazerCooldown;
             tazer.keywordTokens = new string[] { "KEYWORD_SHOCKING", RainrotSharedUtils.SharedUtilsPlugin.sparkPickupKeywordToken };
+
+            #region taser
+            GameObject tazerPrefab = Addressables.LoadAssetAsync<GameObject>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Captain.CaptainTazer_prefab).WaitForCompletion();
+            if(tazerPrefab.TryGetComponent<ProjectileStickOnImpact>(out ProjectileStickOnImpact sticky))
+            {
+                ProjectileLightningOnImpact beam = tazerPrefab.AddComponent<ProjectileLightningOnImpact>();
+                beam.attackFireCount = 1;
+                beam.attackInterval = 99;
+                beam.attackRange = 21;
+                beam.lightningType = RoR2.Orbs.LightningOrb.LightningType.Loader;
+                beam.inheritDamageType = true;
+                beam.damageCoefficient = 1;
+                beam.bounces = 3;
+                beam.enabled = false;
+
+                //sticky.stickEvent.AddPersistentListener(EnableBeam);
+
+                void EnableBeam()
+                {
+                    if (tazerPrefab.TryGetComponent<ProjectileStickOnImpact>(out ProjectileStickOnImpact sticky))
+                    {
+                        //if NOT STUCK then skip
+                        if (!sticky.stuck || sticky.stuckTransform == null || sticky.stuckBody == null)
+                        {
+                            sticky.alreadyRanStickEvent = false;
+                            return;
+                        }
+                        if(tazerPrefab.TryGetComponent<ProjectileProximityBeamController>(out ProjectileProximityBeamController beam))
+                        {
+                            Log.Warning("sdfnbsdfbs");
+                            beam.enabled = true;
+                        }
+                    }
+                };
+
+                ProjectileIncreaseDamageOnStick pidos = tazerPrefab.AddComponent<ProjectileIncreaseDamageOnStick>();
+                pidos.damageMultiplier = tazerDamageBonus;
+                //sticky.stickEvent.AddPersistentListener(new UnityAction(pidos.IncreaseDamage));
+
+                if (tazerPrefab.TryGetComponent<ProjectileImpactExplosion>(out ProjectileImpactExplosion pie))
+                {
+                    pie.blastRadius = 3;// tazerAoeRadius;
+                    pie.blastDamageCoefficient = 0.25f;
+                    pie.blastProcCoefficient = 0;
+                    pie.timerAfterImpact = true;
+                    pie.lifetimeAfterImpact = 0.1f;
+                    //UnityEngine.Object.Destroy(pie);
+                }
+            }
+
+            On.RoR2.Projectile.ProjectileStickOnImpact.TrySticking += StickDamageBonus;
+            LanguageAPI.Add("CAPTAIN_SECONDARY_DESCRIPTION",
+                $"<style=cIsDamage>Shocking</style>. " +
+                $"Fire a fast tazer that deals <style=cIsDamage>{Tools.ConvertDecimal(tazerDamage)} damage</style>. " +
+                $"If bounced, it can travel further and gains up to <style=cIsDamage>{tazerDamageBonus}x damage</style>.");
+            #endregion
         }
 
         private void CaptainTazerBuff(On.EntityStates.Captain.Weapon.FireTazer.orig_OnEnter orig, FireTazer self)
@@ -387,19 +432,15 @@ namespace SurvivorTweaks.SurvivorTweaks
         private bool StickDamageBonus(On.RoR2.Projectile.ProjectileStickOnImpact.orig_TrySticking orig, ProjectileStickOnImpact self, Collider hitCollider, Vector3 impactNormal)
         {
             bool ret = orig(self, hitCollider, impactNormal);
-            if (!ret && hitCollider.GetComponent<HurtBox>() == null)
+            bool hitColliderHasHurtbox = hitCollider.GetComponent<HurtBox>() != null;
+            if (!ret)
             {
-                ProjectileIncreaseDamageOnStick pidos = self.gameObject.GetComponent<ProjectileIncreaseDamageOnStick>();
-                if (pidos != null)
+                if (!hitColliderHasHurtbox)
                 {
-                    if (pidos.currentApplications < pidos.maxApplications)
+                    ProjectileIncreaseDamageOnStick pidos = self.gameObject.GetComponent<ProjectileIncreaseDamageOnStick>();
+                    if (pidos != null)
                     {
-                        ProjectileDamage damage = self.gameObject.GetComponent<ProjectileDamage>();
-                        if (damage != null)
-                        {
-                            pidos.currentApplications++;
-                            damage.damage *= pidos.damageMultiplier;
-                        }
+                        pidos.IncreaseDamage(self);
                     }
                 }
             }
@@ -463,6 +504,91 @@ namespace SurvivorTweaks.SurvivorTweaks
         }
         #endregion
     }
+    class ProjectileLightningOnImpact : ProjectileProximityBeamController, IProjectileImpactBehavior
+    {
+        bool alive = true;
+        public bool destroyOnWorld = true;
+        public bool destroyOnEnemy = true;
+        public bool impactOnWorld = false;
+
+        public void OnProjectileImpact(ProjectileImpactInfo impactInfo)
+        {
+            if (!this.alive)
+            {
+                return;
+            }
+            if (!NetworkServer.active)
+                return; Collider collider = impactInfo.collider;
+
+            if (collider)
+            {
+                HurtBox component = collider.GetComponent<HurtBox>();
+                if (component)
+                {
+                    if (this.destroyOnEnemy)
+                    {
+                        HealthComponent healthComponent = component.healthComponent;
+                        if (healthComponent)
+                        {
+                            if (healthComponent.gameObject == this.projectileController.owner)
+                            {
+                                return;
+                            }
+                            HealthComponent hc = this.GetComponent<HealthComponent>();
+                            if (hc && healthComponent == hc)
+                            {
+                                return;
+                            }
+                            this.alive = false;
+                        }
+                    }
+                }
+                else if (this.destroyOnWorld)
+                {
+                    this.alive = false;
+                }
+                bool hasImpact = (component || this.impactOnWorld);
+                if (!this.alive || hasImpact)
+                {
+                    if (this.TryGetComponent<ProjectileProximityBeamController>(out ProjectileProximityBeamController beam))
+                    {
+                        beam.enabled = true;
+                    }
+                }
+            }
+
+
+            //ProjectileController pc = GetComponent<>
+            //        BullseyeSearch search = new BullseyeSearch();
+            //search.searchOrigin = impactInfo.estimatedPointOfImpact;
+            //search.maxDistanceFilter = 21;
+            //search.teamMaskFilter.RemoveTeam(team);
+            //search.sortMode = BullseyeSearch.SortMode.Distance;
+            //search.RefreshCandidates();
+            //
+            //List<HurtBox> results = search.GetResults().ToList();
+            //for (int i = 0; i < Mathf.Min(targetCount, results.Count()); i++)
+            //{
+            //    HurtBox hurtBox = results[i];
+            //    if (hurtBox)
+            //    {
+            //        LightningOrb lightningOrb = new LightningOrb();
+            //        lightningOrb.bouncedObjects = new List<HealthComponent>();
+            //        lightningOrb.attacker = self.gameObject;
+            //        lightningOrb.teamIndex = team;
+            //        lightningOrb.damageValue = self.body.damage;
+            //        lightningOrb.isCrit = crit;
+            //        lightningOrb.origin = self.body.corePosition;
+            //        lightningOrb.bouncesRemaining = 0;
+            //        lightningOrb.lightningType = LightningOrb.LightningType.Loader;
+            //        lightningOrb.procCoefficient = procCoefficient;
+            //        lightningOrb.target = hurtBox;
+            //        lightningOrb.damageType = new DamageTypeCombo(DamageType.Shock5s, DamageTypeExtended.Generic, DamageSource.NoneSpecified);
+            //        OrbManager.instance.AddOrb(lightningOrb);
+            //    }
+            //}
+        }
+    }
 
     class ProjectileIncreaseDamageOnStick : MonoBehaviour
     {
@@ -473,6 +599,24 @@ namespace SurvivorTweaks.SurvivorTweaks
         void Start()
         {
             currentApplications = 0;
+        }
+        public void IncreaseDamage(ProjectileStickOnImpact sticky)
+        {
+            //if NOT STUCK then skip
+            if (sticky.stuck || sticky.stuckTransform != null || sticky.stuckBody != null)
+            {
+                return;
+            }
+
+            if (this.currentApplications < this.maxApplications)
+            {
+                ProjectileDamage damage = gameObject.GetComponent<ProjectileDamage>();
+                if (damage != null)
+                {
+                    this.currentApplications++;
+                    damage.damage *= this.damageMultiplier;
+                }
+            }
         }
     }
 }
