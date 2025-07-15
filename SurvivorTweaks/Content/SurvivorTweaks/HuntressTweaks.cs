@@ -26,7 +26,7 @@ namespace SurvivorTweaks.SurvivorTweaks
 
         public override string bodyName => "HuntressBody";
 
-        static float baseDamage = 15f; //12
+        static float baseDamage = 14f; //12
 
         static float glaiveBaseDamage = 3.0f; //2.5f
         static float glaiveBounceDamage = 1.3f; //1.1f
@@ -77,6 +77,7 @@ namespace SurvivorTweaks.SurvivorTweaks
             if(self.lightningType != RoR2.Orbs.LightningOrb.LightningType.HuntressGlaive)
                 return orig(self, position);
 
+            //if orb is a huntress glaive
             int i = self.bouncesRemaining % 2;
             if(self.bouncedObjects.Count > i)
             {
