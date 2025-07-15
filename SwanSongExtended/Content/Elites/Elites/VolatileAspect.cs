@@ -112,13 +112,13 @@ namespace SwanSongExtended.Elites
                         crit = Util.CheckRoll(victimBody.crit, victimBody.master)
                     });
 
-                    float radiusForBonus = Mathf.Floor(victimBody.radius - 1);
+                    float radiusForBonus = Mathf.Round(victimBody.radius - 1);
                     int bonusMineCount = (int)Mathf.Ceil(radiusForBonus * VolatileAspect.minesPerSize);
                     if (bonusMineCount > 0)
                     {
                         for(int i = 0; i < bonusMineCount; i++)
                         {
-                            Vector3 dir = UnityEngine.Random.insideUnitSphere + Vector3.up * 2f;
+                            Vector3 dir = UnityEngine.Random.insideUnitSphere + Vector3.up * 1.6f;
                             ProjectileManager.instance.FireProjectile(new FireProjectileInfo
                             {
                                 projectilePrefab = volatileLandminePrefab,
