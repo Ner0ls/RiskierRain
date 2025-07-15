@@ -10,6 +10,7 @@ using RoR2.Projectile;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -70,6 +71,16 @@ namespace SurvivorTweaks.SurvivorTweaks
                 $"Damage increases by <style=cIsDamage>{Tools.ConvertDecimal(glaiveBounceDamage - 1)}</style> per bounce.");
             On.EntityStates.Huntress.HuntressWeapon.ThrowGlaive.OnEnter += BuffGlaive;
             On.RoR2.Orbs.LightningOrb.PickNextTarget += ChangeGlaiveTargeting;
+            On.RoR2.Orbs.LightningOrb.Begin += ChangeGlaiveProperties;
+        }
+
+        private void ChangeGlaiveProperties(On.RoR2.Orbs.LightningOrb.orig_Begin orig, RoR2.Orbs.LightningOrb self)
+        {
+            orig(self);
+            if (self.lightningType != RoR2.Orbs.LightningOrb.LightningType.HuntressGlaive)
+                return;
+
+            self.canBounceOnSameTarget = false;
         }
 
         private HurtBox ChangeGlaiveTargeting(On.RoR2.Orbs.LightningOrb.orig_PickNextTarget orig, RoR2.Orbs.LightningOrb self, Vector3 position)
@@ -77,8 +88,7 @@ namespace SurvivorTweaks.SurvivorTweaks
             if(self.lightningType != RoR2.Orbs.LightningOrb.LightningType.HuntressGlaive)
                 return orig(self, position);
 
-            //if orb is a huntress glaive
-            int i = self.bouncesRemaining % 2;
+            int i = self.bouncedObjects.Count % 2;
             if(self.bouncedObjects.Count > i)
             {
                 HealthComponent hc = self.bouncedObjects[i];
