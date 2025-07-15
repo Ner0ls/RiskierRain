@@ -87,7 +87,7 @@ THE SOULS OF MY ????? WILL DRINK YOUR SCREAMS LIKE NECTAR.";
                 {
                     float iframes = GetStackValue(iframeDurationBase, iframeDurationStack, itemCount);
                     self.body.AddTimedBuffAuthority(RoR2Content.Buffs.Immune.buffIndex, iframes);
-                    bool selfDamage = damageInfo.attacker == self.gameObject;
+                    bool selfDamage = false;// damageInfo.attacker == self.gameObject;
 
                     if (damageInfo.procCoefficient > 0 || selfDamage)
                     {
