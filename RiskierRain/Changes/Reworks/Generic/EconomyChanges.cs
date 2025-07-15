@@ -204,7 +204,7 @@ namespace RiskierRain
             c.EmitDelegate<Func<uint, uint>>((money) =>
             {
                 float compensated = GetCompensatedDifficultyFraction();
-                return (uint)(money * compensated * goldRewardMultiplierGlobal);
+                return (uint)Mathf.CeilToInt(money * compensated * goldRewardMultiplierGlobal);
             });
             c.Emit(OpCodes.Starg, 1);
         }
@@ -215,7 +215,7 @@ namespace RiskierRain
             c.EmitDelegate<Func<uint, uint>>((exp) =>
             {
                 float compensated = GetCompensatedDifficultyFraction();
-                return (uint)(exp * compensated * expRewardMultiplierGlobal);
+                return (uint)Mathf.CeilToInt(exp * compensated * expRewardMultiplierGlobal);
             });
             c.Emit(OpCodes.Starg, 1);
         }
