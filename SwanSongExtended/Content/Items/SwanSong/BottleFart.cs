@@ -65,7 +65,7 @@ namespace SwanSongExtended.Items
         {
             fartReadyBuff = Content.CreateAndAddBuff(
                 "bdCloudReady",
-                null,//Addressables.LoadAssetAsync<Sprite>("RoR2/Base/LunarSkillReplacements/texBuffLunarDetonatorIcon.tif").WaitForCompletion(),
+                Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texBuffGenericShield.tif").WaitForCompletion(),
                 Color.magenta, false, false);
             CreateProjectile();
             base.Init();

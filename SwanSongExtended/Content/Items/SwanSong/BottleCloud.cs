@@ -12,6 +12,7 @@ using JumpRework;
 using static MoreStats.StatHooks;
 using static MoreStats.OnJump;
 using SwanSongExtended.Modules;
+using UnityEngine.AddressableAssets;
 
 namespace SwanSongExtended.Items
 {
@@ -56,7 +57,7 @@ namespace SwanSongExtended.Items
         {
             cloudReadyBuff = Content.CreateAndAddBuff(
                 "bdCloudReady",
-                null,//Addressables.LoadAssetAsync<Sprite>("RoR2/Base/LunarSkillReplacements/texBuffLunarDetonatorIcon.tif").WaitForCompletion(),
+                Addressables.LoadAssetAsync<Sprite>("RoR2/Base/Common/texBuffGenericShield.tif").WaitForCompletion(),
                 Color.white, false, false);
             base.Init();
         }
