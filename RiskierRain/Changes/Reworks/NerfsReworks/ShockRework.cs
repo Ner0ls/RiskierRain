@@ -51,7 +51,7 @@ namespace RiskierRain
                     if (attackerBody)
                     {
                         Debug.Log("break make spark");
-                        NebulaPickup.CreateBoosterPickup(self.transform.position, attackerBody.teamComponent.teamIndex, RainrotSharedUtils.Assets.sparkBoosterObject, 2);
+                        NebulaPickup.CreateBoosterPickup(self.transform.position, attackerBody.teamComponent.teamIndex, RainrotSharedUtils.Assets.sparkBoosterObject, 1);
                     }
                 }
             }
