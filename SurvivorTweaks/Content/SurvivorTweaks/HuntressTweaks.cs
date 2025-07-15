@@ -26,6 +26,8 @@ namespace SurvivorTweaks.SurvivorTweaks
 
         public override string bodyName => "HuntressBody";
 
+        static float baseDamage = 15f; //12
+
         static float glaiveBaseDamage = 3.0f; //2.5f
         static float glaiveBounceDamage = 1.3f; //1.1f
 
@@ -47,6 +49,8 @@ namespace SurvivorTweaks.SurvivorTweaks
             GetSkillsFromBodyObject(bodyObject);
 
             CharacterBody body = bodyObject.GetComponent<CharacterBody>();
+            body.baseDamage = baseDamage;
+            body.levelDamage = body.baseDamage * 0.2f;
 
             ChangeVanillaPrimary(primary);
             ChangeVanillaSecondaries(secondary);
