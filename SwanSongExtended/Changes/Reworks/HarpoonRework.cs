@@ -15,8 +15,8 @@ namespace SwanSongExtended
 {
     public partial class SwanSongPlugin
     {
-        public static float harpoonBarrierBase = 5;
-        public static float harpoonBarrierStack = 5;
+        public static float harpoonBarrierBase = 8;
+        public static float harpoonBarrierStack = 8;
         public static float harpoonTargetTime = 15;
 
         public static Material harpoonTargetMaterial;
