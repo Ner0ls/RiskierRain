@@ -113,11 +113,9 @@ namespace SwanSongExtended.Interactables
 
         public override UnityAction<Interactor> GetInteractionAction(PurchaseInteraction interaction)
         {
-            return null;
             InteractableDropPickup idi = interaction.gameObject.AddComponent<InteractableDropPickup>();
             idi.dropTable = GenerateWeightedSelection();
             idi.destroyOnUse = true;
-            return new UnityAction<Interactor>(idi.OnInteractionBegin);
             return idi.OnInteractionBegin;
         }
         private ExplicitPickupDropTable GenerateWeightedSelection()

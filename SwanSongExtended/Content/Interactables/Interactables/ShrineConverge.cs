@@ -107,7 +107,7 @@ namespace SwanSongExtended.Interactables
                 GameObject.Destroy(sbb);
             ShrineConvergeBehavior scb = interaction.gameObject.AddComponent<ShrineConvergeBehavior>();
             scb.purchaseInteraction = interaction;
-            return null;// scb.AddShrineStack;
+            return scb.AddShrineStack;
         }
         public override void Init()
         {
@@ -130,11 +130,6 @@ namespace SwanSongExtended.Interactables
         Transform symbolTransform;
         void Start()
         {
-            if (purchaseInteraction)
-            {
-                //purchaseInteraction.onPurchase = new PurchaseEvent();
-                purchaseInteraction.onPurchase.AddListener(AddShrineStack);
-            }
             Debug.Log("Shrine converge behavior");
             if(symbolTransform == null)
             {
