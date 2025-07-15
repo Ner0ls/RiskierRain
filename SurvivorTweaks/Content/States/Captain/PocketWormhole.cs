@@ -59,7 +59,7 @@ namespace SurvivorTweaks.States.Captain
 			if (NetworkServer.active)
 			{
 				Vector3 footPosition = this.characterBody.footPosition;
-				float num = 2f;
+				float num = 1f;
 				float num2 = num * 2f;
 				float maxDistance = PocketWormholeSkill.maxTunnelDistance;
 				Rigidbody attackerRigidbody = base.GetComponent<Rigidbody>();
