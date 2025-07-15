@@ -44,7 +44,7 @@ namespace MoreStats
             // Continuously Update Shield Ready
             On.RoR2.CharacterBody.UpdateOutOfCombatAndDanger += UpdateDangerMoreStats;
             // Luck Stat Fixes
-            ILHook luckHook = new ILHook(typeof(CharacterMaster).GetMethod("get_luck", (BindingFlags)(-1)), ModifyLuck);
+            ILHook luckHook = new ILHook(typeof(CharacterMaster).GetMethod("get_luck"), ModifyLuck);
 
             // Barrier Decay And Shield Recharge
             IL.RoR2.HealthComponent.ServerFixedUpdate += HookHealthComponentUpdate;
@@ -199,7 +199,6 @@ namespace MoreStats
             /// </summary>
             public float burnChanceOnHit = 0;
             #endregion
-
 
             #region shield
             /// <summary>
