@@ -22,8 +22,8 @@ namespace SwanSongExtended.Items
         public static float fuseRechargeTime = 1;
 
         public static float baseShield = 25;
-        public static float radiusBase = 21;
-        public static float radiusStack = 3;
+        public static float radiusBase = 40;
+        public static float radiusStack = 4;
 
         public static float minStunDuration = 2f;
         public static float maxStunDuration = 10f;
