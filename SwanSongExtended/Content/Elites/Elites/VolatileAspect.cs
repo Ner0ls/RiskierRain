@@ -34,8 +34,8 @@ namespace SwanSongExtended.Elites
         [AutoConfig("Mortar Blast Radius", 15f)]
         public static float volatileMortarRadius = 15f;
 
-        [AutoConfig("Landmine Count Per Size", 2f)]
-        public static float minesPerSize = 2f;
+        [AutoConfig("Landmine Count Per Size", 1f)]
+        public static float minesPerSize = 1f;
         [AutoConfig("Landmine Damage", "Scales with level", 10)]
         public static float volatileLandmineDamage = 10f;
 
@@ -116,7 +116,7 @@ namespace SwanSongExtended.Elites
                     int bonusMineCount = (int)Mathf.Ceil(radiusForBonus * VolatileAspect.minesPerSize);
                     if (bonusMineCount > 0)
                     {
-                        for(int i = 0; i < bonusMineCount; i++)
+                        for(int i = 0; i <= bonusMineCount; i++)
                         {
                             Vector3 dir = UnityEngine.Random.insideUnitSphere + Vector3.up * 1.6f;
                             ProjectileManager.instance.FireProjectile(new FireProjectileInfo
