@@ -52,8 +52,14 @@ namespace SurvivorTweaks.Skills
             (
                 mustKeyPress: true,
                 isCombatSkill: false,
-                beginSkillCooldownOnSkillEnd: true
+                beginSkillCooldownOnSkillEnd: true,
+                canceledFromSprinting: true
             );
+        public override void Init()
+        {
+            base.Init();
+            Content.AddEntityState(typeof(FireWormhole));
+        }
 
         public override void Hooks()
         {

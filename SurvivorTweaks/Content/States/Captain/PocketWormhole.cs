@@ -7,11 +7,13 @@ using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
+using EntityStates.Mage.Weapon;
 
 namespace SurvivorTweaks.States.Captain
 {
     class PocketWormhole : BaseSkillState
 	{
+		public static GameObject endpointIndicatorPrefab = ChargeMeteor.areaIndicatorPrefab;
 		public static GameObject projectilePrefab;
 		public static GameObject muzzleflashEffectPrefab;
 		public static GameObject chargeEffectPrefab;
@@ -28,90 +30,107 @@ namespace SurvivorTweaks.States.Captain
 		public static float recoilAmplitude;
 		public static float bloom;
 		public static string targetMuzzle = FireTazer.targetMuzzle;
+		float releaseTime = -1;
 
+		Vector3 startpointPosition;
+		Vector3 _endpointPosition;
+		public Vector3 endpointPosition
+		{
+            get
+            {
+				return _endpointPosition;
+            }
+			private set
+			{
+				_endpointPosition = value;
+				if (endpointIndicatorInstance)
+					endpointIndicatorInstance.transform.position = value;
+            }
+		}
+		GameObject endpointIndicatorInstance;
+		private bool disableIndicator = false;
+		bool invalid = false;
 
 		public override void OnEnter()
 		{
 			base.OnEnter();
+			if (endpointIndicatorPrefab != null && isAuthority)
+			{
+				this.endpointIndicatorInstance = UnityEngine.Object.Instantiate<GameObject>(endpointIndicatorPrefab);
+				UpdateEndpointIndicator();
+			}
 			this.exitDuration = baseExitDuration / this.attackSpeedStat;
 			this.enterDuration = baseEnterDuration / this.attackSpeedStat;
-			base.StartAimMode(this.exitDuration + 2f, false);
 			if (chargeEffectPrefab)
 			{
 				EffectManager.SimpleMuzzleFlash(chargeEffectPrefab, base.gameObject, targetMuzzle, false);
 			}
 			Util.PlayAttackSpeedSound(enterSoundString, base.gameObject, this.attackSpeedStat);
-			base.PlayAnimation("Gesture, Additive", "FireTazer", "FireTazer.playbackRate", this.exitDuration);
-			base.PlayAnimation("Gesture, Override", "FireTazer", "FireTazer.playbackRate", this.exitDuration);
+			base.PlayCrossfade("Gesture, Override", "ChargeCaptainShotgun", "ChargeCaptainShotgun.playbackRate", this.enterDuration, 0.1f);
+			base.PlayCrossfade("Gesture, Additive", "ChargeCaptainShotgun", "ChargeCaptainShotgun.playbackRate", this.enterDuration, 0.1f);
 		}
 
-		private void Fire()
+        private void UpdateEndpointIndicator()
 		{
-			this.hasFired = true;
-			Util.PlaySound(FireTazer.attackString, base.gameObject);
-			base.AddRecoil(-1f * FireTazer.recoilAmplitude, -1.5f * FireTazer.recoilAmplitude, -0.25f * FireTazer.recoilAmplitude, 0.25f * FireTazer.recoilAmplitude);
-			base.characterBody.AddSpreadBloom(FireTazer.bloom);
-			Ray aimRay = base.GetAimRay();
-			if (FireTazer.muzzleflashEffectPrefab)
+			if (this.endpointIndicatorInstance && !disableIndicator)
 			{
-				EffectManager.SimpleMuzzleFlash(FireTazer.muzzleflashEffectPrefab, base.gameObject, FireTazer.targetMuzzle, false);
+				this.endpointIndicatorInstance.transform.localScale = Vector3.one * characterBody.bestFitRadius;
+				this.endpointIndicatorInstance.SetActive(true);
 			}
-			if (NetworkServer.active)
+		}
+
+		private void UpdateAimInfo()
+		{
+			Vector3 footPosition = this.characterBody.footPosition;
+			float num = FireWormhole.minDistance;
+			float num2 = num * 2f;
+			float maxDistance = PocketWormholeSkill.maxTunnelDistance;
+			Rigidbody attackerRigidbody = this.rigidbody;
+			if (!attackerRigidbody)
 			{
-				Vector3 footPosition = this.characterBody.footPosition;
-				float num = 1f;
-				float num2 = num * 2f;
-				float maxDistance = PocketWormholeSkill.maxTunnelDistance;
-				Rigidbody attackerRigidbody = base.GetComponent<Rigidbody>();
-				if (!attackerRigidbody)
+				//activatorSkillSlot.AddOneStock();
+				return;
+			}
+
+			Vector3 position = base.transform.position;
+
+			Vector3 pointBPositionAttempt;
+
+			RaycastHit raycastHit;
+			Ray aimRay = base.GetAimRay();
+			if (Physics.Raycast(aimRay, out raycastHit, maxDistance, LayerIndex.world.mask, QueryTriggerInteraction.Ignore))
+			{
+				pointBPositionAttempt = raycastHit.point + raycastHit.normal * num;
+			}
+			else
+			{
+				if (base.inputBank)
 				{
-					activatorSkillSlot.AddOneStock();
+					pointBPositionAttempt = inputBank.aimOrigin + inputBank.aimDirection.normalized * maxDistance;
+				}
+				else
+				{
+					pointBPositionAttempt = transform.position + transform.forward.normalized * maxDistance;
+				}
+			}
+
+			Vector3 distanceToPointB = pointBPositionAttempt - position;
+			Vector3 pointBDirection = distanceToPointB.normalized;
+			Vector3 pointBPosition = pointBPositionAttempt;
+
+			RaycastHit raycastHit2;
+			if (attackerRigidbody.SweepTest(pointBDirection, out raycastHit2, distanceToPointB.magnitude))
+			{
+				if (raycastHit2.distance < num2)
+				{
+					//activatorSkillSlot.AddOneStock();
 					return;
 				}
-
-				Vector3 position = base.transform.position;
-
-				Vector3 pointBPositionAttempt;
-
-				RaycastHit raycastHit;
-				if (Physics.Raycast(aimRay, out raycastHit, maxDistance, LayerIndex.world.mask, QueryTriggerInteraction.Ignore))
-				{
-					pointBPositionAttempt = raycastHit.point + raycastHit.normal * num;
-				}
-                else
-				{
-					if (base.inputBank)
-					{
-						pointBPositionAttempt = inputBank.aimOrigin + inputBank.aimDirection.normalized * maxDistance;
-					}
-                    else
-					{
-						pointBPositionAttempt = transform.position + transform.forward.normalized * maxDistance;
-					}
-				}
-
-				Vector3 distanceToPointB = pointBPositionAttempt - position;
-				Vector3 pointBDirection = distanceToPointB.normalized;
-				Vector3 pointBPosition = pointBPositionAttempt;
-
-				RaycastHit raycastHit2;
-				if (attackerRigidbody.SweepTest(pointBDirection, out raycastHit2, distanceToPointB.magnitude))
-				{
-					if (raycastHit2.distance < num2)
-					{
-						activatorSkillSlot.AddOneStock();
-						return;
-					}
-					pointBPosition = position + pointBDirection * raycastHit2.distance;
-				}
-
-				GameObject gameObject = UnityEngine.Object.Instantiate<GameObject>(LegacyResourcesAPI.Load<GameObject>("Prefabs/NetworkedObjects/Zipline"));
-				ZiplineController component2 = gameObject.GetComponent<ZiplineController>();
-				component2.SetPointAPosition(position + pointBDirection * num);
-				component2.SetPointBPosition(pointBPosition);
-				gameObject.AddComponent<DestroyOnTimer>().duration = PocketWormholeSkill.maxTunnelDuration + baseExitDuration;
-				NetworkServer.Spawn(gameObject);
+				pointBPosition = position + pointBDirection * raycastHit2.distance;
 			}
+
+			startpointPosition = (position + pointBDirection * num);
+			endpointPosition = (pointBPosition);
 		}
 
 		public override void OnExit()
@@ -122,15 +141,34 @@ namespace SurvivorTweaks.States.Captain
 		public override void FixedUpdate()
 		{
 			base.FixedUpdate();
-			if (base.fixedAge >= this.enterDuration && !this.hasFired)
+
+			if (!base.isAuthority)
+				return;
+
+			base.StartAimMode(this.enterDuration, false);
+			UpdateAimInfo();
+			//if not fired 
+			if (base.fixedAge < this.enterDuration)
+				return;
+
+			//if after min duration
+			if (!this.IsKeyDownAuthority())
 			{
+				this.hasFired = true;
+				releaseTime = this.fixedAge;
+				base.StartAimMode(this.exitDuration + 2f, false);
 				this.Fire();
 			}
-			if (base.fixedAge >= this.enterDuration + this.exitDuration && base.isAuthority)
-			{
-				this.outer.SetNextStateToMain();
-				return;
-			}
+		}
+
+		private void Fire()
+		{
+			this.endpointIndicatorInstance.SetActive(false);
+			FireWormhole state = new FireWormhole();
+			state.activatorSkillSlot = this.activatorSkillSlot;
+			state.startPos = this.startpointPosition;
+			state.endpointPos = this.endpointPosition;
+			this.outer.SetNextState(state);
 		}
 
 		public override InterruptPriority GetMinimumInterruptPriority()
