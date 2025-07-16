@@ -131,9 +131,20 @@ namespace RiskierRain
 
             return difficultyBoost;
         }
+        void FreezeTimeScalingOnFinalLevels()
+        {
+            On.RoR2.Run.ShouldUpdateRunStopwatch += ModifyShouldUpdateRunStopwatch;
+        }
+
+        private bool ModifyShouldUpdateRunStopwatch(On.RoR2.Run.orig_ShouldUpdateRunStopwatch orig, Run self)
+        {
+            bool b = orig(self);
+            b |= SceneCatalog.mostRecentSceneDef.isFinalStage;
+                return b;
+        }
 
         public static bool useAmbientLevel = false;
-        void AmbientLevelDifficulty()
+        void ChangeDifficultyCoefficientCalculation()
         {
             useAmbientLevel = true;
             Run.ambientLevelCap = ambientLevelCap;

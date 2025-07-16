@@ -60,7 +60,7 @@ namespace RiskierRain
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
         public const string modName = "RiskierRain";
-        public const string version = "1.1.16";
+        public const string version = "1.1.20";
 
         public static PluginInfo PInfo { get; private set; }
 
@@ -499,13 +499,14 @@ namespace RiskierRain
             //ambient level
             if (GetConfigBool(true, "Difficulty: Difficulty Scaling Changes"))
             {
-                AmbientLevelDifficulty();
-                VoidFieldsStageType(); //related to ambient difficulty boost
+                ChangeDifficultyCoefficientCalculation();
+                FreezeTimeScalingOnFinalLevels();
+                //VoidFieldsStageType(); //related to ambient difficulty boost
             }
             //void fields time cost
             if (GetConfigBool(true, "Difficulty: Void Fields Time Cost"))
             {
-                VoidFieldsTimeCost();
+                //VoidFieldsTimeCost();
             }
 
             //elite stats
