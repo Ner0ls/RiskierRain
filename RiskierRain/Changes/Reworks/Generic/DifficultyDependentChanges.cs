@@ -139,8 +139,11 @@ namespace RiskierRain
         private bool ModifyShouldUpdateRunStopwatch(On.RoR2.Run.orig_ShouldUpdateRunStopwatch orig, Run self)
         {
             bool b = orig(self);
-            b |= SceneCatalog.mostRecentSceneDef.isFinalStage;
+            //idc, if stopwatch is already frozen
+            if (!b)
                 return b;
+            //run stopwatch if stage is not final
+            return !SceneCatalog.mostRecentSceneDef.isFinalStage;
         }
 
         public static bool useAmbientLevel = false;
