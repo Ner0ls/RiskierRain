@@ -39,18 +39,18 @@ namespace RiskierRain.CoreModules
                 _mainAssetBundle = value;
             }
         }
-        private static AssetBundle _orangeAssetBundle;
-        public static AssetBundle orangeAssetBundle
+        public static AssetBundle _retierAssetBundle;
+        public static AssetBundle retierAssetBundle
         {
             get
             {
-                if (_orangeAssetBundle == null)
-                    _orangeAssetBundle = AssetBundle.LoadFromFile(GetAssetBundlePath("orangecontent"));
-                return _orangeAssetBundle;
+                if (_retierAssetBundle == null)
+                    _retierAssetBundle = AssetBundle.LoadFromFile(GetAssetBundlePath("retier2"));
+                return _retierAssetBundle;
             }
             set
             {
-                _orangeAssetBundle = value;
+                _retierAssetBundle = value;
             }
         }
         public static string dropPrefabsPath = "Assets/Models/DropPrefabs";

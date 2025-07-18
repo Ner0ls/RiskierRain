@@ -74,6 +74,7 @@ namespace SwanSongExtended
         public static SwanSongPlugin instance;
         public static AssetBundle mainAssetBundle => CommonAssets.mainAssetBundle;
         public static AssetBundle orangeAssetBundle => CommonAssets.orangeAssetBundle;
+        public static AssetBundle retierAssetBundle => CommonAssets.retierAssetBundle;
 
         public static ExpansionDef expansionDefSS2;
         public static ExpansionDef expansionDefSOTS;

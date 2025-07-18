@@ -36,7 +36,7 @@ namespace SwanSongExtended.Items
 
         public float instantHeal = 0.35f; //0.75f
         #endregion
-        public override AssetBundle assetBundle => null;
+        public override AssetBundle assetBundle => SwanSongPlugin.retierAssetBundle;
         public static BuffDef brewActiveBuff;
         public override string ItemName => "Berserker\u2019s Brew";
 
@@ -70,7 +70,7 @@ namespace SwanSongExtended.Items
         public override ItemTier Tier => ItemTier.Tier2;
 
         public override GameObject ItemModel => Addressables.LoadAssetAsync<GameObject>("RoR2/DLC1/HealingPotion/PickupHealingPotion.prefab").WaitForCompletion(); 
-        public override Sprite ItemIcon => Addressables.LoadAssetAsync<Sprite>("RoR2/DLC1/HealingPotion/texHealingPotion.png").WaitForCompletion();
+        public override Sprite ItemIcon => assetBundle.LoadAsset<Sprite>("Assets/Icons/Power_Elixir.png");
         public override ItemTag[] ItemTags { get; } = new ItemTag[] { ItemTag.Healing, ItemTag.LowHealth, ItemTag.OnStageBeginEffect };
         public override ExpansionDef RequiredExpansion => SotvExpansionDef();
 

@@ -81,7 +81,10 @@ namespace SurvivorTweaks.SurvivorTweaks
 
             //passive
             ItemDef microbot = Addressables.LoadAssetAsync<ItemDef>("RoR2/Base/CaptainDefenseMatrix/CaptainDefenseMatrix.asset").WaitForCompletion();
-            SurvivorTweaksPlugin.RetierItem(microbot);
+            SurvivorTweaksPlugin.RetierItem(microbot, ItemTier.Tier2);
+            Sprite sprite = assetBundle.LoadAsset<Sprite>("Assets/Icons/Defensive_Microbots.png");
+            if(sprite)
+                microbot.pickupIconSprite = sprite;
             //microbot.tags |= ItemTag.
             //On.RoR2.CaptainDefenseMatrixController.TryGrantItem += MicrobotGuh;
             //On.RoR2.CaptainDefenseMatrixController.OnServerMasterSummonGlobal += MicrobotGah;
