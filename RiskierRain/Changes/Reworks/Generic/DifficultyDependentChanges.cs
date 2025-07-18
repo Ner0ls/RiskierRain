@@ -615,45 +615,96 @@ namespace RiskierRain
         #endregion
 
         #region tp boss weaken
-        public void AddTpBossWeaken()
+        public void AddPityCharge()
         {
             On.RoR2.TeleporterInteraction.ChargingState.FixedUpdate += WeakenBossPostTpCharge;
+            On.RoR2.TeleporterInteraction.ChargedState.OnExit += PityChargeOnExit;
         }
 
-        static bool wasTpCharged = false;
+        private void PityChargeOnExit(On.RoR2.TeleporterInteraction.ChargedState.orig_OnExit orig, TeleporterInteraction.ChargedState self)
+        {
+            orig(self);
+            if (pityChargeOn)
+            {
+                pityChargeOn = false;
+                pityChargeShrinkDelta = 0;
+                pityChargeRecolorDelta = 0;
+                self.teleporterInteraction.holdoutZoneController.calcColor -= PityChargeCalcColor;
+                self.teleporterInteraction.holdoutZoneController.calcRadius -= PityChargeCalcRadius;
+            }
+        }
+
+        private void PityChargeCalcRadius(ref float radius)
+        {
+            radius = Mathf.Max(radius * (1 - pityChargeShrinkDelta), 10f);
+        }
+
+        private void PityChargeCalcColor(ref Color color)
+        {
+            color = HoldoutZoneController.FocusConvergenceController.convergenceMaterialColor;
+        }
+
+        static bool pityChargeOn = false;
+        static float pityChargeShrinkDelta = 0;
+        static float pityChargeRecolorDelta = 0;
         private void WeakenBossPostTpCharge(On.RoR2.TeleporterInteraction.ChargingState.orig_FixedUpdate orig, RoR2.TeleporterInteraction.ChargingState baseState)
         {
             orig(baseState);
-            if (NetworkServer.active)
+            TeleporterInteraction.ChargingState self = baseState as TeleporterInteraction.ChargingState;
+            if(self.teleporterInteraction.holdoutZoneController.charge >= 1f)
             {
-                TeleporterInteraction.ChargingState self = baseState as TeleporterInteraction.ChargingState;
-                if(self.teleporterInteraction.holdoutZoneController.charge >= 1f)
+                if (!pityChargeOn)
                 {
-                    if (!wasTpCharged)
+                    pityChargeOn = true;
+                    self.teleporterInteraction.holdoutZoneController.calcColor += PityChargeCalcColor;
+                    self.teleporterInteraction.holdoutZoneController.calcRadius += PityChargeCalcRadius;
+
+                    // send chat message
+                    RoR2.Chat.AddMessage("<style=cIsUtility>The overcharged teleporter begins its Convergence...</style>");
+                    // add tutorial popup
+                }
+                if (pityChargeRecolorDelta < 1)
+                    pityChargeRecolorDelta += Time.fixedDeltaTime;
+
+                if (!self.teleporterInteraction.monstersCleared && self.teleporterInteraction.holdoutZoneController.isAnyoneCharging)
+                {
+                    pityChargeShrinkDelta += Time.fixedDeltaTime * 0.01f;
+
+                    if (NetworkServer.active)
                     {
-                        wasTpCharged = true;
-                        if (!self.teleporterInteraction.monstersCleared)
+                        BossGroup bg = self.teleporterInteraction.bossGroup;
+                        foreach (BossGroup.BossMemory bossMemory in bg.bossMemories)
                         {
-                            BossGroup bg = self.teleporterInteraction.bossGroup;
-                            foreach (BossGroup.BossMemory bossMemory in bg.bossMemories)
+                            CharacterBody body = bossMemory.cachedBody;
+                            if (body == null && bossMemory.cachedMaster != null)
                             {
-                                CharacterBody body = bossMemory.cachedBody;
-                                if(body == null && bossMemory.cachedMaster != null)
+                                body = bossMemory.cachedMaster.GetBody();
+                            }
+                            if (body != null)
+                            {
+                                body.AddTimedBuff(RoR2Content.Buffs.Cripple, 9999);
+                                body.AddTimedBuff(RoR2Content.Buffs.HealingDisabled, 9999);
+                                HealthComponent hc = body.healthComponent;
+                                if (hc && hc.health > 1)
                                 {
-                                    body = bossMemory.cachedMaster.GetBody();
-                                }
-                                if(body != null)
-                                {
-                                    body.AddTimedBuff(RoR2Content.Buffs.Cripple, 9999);
+                                    DamageInfo di = new DamageInfo();
+                                    di.damage = (body.maxHealth + body.maxShield) * 0.01f * Time.fixedDeltaTime;
+                                    di.damageType = new DamageTypeCombo(DamageType.Silent,
+                                        DamageTypeExtended.Generic, DamageSource.NoneSpecified);
+                                    di.damageType |= DamageType.BypassArmor;
+                                    di.damageType |= DamageType.BypassBlock;
+                                    di.procCoefficient = 1;
+                                    di.position = body.corePosition;
+                                    hc.TakeDamage(di);
                                 }
                             }
                         }
                     }
                 }
-                else
-                {
-                    wasTpCharged = false;
-                }
+            }
+            else
+            {
+                pityChargeOn = false;
             }
         }
         #endregion

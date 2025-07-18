@@ -63,7 +63,6 @@ namespace RiskierRain
         public const string version = "1.1.20";
 
         public static PluginInfo PInfo { get; private set; }
-
         public static string dropPrefabsPath => CoreModules.Assets.dropPrefabsPath;
         public static string iconsPath => CoreModules.Assets.iconsPath;
         public static string eliteMaterialsPath => CoreModules.Assets.eliteMaterialsPath;
@@ -539,10 +538,10 @@ namespace RiskierRain
                 ChangeDirectorStats();
             }
 
-            //eclipse changes
-            if (GetConfigBool(true, "Difficulty: Post-Charge TP Boss Weaken"))
+            //pity charge
+            if (GetConfigBool(true, "Difficulty: pity charge"))
             {
-                AddTpBossWeaken();
+                AddPityCharge();
             }
 
             //newt shrine
