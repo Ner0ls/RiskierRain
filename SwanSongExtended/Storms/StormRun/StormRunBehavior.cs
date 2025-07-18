@@ -57,10 +57,10 @@ namespace SwanSongExtended.Storms
             }
             instance = this;
 
-            RoR2.Stage.onStageStartGlobal += OnServerStageBegin;
+            RoR2.Stage.onStageStartGlobal += OnStageBeginGlobal;
         }
 
-        private void OnServerStageBegin(Stage obj)
+        private void OnStageBeginGlobal(Stage obj)
         {
             stormType = GetStormType(obj.sceneDef);
             if (stormType == StormType.None)
@@ -81,6 +81,8 @@ namespace SwanSongExtended.Storms
                 a = rainstormStormDelayMinutes;
                 b = rainstormStormWarningMinutes;
             }
+            if (Run.instance.stageClearCount == 0)
+                a *= 1.4f;
             stormControllerInstance.BeginStormApproach(a + Run.instance.stageRng.RangeInt(0, 1), b);
         }
 
@@ -89,7 +91,7 @@ namespace SwanSongExtended.Storms
         {
             if(instance == this)
             {
-                RoR2.Stage.onStageStartGlobal -= OnServerStageBegin;
+                RoR2.Stage.onStageStartGlobal -= OnStageBeginGlobal;
             }
         }
         #endregion
