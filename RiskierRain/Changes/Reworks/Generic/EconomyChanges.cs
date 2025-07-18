@@ -728,7 +728,7 @@ namespace RiskierRain
         #region hacking criteria
         void ChangeHackingCriteria()
         {
-            On.EntityStates.CaptainSupplyDrop.HackingMainState.PurchaseInteractionIsValidTarget += BlacklistGoldChest;
+            //On.EntityStates.CaptainSupplyDrop.HackingMainState.PurchaseInteractionIsValidTarget += BlacklistGoldChest;
         }
 
         private bool BlacklistGoldChest(HackingMainState.orig_PurchaseInteractionIsValidTarget orig, PurchaseInteraction purchaseInteraction)
