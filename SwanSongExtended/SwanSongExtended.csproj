@@ -46,8 +46,6 @@
 
   <ItemGroup>
     <Compile Remove="Content\Equipment\Reworks\GuillotineEquipment.cs" />
-    <Compile Remove="Content\Interactables\Interactables\CombatShrineLunar.cs" />
-    <Compile Remove="Content\Interactables\Interactables\ConstructConstruct.cs" />
     <Compile Remove="Content\Interactables\Interactables\CurseStatue.cs" />
     <Compile Remove="Content\Interactables\Interactables\FakeShrine.cs" />
     <Compile Remove="Content\Interactables\QuestInteractables\EnergyCrystalAltar.cs" />
@@ -91,11 +89,6 @@
   <ItemGroup>
     <Folder Include="Content\Items\Vanilla\SOTS\" />
     <Folder Include="Content\Orbs\" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="Content\Interactables\Interactables\CombatShrineLunar.cs" />
-    <None Include="Content\Interactables\Interactables\ConstructConstruct.cs" />
   </ItemGroup>
 
 </Project>
