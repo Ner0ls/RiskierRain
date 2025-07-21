@@ -148,6 +148,8 @@ namespace SwanSongExtended.Storms
             private List<MeteorStormController.Meteor> meteorsToDetonate;
             private List<MeteorStormController.MeteorWave> meteorWaves;
             private float waveTimer;
+            float stormStrength = 0;
+            float stormStrengthIncreaseStopwatch = 0;
 
             public override void OnEnter()
             {

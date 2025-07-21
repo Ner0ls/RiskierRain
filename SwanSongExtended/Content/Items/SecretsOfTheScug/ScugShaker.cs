@@ -75,12 +75,15 @@ namespace SwanSongExtended.Items
         }
         private void ScugShakerOnHit(CharacterBody attackerBody, DamageInfo damageInfo, CharacterBody victimBody)
         {
+            if (!NetworkServer.active)
+                return;
+
             if (damageInfo.damage / attackerBody.damage < 4)
             {
                 return;
             }
             int scugCount = GetCount(attackerBody);
-            if (scugCount <= 0 || !NetworkServer.active)
+            if (scugCount <= 0)
             {
                 return;
             }
@@ -91,6 +94,8 @@ namespace SwanSongExtended.Items
         private void ScugShakerTakeDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, RoR2.HealthComponent self, RoR2.DamageInfo damageInfo)
         {
             orig(self, damageInfo);
+            if (!NetworkServer.active)
+                return;
             CharacterBody body = self?.body;
             int itemCount = GetCount(body);
             if (itemCount <= 0)
