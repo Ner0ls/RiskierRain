@@ -141,19 +141,17 @@ namespace SwanSongExtended.Interactables
         {
             if (purchased)
                 return;
-            if (!NetworkServer.active)
-            {
-                Debug.LogWarning("[Server] function 'System.Void RoR2.ShrineBossBehavior::AddShrineStack(RoR2.Interactor)' called on client");
-                return;
-            }
             purchased = true;
 
             if (TeleporterInteraction.instance && TeleporterInteraction.instance.activationState <= TeleporterInteraction.ActivationState.IdleToCharging)
             {
                 //TeleporterInteraction.instance.AddShrineStack();
                 TeleporterInteraction.instance.gameObject.AddComponent<ConvergenceShrinkController>();
-                BossGroup bossGroup = TeleporterInteraction.instance.bossGroup;
-                bossGroup.bonusRewardCount += 2;
+                if (NetworkServer.active)
+                {
+                    BossGroup bossGroup = TeleporterInteraction.instance.bossGroup;
+                    bossGroup.bonusRewardCount += 2;
+                }
             }
 
             CharacterBody component = activator.GetComponent<CharacterBody>();
@@ -169,9 +167,9 @@ namespace SwanSongExtended.Interactables
                 rotation = Quaternion.identity,
                 scale = 1f,
                 color = new Color(0.94509804f, 0.90588236f, 0.7372549f)
-            }, true);
+            }, false);
 
-            if (true)
+            if (NetworkServer.active)
             {
                 if (this.symbolTransform)
                 {
