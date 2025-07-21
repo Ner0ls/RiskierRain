@@ -185,6 +185,17 @@ namespace SwanSongExtended.Items
                 pie2.childrenProjectilePrefab = molotovDotZone;
             }
 
+            ProjectileDamage pda = molotovProjectile.GetComponent<ProjectileDamage>();
+            if (pda)
+            {
+                pda.damageType.damageSource = DamageSource.NoneSpecified;
+            }
+            ProjectileDamage odoen = molotovDotZone.GetComponent<ProjectileDamage>();
+            if (odoen)
+            {
+                odoen.damageType.damageSource = DamageSource.NoneSpecified;
+            }
+
             ProjectileDotZone pdz2 = molotovDotZone.GetComponent<ProjectileDotZone>();
             if (pdz2)
             {
