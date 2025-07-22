@@ -27,7 +27,7 @@ namespace SwanSongExtended
             InteractableSpawnCard greenPrinterSpawnCard = Addressables.LoadAssetAsync<InteractableSpawnCard>("RoR2/Base/DuplicatorLarge/iscDuplicatorLarge.asset").WaitForCompletion();
             InteractableSpawnCard bigChestSpawnCard = Addressables.LoadAssetAsync<InteractableSpawnCard>("RoR2/Base/Chest2/iscChest2.asset").WaitForCompletion();
             InteractableSpawnCard lunarPodSpawnCard = Addressables.LoadAssetAsync<InteractableSpawnCard>("RoR2/Base/LunarChest/iscLunarChest.asset").WaitForCompletion();
-            InteractableSpawnCard constructConstructSpawnCard = ConstructConstruct.instance.customInteractable.spawnCard;
+            InteractableSpawnCard constructConstructSpawnCard = null;//ConstructConstruct.instance.customInteractable.spawnCard;
             InteractableSpawnCard flameAltarSpawnCard = null;//FlameAltar.instance.customInteractable.spawnCard;
             InteractableSpawnCard lunarBrandMakerSpawnCard = null;//LunarBrandMaker.instance.customInteractable.spawnCard;
             InteractableSpawnCard spineSpawnCard = null;//SpineAltar.instance.customInteractable.spawnCard;

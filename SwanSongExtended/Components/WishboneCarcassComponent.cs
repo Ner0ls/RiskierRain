@@ -20,6 +20,7 @@ namespace SwanSongExtended.Components
     {
         static List<WishboneCarcassComponent> instancesList = new List<WishboneCarcassComponent>();
         public static ReadOnlyCollection<WishboneCarcassComponent> readonlyInstancesList = new ReadOnlyCollection<WishboneCarcassComponent>(WishboneCarcassComponent.instancesList);
+        public static bool objectiveOn = false;
         public static void ClearAllCarcasses()
         {
             for(int i = readonlyInstancesList.Count - 1; i >= 0; i--)
@@ -28,6 +29,7 @@ namespace SwanSongExtended.Components
                 if(carcass != null)
                 {
                     Destroy(carcass);
+                    Destroy(carcass.gameObject);
                 }
             }
         }
@@ -50,20 +52,25 @@ namespace SwanSongExtended.Components
         {
             if (enable)
             {
-                ObjectivePanelController.collectObjectiveSources += this.OnCollectObjectiveSources;
+                if (!objectiveOn)
+                {
+                    ObjectivePanelController.collectObjectiveSources += OnCollectObjectiveSources;
+                    objectiveOn = true;
+                }
             }
-            else
+            else if(objectiveOn)
             {
-                ObjectivePanelController.collectObjectiveSources -= this.OnCollectObjectiveSources;
+                ObjectivePanelController.collectObjectiveSources -= OnCollectObjectiveSources;
+                objectiveOn = false;
             }
         }
-        private void OnCollectObjectiveSources(CharacterMaster master, List<ObjectivePanelController.ObjectiveSourceDescriptor> objectiveSourcesList)
+        private static void OnCollectObjectiveSources(CharacterMaster master, List<ObjectivePanelController.ObjectiveSourceDescriptor> objectiveSourcesList)
         {
             objectiveSourcesList.Add(new ObjectivePanelController.ObjectiveSourceDescriptor
             {
                 master = master,
                 objectiveType = typeof(WishboneObjectiveTracker),
-                source = base.gameObject
+                source = StormRunBehavior.instance
             });
         }
     }

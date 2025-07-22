@@ -20,7 +20,7 @@ namespace SwanSongExtended.Items
 
         public override string ItemLangTokenName => "WISHBONE";
 
-        public override string ItemPickupDesc => "It's very delicate. Deliver it to someplace safe, and make a wish.";
+        public override string ItemPickupDesc => "It's very delicate. Take it someplace safe, and make a wish.";
 
         public override string ItemFullDescription => "It's very delicate. Take it someplace safe, and make a wish.";
 
@@ -44,22 +44,34 @@ namespace SwanSongExtended.Items
             TeleporterInteraction.onTeleporterBeginChargingGlobal += StealWishboneOnTeleCharge;
             IL.RoR2.BossGroup.DropRewards += WishboneRewards;
             On.RoR2.CharacterBody.Start += DestroyWishboneOnStart;
-            GetHitBehavior += DestroyWishboneOnHit;
+            On.RoR2.HealthComponent.TakeDamageProcess += DestroyWishboneOnDamage;
+            //GetHitBehavior += DestroyWishboneOnHit;
+        }
+
+        private void DestroyWishboneOnDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
+        {
+            orig(self, damageInfo);
+            if (!NetworkServer.active)
+                return;
+            if (damageInfo.procCoefficient <= 0)
+                return;
+            if (damageInfo.attacker == self.gameObject)
+                return;
+            int count = GetCount(self.body);
+            if (count > 0 && (StormRunBehavior.instance?.hasBegunStorm == true || !self.alive))
+            {
+                ClearWishbones(self.body, count);
+                EffectData effectData2 = new EffectData
+                {
+                    origin = self.body.corePosition
+                };
+                effectData2.SetNetworkedObjectReference(self.body.gameObject);
+                EffectManager.SpawnEffect(HealthComponent.AssetReferences.fragileDamageBonusBreakEffectPrefab, effectData2, true);
+            }
         }
 
         private void DestroyWishboneOnHit(CharacterBody attackerBody, DamageInfo damageInfo, CharacterBody victimBody)
         {
-            if (damageInfo.HasModdedDamageType(StormsCore.stormDamageType))
-            {
-                int count = GetCount(victimBody);
-                ClearWishbones(victimBody, count);
-                EffectData effectData2 = new EffectData
-                {
-                    origin = victimBody.corePosition
-                };
-                effectData2.SetNetworkedObjectReference(victimBody.gameObject);
-                EffectManager.SpawnEffect(HealthComponent.AssetReferences.fragileDamageBonusBreakEffectPrefab, effectData2, true);
-            }
         }
 
         private void DestroyWishboneOnStart(On.RoR2.CharacterBody.orig_Start orig, CharacterBody self)
