@@ -196,7 +196,7 @@ namespace SwanSongExtended.Interactables
 
 						component.targetRenderer = (from x in interactablePrefab.GetComponentsInChildren<MeshRenderer>()
 													where x.gameObject.name.Contains(modelName)
-													select x).First<MeshRenderer>();
+													select x).FirstOrDefault<MeshRenderer>();
 
 						component.strength = 1f;
 						component.highlightColor = Highlight.HighlightColor.interactive;
