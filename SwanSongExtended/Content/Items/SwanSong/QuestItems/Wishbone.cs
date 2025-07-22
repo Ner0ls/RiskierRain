@@ -16,13 +16,15 @@ namespace SwanSongExtended.Items
 {
     class Wishbone : ItemBase<Wishbone>
     {
+        public override bool lockEnabled => true;
+        static ItemDef brokenItemDef;
         public override string ItemName => "Wishbone";
 
         public override string ItemLangTokenName => "WISHBONE";
 
-        public override string ItemPickupDesc => "It's very delicate. Take it someplace safe, and make a wish.";
+        public override string ItemPickupDesc => "It's very delicate. Take it someplace safe, and <style=cIsDamage>make a wish</style>.";
 
-        public override string ItemFullDescription => "It's very delicate. Take it someplace safe, and make a wish.";
+        public override string ItemFullDescription => "It's very delicate. Take it someplace safe, and <style=cIsDamage>make a wish</style>.";
 
         public override string ItemLore => "loooorrrrreeeeeeee";
 
@@ -32,11 +34,18 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => LoadDropPrefab();
 
-        public override Sprite ItemIcon => LoadItemIcon();
+        public override Sprite ItemIcon => Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Core.texNullIcon_png).WaitForCompletion();
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
             return new ItemDisplayRuleDict();
+        }
+        public override void Init()
+        {
+            brokenItemDef = CreateNewUntieredItem("BROKENWISH",
+                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Common_MiscIcons.texWIPIcon_png).WaitForCompletion());
+            DoLangForItem(brokenItemDef, "Bone", "The shorter half of a broken wishbone. It is useless.", "Useless.");
+            base.Init();
         }
 
         public override void Hooks()
@@ -45,7 +54,6 @@ namespace SwanSongExtended.Items
             IL.RoR2.BossGroup.DropRewards += WishboneRewards;
             On.RoR2.CharacterBody.Start += DestroyWishboneOnStart;
             On.RoR2.HealthComponent.TakeDamageProcess += DestroyWishboneOnDamage;
-            //GetHitBehavior += DestroyWishboneOnHit;
         }
 
         private void DestroyWishboneOnDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
@@ -60,18 +68,8 @@ namespace SwanSongExtended.Items
             int count = GetCount(self.body);
             if (count > 0 && (StormRunBehavior.instance?.hasBegunStorm == true || !self.alive))
             {
-                ClearWishbones(self.body, count);
-                EffectData effectData2 = new EffectData
-                {
-                    origin = self.body.corePosition
-                };
-                effectData2.SetNetworkedObjectReference(self.body.gameObject);
-                EffectManager.SpawnEffect(HealthComponent.AssetReferences.fragileDamageBonusBreakEffectPrefab, effectData2, true);
+                BreakWishbones(self.body, count);
             }
-        }
-
-        private void DestroyWishboneOnHit(CharacterBody attackerBody, DamageInfo damageInfo, CharacterBody victimBody)
-        {
         }
 
         private void DestroyWishboneOnStart(On.RoR2.CharacterBody.orig_Start orig, CharacterBody self)
@@ -80,14 +78,26 @@ namespace SwanSongExtended.Items
             if (!NetworkServer.active)
                 return;
             int wishboneCount = GetCount(self);
-            ClearWishbones(self, wishboneCount);
+            BreakWishbones(self, wishboneCount, false);
         }
 
-        private void ClearWishbones(CharacterBody self, int wishboneCount)
+        private void BreakWishbones(CharacterBody body, int wishboneCount, bool badBreak = true)
         {
-            for (int i = 0; i < wishboneCount; i++)
+            body.inventory.RemoveItem(this.ItemsDef.itemIndex, wishboneCount);
+            if (badBreak)
             {
-                self.inventory.RemoveItem(this.ItemsDef.itemIndex);
+                body.inventory.GiveItem(brokenItemDef.itemIndex, wishboneCount);
+
+                CharacterMasterNotificationQueue.SendTransformNotification(body.master,
+                    this.ItemsDef.itemIndex, brokenItemDef.itemIndex,
+                    CharacterMasterNotificationQueue.TransformationType.Default);
+
+                EffectData effectData2 = new EffectData
+                {
+                    origin = body.corePosition
+                };
+                effectData2.SetNetworkedObjectReference(body.gameObject);
+                EffectManager.SpawnEffect(HealthComponent.AssetReferences.fragileDamageBonusBreakEffectPrefab, effectData2, true);
             }
         }
 
@@ -122,7 +132,7 @@ namespace SwanSongExtended.Items
                             EffectManager.SpawnEffect(ItemTransferOrb.orbEffectPrefab, effectData, true);
                         }
                     }
-                    ClearWishbones(body, wishboneCount);
+                    BreakWishbones(body, wishboneCount, false);
                 }
             }
         }
