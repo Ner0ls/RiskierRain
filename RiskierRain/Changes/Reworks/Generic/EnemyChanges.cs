@@ -327,7 +327,7 @@ namespace RiskierRain
         {
             CharacterBody wispBody = this.chimeraWispPrefab.GetComponent<CharacterBody>();
             wispBody.baseAttackSpeed *= 1 + kitSlowAspdReduction;
-            wispBody.baseDamage = 8f;//15
+            wispBody.baseDamage = 5f;//15
             wispBody.levelDamage = wispBody.baseDamage * 0.2f;
         }
         #endregion
