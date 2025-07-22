@@ -151,7 +151,7 @@ namespace SwanSongExtended.Storms
             private List<MeteorStormController.MeteorWave> meteorWaves;
             private float waveTimer;
             float stormStrength = 0;
-            float stormStrengthIncreaseStopwatch = 0;
+            float stormStrengthIncreaseCountdown = 0;
 
             public override void OnEnter()
             {
@@ -167,6 +167,7 @@ namespace SwanSongExtended.Storms
                     return;
                 this.meteorsToDetonate = new List<MeteorStormController.Meteor>();
                 this.meteorWaves = new List<MeteorStormController.MeteorWave>();
+                stormStrengthIncreaseCountdown = stormStrengthIncreaseTimerSeconds;
                 //On.RoR2.MeteorStormController.MeteorWave.GetNextMeteor += MeteorWave_GetNextMeteor;
 
                 EnableDirector();
@@ -180,6 +181,13 @@ namespace SwanSongExtended.Storms
             public override void FixedUpdate()
             {
                 base.FixedUpdate();
+                stormStrengthIncreaseCountdown -= Time.fixedDeltaTime;
+                if(stormStrengthIncreaseCountdown <= 0 && Run.instance)
+                {
+                    stormStrengthIncreaseCountdown += StormsCore.stormStrengthIncreaseTimerSeconds;
+                    stormStrength += stormStrengthIncreaseBase + DifficultyCatalog.GetDifficultyDef(Run.instance.selectedDifficulty).scalingValue * stormStrengthIncreasePerDifficulty;
+                    Chat.AddMessage("<style=cIsUtility>The storm intensifies...</style>");
+                }
                 if (!NetworkServer.active)
                     return;
 
@@ -187,7 +195,7 @@ namespace SwanSongExtended.Storms
                 this.waveTimer -= Time.fixedDeltaTime;
                 if (this.waveTimer <= 0f)
                 {
-                    this.waveTimer = UnityEngine.Random.Range(waveMinInterval, waveMaxInterval) / Mathf.Min(1 + (fixedAge / 600), 2);
+                    this.waveTimer = UnityEngine.Random.Range(waveMinInterval, waveMaxInterval) / (1 + stormStrength);
                     MeteorStormController.MeteorWave item =
                         new MeteorStormController.MeteorWave(
                             CharacterBody.readOnlyInstancesList

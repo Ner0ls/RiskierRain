@@ -36,12 +36,15 @@ namespace SwanSongExtended.Storms
         public const float rainstormStormWarningMinutes = 2;
         public const float monsoonStormDelayMinutes = 3.5f;
         public const float monsoonStormWarningMinutes = 1f;
+        public const float stormStrengthIncreaseTimerSeconds = 90;
+        public const float stormStrengthIncreasePerDifficulty = 0.15f;
+        public const float stormStrengthIncreaseBase = 0.15f;
 
         //meteors:
         public static GameObject meteorWarningEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Meteor/MeteorStrikePredictionEffect.prefab").WaitForCompletion();
         public static GameObject meteorImpactEffectPrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/Base/Meteor/MeteorStrikeImpact.prefab").WaitForCompletion();
         public static float waveMinInterval = 0.6f;
-        public static float waveMaxInterval = 0.8f;
+        public static float waveMaxInterval = 0.9f;
         public static float waveMissChance = 0.6f;
         public static float meteorTargetEnemyChance = 15f;
         public static float meteorTravelEffectDuration = 0f;
