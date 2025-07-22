@@ -15,7 +15,7 @@ namespace SwanSongExtended.Interactables
     {
         public override string InteractableName => "Omen";
 
-        public override string InteractableContext => "Harvest Wishbone";
+        public override string InteractableContext => "Break Omen";
 
         public override string InteractableLangToken => "WISHBONECARCASS";
 
