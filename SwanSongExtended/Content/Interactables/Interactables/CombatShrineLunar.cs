@@ -125,7 +125,7 @@ namespace SwanSongExtended.Interactables
 
         GameObject enemySpawned;
         ItemDef[] itemPool;
-        internal ItemIndex itemToGive;
+        public static ItemIndex itemToGive;
         public void ChooseItem()
         {
             int i = UnityEngine.Random.RandomRangeInt(0, itemPool.Length - 1);
@@ -143,7 +143,6 @@ namespace SwanSongExtended.Interactables
             cd.teamIndex = TeamIndex.Lunar;
             cd.fallBackToStageMonsterCards = true;
             cd.onSpawnedServer = new OnSpawnedServer();
-            cd.onSpawnedServer.AddPersistentListener(OnGalleryDirectorSpawnServer);
             cd.combatSquad = cs;
             LunarCombatShrineBehavior lscb = interaction.gameObject.AddComponent<LunarCombatShrineBehavior>();
             lscb.baseMonsterCredit = 40;
@@ -155,20 +154,6 @@ namespace SwanSongExtended.Interactables
             lscb.symbolTransform = symbolTransform.transform;
 
             return lscb.OnInteractionBegin;
-
-            void OnGalleryDirectorSpawnServer(GameObject masterObject)
-            {
-                CharacterMaster master = masterObject.GetComponent<CharacterMaster>();
-                if(master != null)
-                {
-                    Inventory inv = master.GetBody()?.inventory;
-                    if(inv != null)
-                    {
-                        inv.GiveItem(itemToGive);
-                        inv.GiveItem(GalleryItemDrop.instance.ItemsDef);
-                    }
-                }
-            }
         }
     }
     public class LunarCombatShrineBehavior : ShrineCombatBehavior
@@ -177,11 +162,12 @@ namespace SwanSongExtended.Interactables
         {
             if (purchaseCount >= maxPurchaseCount)
                 return;
+            combatDirector.onSpawnedServer.AddListener(OnGalleryDirectorSpawnServer);
             CombatShrineLunar.instance.ChooseItem();
             CharacterBody interactorBody = activator.GetComponent<CharacterBody>();
             if (interactorBody)
             {
-                string nameToken = ItemCatalog.GetItemDef(CombatShrineLunar.instance.itemToGive)?.nameToken;
+                string nameToken = ItemCatalog.GetItemDef(CombatShrineLunar.itemToGive)?.nameToken;
                 Chat.SendBroadcastChat(new Chat.SubjectFormatChatMessage
                 {
                     subjectAsCharacterBody = interactorBody,
@@ -193,7 +179,26 @@ namespace SwanSongExtended.Interactables
                 });
             }
             base.AddShrineStack(activator);
+            //combatDirector.onSpawnedServer.RemoveListener(OnGalleryDirectorSpawnServer);
             purchaseInteraction.SetAvailable(false);
+
+            void OnGalleryDirectorSpawnServer(GameObject masterObject)
+            {
+                CharacterMaster master = masterObject.GetComponent<CharacterMaster>();
+                OnGallerySquadSpawnServer(master);
+            }
+            void OnGallerySquadSpawnServer(CharacterMaster master)
+            {
+                if (master != null)
+                {
+                    Inventory inv = master.inventory;
+                    if (inv != null)
+                    {
+                        inv.GiveItem(CombatShrineLunar.itemToGive);
+                        inv.GiveItem(GalleryItemDrop.instance.ItemsDef);
+                    }
+                }
+            }
         }
     }
 }
