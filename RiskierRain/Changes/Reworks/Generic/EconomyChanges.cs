@@ -35,7 +35,7 @@ namespace RiskierRain
         int awuAdaptiveArmorCount = 1;
 
         static float costExponent = 1f;
-        static float goldRewardMultiplierGlobal = 0.6f;
+        static float goldRewardMultiplierGlobal = 0.4f;
         static float expRewardMultiplierGlobal = 1;
         static float compensationForStartingLevel = 0;
 
@@ -143,8 +143,21 @@ namespace RiskierRain
 
         private void BloodShrineRewardRework()
         {
-            On.RoR2.ShrineBloodBehavior.Start += ShrineBloodBehavior_Start;
+            IL.RoR2.ShrineBloodBehavior.AddShrineStack += ShrineBloodReward;
+            //On.RoR2.ShrineBloodBehavior.Start += ShrineBloodBehavior_Start;
         }
+
+        private void ShrineBloodReward(ILContext il)
+        {
+            ILCursor c = new ILCursor(il);
+            if(c.TryGotoNext(MoveType.Before,
+                x => x.MatchCallOrCallvirt<CharacterMaster>(nameof(CharacterMaster.GiveMoney))))
+            {
+                c.EmitDelegate<Func<uint, uint>>((moneyIn) => 
+                    (uint)Run.instance.GetDifficultyScaledCost(25, RoR2.Stage.instance.entryDifficultyCoefficient));
+            }
+        }
+
         private void ShrineBloodBehavior_Start(On.RoR2.ShrineBloodBehavior.orig_Start orig, ShrineBloodBehavior self)
         {
             orig(self);
@@ -188,13 +201,11 @@ namespace RiskierRain
         static float GetCompensatedDifficultyFraction()
         {
             float entryDiffCoeff = Stage.instance.entryDifficultyCoefficient;
-            if (entryDiffCoeff <= 0)
-                return 1;
-            else if (compensationForStartingLevel > 0)
+            if (entryDiffCoeff > 0 && compensationForStartingLevel > 0)
             {
                 entryDiffCoeff = Mathf.Lerp(entryDiffCoeff, entryDiffCoeff - GetAmbientLevelBoost(), compensationForStartingLevel);
             }
-            return entryDiffCoeff / (Run.instance.compensatedDifficultyCoefficient);
+            return (1 + entryDiffCoeff) / (1 + Run.instance.compensatedDifficultyCoefficient);
         }
 
         private static void FixGoldRewards(ILContext il)
