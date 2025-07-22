@@ -83,9 +83,12 @@ namespace SwanSongExtended.Storms
                 a = rainstormStormDelayMinutes;
                 b = rainstormStormWarningMinutes;
             }
+
             if (Run.instance.stageClearCount == 0)
-                a *= 1.4f;
-            stormControllerInstance.BeginStormApproach(a + Run.instance.stageRng.RangeInt(0, 1), b);
+                a += 1.5f;
+            a += Run.instance.stageRng.RangeFloat(0, 1);
+
+            stormControllerInstance.BeginStormApproach(a, b);
 
             if (NetworkServer.active)
             {
