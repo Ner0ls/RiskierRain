@@ -28,7 +28,13 @@ namespace RiskierRain
         /// linear. increases the difficulty by this amount per minute, affected by the difficulty's scaling value
         /// </summary>
         public static float baseScalingMultiplier = 1.1f; //1f
+        /// <summary>
+        /// exponential
+        /// </summary>
         public static float difficultyIncreasePerMinutePerDifficulty = 0.01f; //0f
+        /// <summary>
+        /// exponential
+        /// </summary>
         public static float difficultyIncreasePerMinuteBase = 1.0f; //1f
         /// <summary>
         /// exponential. increases the difficulty and difficulty scaling by this amount for each stach
@@ -653,21 +659,21 @@ namespace RiskierRain
             TeleporterInteraction.ChargingState self = baseState as TeleporterInteraction.ChargingState;
             if(self.teleporterInteraction.holdoutZoneController.charge >= 1f)
             {
-                if (!pityChargeOn)
-                {
-                    pityChargeOn = true;
-                    self.teleporterInteraction.holdoutZoneController.calcColor += PityChargeCalcColor;
-                    self.teleporterInteraction.holdoutZoneController.calcRadius += PityChargeCalcRadius;
-
-                    // send chat message
-                    RoR2.Chat.AddMessage("<style=cIsUtility>The overcharged teleporter begins its Convergence...</style>");
-                    // add tutorial popup
-                }
-                if (pityChargeRecolorDelta < 1)
-                    pityChargeRecolorDelta += Time.fixedDeltaTime;
-
                 if (!self.teleporterInteraction.monstersCleared && self.teleporterInteraction.holdoutZoneController.isAnyoneCharging)
                 {
+                    if (!pityChargeOn)
+                    {
+                        pityChargeOn = true;
+                        self.teleporterInteraction.holdoutZoneController.calcColor += PityChargeCalcColor;
+                        self.teleporterInteraction.holdoutZoneController.calcRadius += PityChargeCalcRadius;
+
+                        // send chat message
+                        RoR2.Chat.AddMessage("<style=cIsUtility>The overcharged teleporter begins its Convergence...</style>");
+                        // add tutorial popup
+                    }
+                    if (pityChargeRecolorDelta < 1)
+                        pityChargeRecolorDelta += Time.fixedDeltaTime;
+
                     pityChargeShrinkDelta += Time.fixedDeltaTime * 0.01f;
 
                     if (NetworkServer.active)
