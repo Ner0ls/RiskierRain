@@ -83,6 +83,8 @@ namespace SwanSongExtended.Items
 
         private void BreakWishbones(CharacterBody body, int wishboneCount, bool badBreak = true)
         {
+            if (wishboneCount <= 0)
+                return;
             body.inventory.RemoveItem(this.ItemsDef.itemIndex, wishboneCount);
             if (badBreak)
             {

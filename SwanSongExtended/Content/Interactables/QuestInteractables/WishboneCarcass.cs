@@ -48,7 +48,7 @@ namespace SwanSongExtended.Interactables
             (
                 unavailableDuringTeleporter: false,
                 sacrificeWeightScalar: 1,
-                maxSpawnsPerStage: 1
+                maxSpawnsPerStage: 0
             );
 
         private static Xoroshiro128Plus rng;
