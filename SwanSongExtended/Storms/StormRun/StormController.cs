@@ -356,7 +356,7 @@ namespace SwanSongExtended.Storms
             public override void FixedUpdate()
             {
                 base.FixedUpdate();
-                if (base.fixedAge >= stormController.stormWarningTime && NetworkServer.active)
+                if (base.fixedAge >= stormController.stormWarningTime)
                 {
                     string warningMessage = "";
                     switch (stormType)
@@ -453,7 +453,7 @@ namespace SwanSongExtended.Storms
             public override void FixedUpdate()
             {
                 base.FixedUpdate();
-                if (base.fixedAge >= stormController.stormDelayTime && NetworkServer.active)
+                if (base.fixedAge >= stormController.stormDelayTime)
                 {
                     if (stormType > StormType.None)
                     {
