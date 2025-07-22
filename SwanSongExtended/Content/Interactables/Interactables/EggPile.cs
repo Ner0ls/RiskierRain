@@ -30,7 +30,7 @@ namespace SwanSongExtended.Interactables
 
         public override string prefabName => "eggPile";
 
-        public override bool ShouldCloneModel => false;
+        public override bool ShouldCloneModel => true;
 
         public override float voidSeedWeight => 0.05f;
 
@@ -49,7 +49,7 @@ namespace SwanSongExtended.Interactables
             (
                 unavailableDuringTeleporter: false,
                 sacrificeWeightScalar: 1,
-                maxSpawnsPerStage: 5
+                maxSpawnsPerStage: 3
             );
 
         public override string[] validScenes => new string[]

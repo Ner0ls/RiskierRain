@@ -23,9 +23,9 @@ namespace SwanSongExtended.Interactables
 
         public override string modelName => "mdlEggPile";
 
-        public override string prefabName => "eggPile";
+        public override string prefabName => "omen";
 
-        public override bool ShouldCloneModel => false;
+        public override bool ShouldCloneModel => true;
 
         public override DirectorAPI.InteractableCategory category => DirectorAPI.InteractableCategory.Barrels;
 
