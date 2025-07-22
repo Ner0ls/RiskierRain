@@ -63,7 +63,7 @@ namespace SwanSongExtended.Storms
             CreateStormEliteTiers();
             CreateStormsRunBehaviorPrefab();
             LanguageAPI.Add(stormShelterObjectiveToken, "Seek <style=cDeath>shelter <sprite name=\"TP\" tint=1></style> from the Storm");
-            LanguageAPI.Add(wishboneObjectiveToken, "Gather missing <style=cIsDamage>Wishbones</style>");
+            LanguageAPI.Add(wishboneObjectiveToken, "Collect <style=cIsDamage>Wishbones</style>");
 
             //On.RoR2.HoldoutZoneController.OnEnable += RegisterHoldoutZone;
             //On.RoR2.HoldoutZoneController.OnDisable += UnregisterHoldoutZone;

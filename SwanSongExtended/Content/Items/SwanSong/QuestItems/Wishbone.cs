@@ -3,6 +3,7 @@ using MonoMod.Cil;
 using R2API;
 using RoR2;
 using RoR2.Orbs;
+using SwanSongExtended.Components;
 using SwanSongExtended.Storms;
 using System;
 using System.Collections.Generic;
@@ -34,7 +35,7 @@ namespace SwanSongExtended.Items
 
         public override GameObject ItemModel => LoadDropPrefab();
 
-        public override Sprite ItemIcon => Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Core.texNullIcon_png).WaitForCompletion();
+        public override Sprite ItemIcon => Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Common_MiscIcons.texWIPIcon_png).WaitForCompletion();
 
         public override ItemDisplayRuleDict CreateItemDisplayRules()
         {
@@ -43,7 +44,7 @@ namespace SwanSongExtended.Items
         public override void Init()
         {
             brokenItemDef = CreateNewUntieredItem("BROKENWISH",
-                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Common_MiscIcons.texWIPIcon_png).WaitForCompletion());
+                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Core.texNullIcon_png).WaitForCompletion());
             DoLangForItem(brokenItemDef, "Bone", "The shorter half of a broken wishbone. It is useless.", "Useless.");
             base.Init();
         }
@@ -107,6 +108,7 @@ namespace SwanSongExtended.Items
         static int serverWishboneCount = 0;
         private void StealWishboneOnTeleCharge(TeleporterInteraction obj)
         {
+            WishboneCarcassComponent.ClearAllCarcasses();
             if (!NetworkServer.active)
                 return;
             serverWishboneCount = 0;
