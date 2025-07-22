@@ -11,6 +11,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.Networking;
+using static R2API.DamageAPI;
 using static RoR2.CombatDirector;
 
 namespace SwanSongExtended.Storms
@@ -18,6 +19,7 @@ namespace SwanSongExtended.Storms
     public static class StormsCore
     {
         public const string stormShelterObjectiveToken = "OBJECTIVE_SHELTER";
+        public const string wishboneObjectiveToken = "OBJECTIVE_WISHBONE";
         public static GameObject StormsRunBehaviorPrefab;
         public static GameObject StormsControllerPrefab;
         public static EliteTierDef StormEliteT1;
@@ -49,13 +51,16 @@ namespace SwanSongExtended.Storms
         public static float meteorBlastRadius = 10;
         public static float meteorBlastForce = 0;
         public static BlastAttack.FalloffModel meteorFalloffModel = BlastAttack.FalloffModel.None;
+        public static ModdedDamageType stormDamageType;
 
         public static void Init()
         {
             ShelterUtilsModule.useShelterBuff = true;
+            stormDamageType = ReserveDamageType();
             CreateStormEliteTiers();
             CreateStormsRunBehaviorPrefab();
             LanguageAPI.Add(stormShelterObjectiveToken, "Seek <style=cDeath>shelter <sprite name=\"TP\" tint=1></style> from the Storm");
+            LanguageAPI.Add(wishboneObjectiveToken, "Gather missing <style=cIsDamage>Wishbones</style>");
 
             //On.RoR2.HoldoutZoneController.OnEnable += RegisterHoldoutZone;
             //On.RoR2.HoldoutZoneController.OnDisable += UnregisterHoldoutZone;

@@ -2,6 +2,7 @@
 using RainrotSharedUtils.Shelters;
 using RoR2;
 using RoR2.UI;
+using SwanSongExtended.Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 using static SwanSongExtended.Storms.StormRunBehavior;
 using static SwanSongExtended.Storms.StormsCore;
+using static R2API.DamageAPI;
 
 namespace SwanSongExtended.Storms
 {
@@ -160,6 +162,7 @@ namespace SwanSongExtended.Storms
                     outer.SetNextState(new StormController.IdleState());
                     return;
                 }
+                WishboneCarcassComponent.ClearAllCarcasses();
                 if (!NetworkServer.active)
                     return;
                 this.meteorsToDetonate = new List<MeteorStormController.Meteor>();
@@ -268,7 +271,7 @@ namespace SwanSongExtended.Storms
                     origin = meteor.impactPosition
                 };
                 EffectManager.SpawnEffect(meteorImpactEffectPrefab, effectData, true);
-                new BlastAttack
+                BlastAttack blast = new BlastAttack
                 {
                     inflictor = base.gameObject,
                     baseDamage = meteorBlastDamageCoefficient * (1 + meteorBlastDamageScalarPerLevel * level),//multiplies by ambient level. if this is unsatisfactory change later
@@ -284,7 +287,9 @@ namespace SwanSongExtended.Storms
                     procCoefficient = 0f,
                     teamIndex = TeamIndex.Monster,// | TeamIndex.Void | TeamIndex.Neutral,
                     radius = meteorBlastRadius
-                }.Fire();
+                };
+                blast.AddModdedDamageType(StormsCore.stormDamageType);
+                blast.Fire();
             }
 
             /// <summary>

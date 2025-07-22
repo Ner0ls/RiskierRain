@@ -1,9 +1,11 @@
 ﻿using RoR2;
+using SwanSongExtended.Interactables;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Networking;
 using static SwanSongExtended.Storms.StormsCore;
 
 namespace SwanSongExtended.Storms
@@ -84,6 +86,11 @@ namespace SwanSongExtended.Storms
             if (Run.instance.stageClearCount == 0)
                 a *= 1.4f;
             stormControllerInstance.BeginStormApproach(a + Run.instance.stageRng.RangeInt(0, 1), b);
+
+            if (NetworkServer.active)
+            {
+                WishboneCarcass.ScatterWishbones();
+            }
         }
 
         #region hooks
