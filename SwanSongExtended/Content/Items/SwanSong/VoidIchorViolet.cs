@@ -78,9 +78,9 @@ namespace SwanSongExtended.Items
             if (itemCount > 0)
             {
                 DamageType damageType = damageInfo.damageType.damageType;
-                bool badDamage = damageType.HasFlag(DamageType.BypassArmor) || damageType.HasFlag(DamageType.DoT);
-                bool selfDamage = self.gameObject != damageInfo.attacker;
-                if (!body.HasBuff(violetBuff) && !badDamage && !selfDamage)
+                bool badDamage = damageInfo.procCoefficient == 0 || damageType.HasFlag(DamageType.DoT);
+                bool selfDamage = self.gameObject == damageInfo.attacker;
+                if (!body.HasBuff(violetBuff) && !badDamage)
                 {
                     int barrierToAdd = barrierBase + barrierStack * (itemCount - 1);
                     self.AddBarrier(barrierToAdd);
