@@ -49,7 +49,7 @@ namespace SwanSongExtended.Interactables
             (
                 unavailableDuringTeleporter: false,
                 sacrificeWeightScalar: 1,
-                maxSpawnsPerStage: 1
+                maxSpawnsPerStage: 5
             );
 
         public override string[] validScenes => new string[]
