@@ -23,7 +23,7 @@ namespace SwanSongExtended.Interactables
 
         public override string InteractableLangToken => "LUNAR_GALLERY";
 
-        public override GameObject InteractableModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/lunarGallery.prefab");
+        public override GameObject InteractableModel => assetBundle.LoadAsset<GameObject>("Assets/Prefabs/mdlLunarGallery.prefab");
 
         public override bool ShouldCloneModel => false;
 
@@ -143,13 +143,17 @@ namespace SwanSongExtended.Interactables
             cd.teamIndex = TeamIndex.Lunar;
             cd.fallBackToStageMonsterCards = true;
             cd.onSpawnedServer = new OnSpawnedServer();
-            cd.onSpawnedServer.AddListener(OnGalleryDirectorSpawnServer);
+            cd.onSpawnedServer.AddPersistentListener(OnGalleryDirectorSpawnServer);
+            cd.combatSquad = cs;
             LunarCombatShrineBehavior lscb = interaction.gameObject.AddComponent<LunarCombatShrineBehavior>();
             lscb.baseMonsterCredit = 40;
             lscb.maxPurchaseCount = 1;
             lscb.monsterCreditCoefficientPerPurchase = 2;
 
-            InteractionComponent.onPurchase.AddListener(lscb.OnInteractionBegin);
+            GameObject symbolTransform = new GameObject();
+            symbolTransform.transform.parent = interaction.transform;
+            lscb.symbolTransform = symbolTransform.transform;
+
             return lscb.OnInteractionBegin;
 
             void OnGalleryDirectorSpawnServer(GameObject masterObject)
@@ -171,6 +175,8 @@ namespace SwanSongExtended.Interactables
     {
         public void OnInteractionBegin(Interactor activator)
         {
+            if (purchaseCount >= maxPurchaseCount)
+                return;
             CombatShrineLunar.instance.ChooseItem();
             CharacterBody interactorBody = activator.GetComponent<CharacterBody>();
             if (interactorBody)
@@ -187,6 +193,7 @@ namespace SwanSongExtended.Interactables
                 });
             }
             base.AddShrineStack(activator);
+            purchaseInteraction.SetAvailable(false);
         }
     }
 }
