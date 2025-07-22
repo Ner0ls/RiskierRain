@@ -21,7 +21,7 @@ namespace BetterSoulCost
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
         public const string modName = "BetterSoulCost";
-        public const string version = "1.0.4";
+        public const string version = "1.0.6";
         #endregion
         #region config
         internal static ConfigFile CustomConfigFile { get; set; }
@@ -46,7 +46,7 @@ namespace BetterSoulCost
                 x => x.MatchCallOrCallvirt<CharacterBody>(nameof(CharacterBody.SetBuffCount))
                 );
             c.Remove();
-            c.EmitDelegate<Action<CharacterBody, int, int>>((body, buffIndex, buffCount) => AddSoulCostToBody(body, (BuffIndex)buffIndex, (int)buffCount));
+            c.EmitDelegate<Action<CharacterBody, int, int>>((body, buffIndex, buffCount) => AddSoulCostToBody(body, (BuffIndex)buffIndex, (int)buffCount * 0.1f));
         }
 
         public static void AddSoulCostToBody(CharacterBody body, float soulCost)
