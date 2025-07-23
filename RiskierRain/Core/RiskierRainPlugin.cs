@@ -338,6 +338,18 @@ namespace RiskierRain
             {
                 BuffBottledChaos();
             }
+
+            if(GetConfigBool(true, "Command/Potential Armor"))
+            {
+                On.RoR2.UI.PickupPickerPanel.Awake += CommandOrPotentialArmor;
+                void CommandOrPotentialArmor(On.RoR2.UI.PickupPickerPanel.orig_Awake orig, RoR2.UI.PickupPickerPanel self)
+                {
+                    RoR2.LocalUser user = RoR2.LocalUserManager.GetFirstLocalUser();
+                    RoR2.CharacterBody body = user.cachedBody;
+                    body.AddTimedBuffAuthority(RoR2.RoR2Content.Buffs.HiddenInvincibility.buffIndex, 4);
+                    orig(self);
+                };
+            }
             //this.MakeMinionsInheritOnKillEffects();
 
             //scav could have royal cap? cunning
