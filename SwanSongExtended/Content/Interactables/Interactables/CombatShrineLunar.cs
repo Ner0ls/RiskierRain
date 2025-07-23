@@ -104,9 +104,13 @@ namespace SwanSongExtended.Interactables
             SwanSongPlugin.BlacklistSingleItem(nameof(RoR2Content.Items.LunarTrinket));
             SwanSongPlugin.BlacklistSingleItem(nameof(RoR2Content.Items.FocusConvergence));
             SwanSongPlugin.BlacklistSingleItem(nameof(RoR2Content.Items.MonstersOnShrineUse));
-            SwanSongPlugin.BlacklistSingleItem(nameof(DLC1Content.Items.LunarSun));
-            SwanSongPlugin.BlacklistSingleItem(nameof(DLC1Content.Items.RandomlyLunar));
-            SwanSongPlugin.BlacklistSingleItem(nameof(DLC2Content.Items.OnLevelUpFreeUnlock));
+
+            Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPaths.RoR2_DLC1_LunarSun.LunarSun_asset).Completed += (ctx) =>
+                SwanSongPlugin.BlacklistSingleItem(ctx.Result);
+            Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPaths.RoR2_DLC1_RandomlyLunar.RandomlyLunar_asset).Completed += (ctx) =>
+                SwanSongPlugin.BlacklistSingleItem(ctx.Result);
+            Addressables.LoadAssetAsync<ItemDef>(RoR2BepInExPack.GameAssetPaths.RoR2_DLC2_Items_OnLevelUpFreeUnlock.OnLevelUpFreeUnlock_asset).Completed += (ctx) =>
+                SwanSongPlugin.BlacklistSingleItem(ctx.Result);
         }
 
         public override void Hooks()
