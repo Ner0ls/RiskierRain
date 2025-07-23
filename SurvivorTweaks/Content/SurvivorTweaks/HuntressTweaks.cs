@@ -88,9 +88,9 @@ namespace SurvivorTweaks.SurvivorTweaks
             if(self.lightningType != RoR2.Orbs.LightningOrb.LightningType.HuntressGlaive)
                 return orig(self, position);
 
-            int nextBounce = self.bouncedObjects.Count + 1;
-            int i = nextBounce % 2;
-            if(self.bouncedObjects.Count >= i)
+            int lastBounce = self.bouncedObjects.Count;
+            int i = lastBounce % 2;
+            if(self.bouncedObjects.Count > i)
             {
                 HealthComponent hc = self.bouncedObjects[i];
                 if (hc != null && hc.alive)
