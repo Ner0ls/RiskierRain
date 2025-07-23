@@ -19,11 +19,11 @@ namespace SwanSongExtended
         public static float seedRegenDurationStack = 0.25f;
         public void ReworkLeechingSeed()
         {
-            ItemDef itemDef = Addressables.LoadAssetAsync<ItemDef>("RoR2/Base/Seed/Seed.asset").WaitForCompletion();
-            RetierItem(itemDef, ItemTier.Tier1);
+            seedItemDef = Addressables.LoadAssetAsync<ItemDef>("RoR2/Base/Seed/Seed.asset").WaitForCompletion();
+            RetierItem(seedItemDef, ItemTier.Tier1);
             Sprite sprite = retierAssetBundle.LoadAsset<Sprite>("Assets/Icons/Leeching_Seed.png");
             if (sprite)
-                itemDef.pickupIconSprite = sprite;
+                seedItemDef.pickupIconSprite = sprite;
 
             IL.RoR2.GlobalEventManager.ProcessHitEnemy += FuckLeechingSeed;
             GetHitBehavior += NewSeedBehavior;
