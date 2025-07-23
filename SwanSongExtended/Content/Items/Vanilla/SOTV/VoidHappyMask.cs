@@ -13,12 +13,12 @@ namespace SwanSongExtended.Items
 {
     class VoidHappyMask : ItemBase<VoidHappyMask>
     {
-        public override string ConfigName => "Items : Tragic Facade";
+        public override string ConfigName => "Items : Forgotten Facade";
         public float procChance = 7;
         public int baseInfestors = 2;
         public int stackInfestors = 1;
         public static SpawnCard infestorSpawnCard = LegacyResourcesAPI.Load<SpawnCard>("SpawnCards/CharacterSpawnCards/cscVoidInfestor");
-        public override string ItemName => "Tragic Facade";
+        public override string ItemName => "Forgotten Facade";
 
         public override string ItemLangTokenName => "VOIDHAPPIESTMASK";
 
