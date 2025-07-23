@@ -29,8 +29,8 @@ namespace SurvivorTweaks.SurvivorTweaks
 
         static float baseDamage = 14f; //12
 
-        static float glaiveBaseDamage = 3.0f; //2.5f
-        static float glaiveBounceDamage = 1.3f; //1.1f
+        static float glaiveBaseDamage = 3.4f; //2.5f
+        static float glaiveBounceDamage = 1.1f; //1.1f
 
 
         static int arrowRainCooldown = 22; //12
