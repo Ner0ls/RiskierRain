@@ -37,10 +37,10 @@ namespace SwanSongExtended.Items
         public override string ItemPickupDesc => "Periodically gain protection from damage.";
 
         public override string ItemFullDescription => $"After not taking damage for {UtilityColor($"{maxBeetleArmorStacks}")} seconds, " +
-            $"gain a stack of {DamageColor("Chimera Armor")}, up to {UtilityColor($"{maxBeetleArmorStacks}")} times. " +
-            $"Each stack of {DamageColor("Chimera Armor")} " +
+            $"gain a layer of {DamageColor("Chimera Armor")}, up to {UtilityColor($"{maxBeetleArmorStacks}")} times. " +
+            $"Each layer of {DamageColor("Chimera Armor")} " +
             $"increases {HealingColor("armor")} by {HealingColor($"{armorPerBuffBase}")} {StackText("+" + armorPerBuffStack)}. " +
-            $"Taking damage while protected strips 1 stack of {DamageColor("Chimera Armor")}, " +
+            $"Taking damage while protected strips 1 layer of {DamageColor("Chimera Armor")}, " +
             $"{DamageColor("Crippling")} the enemy who attacked you for {retaliateCrippleDuration}s.";
 
         public override string ItemLore => "";
@@ -63,7 +63,7 @@ namespace SwanSongExtended.Items
             base.Init();
             beetleArmor = Content.CreateAndAddBuff("bdDesignArmor",
                 Addressables.LoadAssetAsync<Sprite>("RoR2/Base/LunarSkillReplacements/texBuffLunarDetonatorIcon.tif").WaitForCompletion(),
-                Color.cyan, false, false);
+                Color.cyan, true, false);
         }
 
         public override void Hooks()
