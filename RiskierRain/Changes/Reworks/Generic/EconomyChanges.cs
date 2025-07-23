@@ -35,9 +35,9 @@ namespace RiskierRain
         int awuAdaptiveArmorCount = 1;
 
         static float costExponent = 1f;
-        static float goldRewardMultiplierGlobal = 0.4f;
-        static float expRewardMultiplierGlobal = 1;
-        static float compensationForStartingLevel = 0;
+        static float goldRewardMultiplierGlobal = 0.6f;
+        static float expRewardMultiplierGlobal = 0.6f;
+        static float compensationForStartingLevel = 0.5f;
 
         public float interactableCreditsMultiplier = 1.5f;
         public float monsterCreditsMultiplier = 1.5f;
@@ -150,12 +150,18 @@ namespace RiskierRain
         private void ShrineBloodReward(ILContext il)
         {
             ILCursor c = new ILCursor(il);
-            if(c.TryGotoNext(MoveType.Before,
-                x => x.MatchCallOrCallvirt<CharacterMaster>(nameof(CharacterMaster.GiveMoney))))
+            int rewardLoc = 1;
+            c.GotoNext(MoveType.After,
+                x => x.MatchLdfld<ShrineBloodBehavior>(nameof(ShrineBloodBehavior.goldToPaidHpRatio))
+                );
+            c.GotoNext(MoveType.After,
+                x => x.MatchStloc(out rewardLoc)
+                );
+            c.EmitDelegate<Func<uint>>(() =>
             {
-                c.EmitDelegate<Func<uint, uint>>((moneyIn) => 
-                    (uint)Run.instance.GetDifficultyScaledCost(25, RoR2.Stage.instance.entryDifficultyCoefficient));
-            }
+                return (uint)Run.instance.GetDifficultyScaledCost(25, RoR2.Stage.instance.entryDifficultyCoefficient);
+            });
+            c.Emit(OpCodes.Stloc, rewardLoc);
         }
 
         private void ShrineBloodBehavior_Start(On.RoR2.ShrineBloodBehavior.orig_Start orig, ShrineBloodBehavior self)
@@ -756,9 +762,9 @@ namespace RiskierRain
         #endregion
 
         #region halcyonite shrine
-        public static int halcyoniteShrineLowGoldCost = 40;//75
-        public static int halcyoniteShrineMidGoldCost = 100;//150
-        public static int halcyoniteShrineMaxGoldCost = 150;//300
+        public static int halcyoniteShrineLowGoldCost = 35;//75
+        public static int halcyoniteShrineMidGoldCost = 75;//150
+        public static int halcyoniteShrineMaxGoldCost = 125;//300
         public static float halcyoniteShrineRadius = 30;//30
 
         void ChangeHalcyoniteShrineGoldRequirements()

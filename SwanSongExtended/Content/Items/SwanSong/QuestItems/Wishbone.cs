@@ -64,7 +64,7 @@ namespace SwanSongExtended.Items
                 return;
             if (damageInfo.procCoefficient <= 0)
                 return;
-            if (damageInfo.attacker == self.gameObject)
+            if (damageInfo.attacker && damageInfo.attacker == self.gameObject)
                 return;
             int count = GetCount(self.body);
             if (count > 0 && (StormRunBehavior.instance?.hasBegunStorm == true || !self.alive))
