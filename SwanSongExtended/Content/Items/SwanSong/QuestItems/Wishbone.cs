@@ -23,9 +23,9 @@ namespace SwanSongExtended.Items
 
         public override string ItemLangTokenName => "WISHBONE";
 
-        public override string ItemPickupDesc => "It's very delicate. Take it someplace safe, and <style=cIsDamage>make a wish</style>.";
+        public override string ItemPickupDesc => "Breaks during storms. If taken to the Teleporter, a wish will be granted.";
 
-        public override string ItemFullDescription => "It's very delicate. Take it someplace safe, and <style=cIsDamage>make a wish</style>.";
+        public override string ItemFullDescription => ItemPickupDesc;
 
         public override string ItemLore => "loooorrrrreeeeeeee";
 
