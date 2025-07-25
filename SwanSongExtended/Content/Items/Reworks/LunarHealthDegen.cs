@@ -46,7 +46,7 @@ namespace SwanSongExtended.Items
 
         public override string ItemPickupDesc => "Your health degenerates over time. Gain barrier and luck at low health.";
 
-        public override string ItemFullDescription => $"For every missing {ConvertDecimal(1 / LunarHealthDegenBehavior.maxBuffCount)} of health, gain a stack of Rot. " +
+        public override string ItemFullDescription => $"For every missing {ConvertDecimal(1f / (float)LunarHealthDegenBehavior.maxBuffCount)} of health, gain a stack of Rot. " +
             $"After {rotStacksForFirstBonus} stacks have accumulated, increase base damage by {damageBase} {StackText($"+{damageStack}")}. " +
             $"After {rotStacksForFirstBonus} stacks, gain {ConvertDecimal(LunarHealthDegenBehavior.barrierFraction)} barrier " +
             $"and increase Luck by {luckBase} {StackText($"+{luckStack}")}. " +
