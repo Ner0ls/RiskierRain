@@ -24,8 +24,8 @@ namespace SurvivorTweaks.SurvivorTweaks
         public static float grenadeCooldown = 1.2f; 
         public static float grenadeDamage = 1.3f; //1.0f
         public static float grenadeStunChance = 25; //0
-        public static int grenadeCount = 1;
-        public static int grenadeStock = 3;
+        public static int grenadeCount = 3;
+        public static int grenadeStock = 1;
         public static float mineArmingDuration = 2f;//3f
         public static GameObject bubbleShieldPrefab;
         public static float bubbleShieldRadius = 15;//10
