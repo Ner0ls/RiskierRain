@@ -176,7 +176,16 @@ namespace SwanSongExtended.Items
 
         private void OnDisable()
         {
-            this.body.RemoveBuff(CobaltShield.cobaltDefense);
+            int buffCount = body.GetBuffCount(DesignAnomaly.beetleArmor);
+            if(buffCount > 0)
+            {
+                while (buffCount > 0)
+                {
+                    buffCount--;
+                    this.body.RemoveBuff(DesignAnomaly.beetleArmor);
+                }
+                OnBeetleArmorRemoved();
+            }
         }
     }
 }
