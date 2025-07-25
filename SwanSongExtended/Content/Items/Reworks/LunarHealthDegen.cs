@@ -48,7 +48,7 @@ namespace SwanSongExtended.Items
 
         public override string ItemFullDescription => $"For every missing {ConvertDecimal(1f / (float)LunarHealthDegenBehavior.maxBuffCount)} of health, gain Rot. " +
             $"After {rotStacksForFirstBonus} Rot has accumulated, increase base damage by {damageBase} {StackText($"+{damageStack}")}. " +
-            $"After {rotStacksForFirstBonus} Rot, gain {ConvertDecimal(LunarHealthDegenBehavior.barrierFraction)} barrier " +
+            $"After {rotStacksForSecondBonus} Rot, gain {ConvertDecimal(LunarHealthDegenBehavior.barrierFraction)} barrier " +
             $"and increase Luck by {luckBase} {StackText($"+{luckStack}")}. " +
             $"{RedText($"Reduce base health regeneration by {healthRegenBase} hp/s")} {StackText($"{healthRegenStack}")}.";
 
