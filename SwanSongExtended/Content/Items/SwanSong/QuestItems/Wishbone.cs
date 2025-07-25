@@ -53,8 +53,18 @@ namespace SwanSongExtended.Items
         {
             TeleporterInteraction.onTeleporterBeginChargingGlobal += StealWishboneOnTeleCharge;
             IL.RoR2.BossGroup.DropRewards += WishboneRewards;
+            On.RoR2.BossGroup.DropRewards += WishboneRewardMessage;
             On.RoR2.CharacterBody.Start += DestroyWishboneOnStart;
             On.RoR2.HealthComponent.TakeDamageProcess += DestroyWishboneOnDamage;
+        }
+
+        private void WishboneRewardMessage(On.RoR2.BossGroup.orig_DropRewards orig, BossGroup self)
+        {
+            if (serverWishboneCount > 0)
+            {
+                Chat.AddMessage("<style=cIsDamage>A wish is granted...</style>");
+            }
+            orig(self);
         }
 
         private void DestroyWishboneOnDamage(On.RoR2.HealthComponent.orig_TakeDamageProcess orig, HealthComponent self, DamageInfo damageInfo)
