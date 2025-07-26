@@ -18,11 +18,11 @@ namespace SwanSongExtended.Items
         public static BuffDef forkReadyBuff;
         public static BuffDef forkRechargeBuff;
         public static BuffDef forkRepeatHitBuff;
-        public static float forkRecharge = 10;
-        public static float forkDuration = 5;
-        public static float forkAttackRequirement = 4;
-        public static float forkTotalDamageBase = 1.5f;
-        public static float forkTotalDamageStack = 1f;
+        public static float forkRecharge = 5;
+        public static float forkDuration = 3;
+        public static float forkAttackRequirement = 6;
+        public static float forkTotalDamageBase = 2f;
+        public static float forkTotalDamageStack = 2f;
         public static float forkStrikeRange = 25;
         public override string ItemName => "Copper Fork";
 
@@ -31,16 +31,40 @@ namespace SwanSongExtended.Items
         public override string ItemPickupDesc => "Attract lightning on repeated hits.";
 
         public override string ItemFullDescription => 
-            $"Damage from skills or equipment also sticks the enemy with " +
-            $"a copper fork for {forkDuration} seconds. " +
+            $"Damage from any {DamageColor("skill or equipment")} also sticks the enemy with " +
+            $"a copper fork for {UtilityColor($"{forkDuration}")} seconds. " +
             $"Repeatedly attacking a forked enemy resets the fork's duration " +
-            $"and attracts lightning, Stunning a nearby enemy " +
-            $"for {ConvertDecimal(forkTotalDamageStack)} TOTAL damage " +
+            $"and attracts lightning, {DamageColor("Stunning")} a nearby enemy " +
+            $"for {DamageColor(ConvertDecimal(forkTotalDamageStack) + " TOTAL damage")} " +
             $"{StackText($"+{ConvertDecimal(forkTotalDamageStack)}")}. " +
-            $"1 max. Recharges {forkRecharge} after the fork expires.";
+            $"1 max, recharges {UtilityColor($"{forkRecharge}s")} after the fork expires.";
 
-        public override string ItemLore => "The System's Finest Copperware!" +
-            "\n\nNote: Please don't try eating in the rain. You don't want this to corrode.";
+        public override string ItemLore =>
+@"New, from CuCo!
+
+The CopperWare Utensil set offers countless benefits over your mundane Stainless Steel silverware.
+
+A stylish reddish-brown color to match your tableware, and a perfect match for your CuCo CopperWare Pots and Pans set!
+
+Supplemental Copper intake directly from your eating utensils!
+
+Easy cleaning! A rub down with any household acid like Vinegar or Lemon Juice will bring your CopperWare back to a factory shine!
+
+Try CopperWare today!
+
+PRODUCT WARNINGS
+
+To avoid risk of galvanic corrosion, do not allow CopperWare in contact with other metal surfaces, especially in the presence of electrolytes like salt.
+
+Do not use CopperWare utensils in cooking. This presents a significant burn risk and may leach copper into the dish.
+
+Customers over the age of 65 are not recommended to use CopperWare due to links between copper and Alzheimer's Disease.
+
+Due to copper's high electrical condicuctivity, it is recommended not to use any CopperWare products in close proximity to electrical currents or appliances.
+
+To mitigate risk of fatal electrocution, please do not use CopperWare products when dining outside.
+
+With your agreement to purchase and use this product, CuCo is released of liability from any consumer complaints relating to the nature of copper kitchenware.";
 
         public override ItemTier Tier => ItemTier.Tier2;
 
@@ -90,9 +114,6 @@ namespace SwanSongExtended.Items
             if (itemCount <= 0 || !NetworkServer.active)
                 return;
 
-            if (!victimBody.healthComponent.alive)
-                return;
-
             if (!damageInfo.damageType.IsDamageSourceSkillBased && damageInfo.damageType.damageSource != DamageSource.Equipment)
                 return;
 
@@ -101,6 +122,12 @@ namespace SwanSongExtended.Items
             //if the attacker can fork or if the victim is already forked
             if(forkReady || forkHits > 0)
             {
+                if (!victimBody.healthComponent.alive)
+                {
+                    DoForkLightningStrike(attackerBody, damageInfo, victimBody, itemCount);
+                    return;
+                }
+
                 //if the attacker can fork, take the fork
                 if (forkReady)
                 {
