@@ -10,6 +10,7 @@ using static SwanSongExtended.Modules.Language.Styling;
 using static MoreStats.OnHit;
 using UnityEngine.Networking;
 using RoR2.Orbs;
+using static RoR2.CharacterBody;
 
 namespace SwanSongExtended.Items
 {
@@ -18,11 +19,12 @@ namespace SwanSongExtended.Items
         public static BuffDef forkReadyBuff;
         public static BuffDef forkRechargeBuff;
         public static BuffDef forkRepeatHitBuff;
+        public static BuffDef forkedBuff;
         public static float forkRecharge = 5;
         public static float forkDuration = 3;
-        public static float forkAttackRequirement = 6;
-        public static float forkTotalDamageBase = 2f;
-        public static float forkTotalDamageStack = 2f;
+        public static int forkAttackRequirement = 6;
+        public static float forkTotalDamageBase = 1.5f;
+        public static float forkTotalDamageStack = 1.5f;
         public static float forkStrikeRange = 25;
         public override string ItemName => "Copper Fork";
 
@@ -89,8 +91,13 @@ With your agreement to purchase and use this product, CuCo is released of liabil
                 Color.gray, false, false);
             forkRepeatHitBuff = Content.CreateAndAddBuff("bdForkStack",
                 Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Common_MiscIcons.texAttackIcon_png).WaitForCompletion(),
-                new Color32(255, 125, 0,255), true, true);
+                new Color32(255, 125, 0, 255), true, false);
             forkRepeatHitBuff.flags |= BuffDef.Flags.ExcludeFromNoxiousThorns;
+            forkedBuff = Content.CreateAndAddBuff("bdForked",
+                Addressables.LoadAssetAsync<Sprite>(RoR2BepInExPack.GameAssetPaths.RoR2_Base_Common_MiscIcons.texAttackIcon_png).WaitForCompletion(),
+                new Color32(255, 125, 0, 255), false, false);
+            forkedBuff.isHidden = true;
+            forkedBuff.flags |= BuffDef.Flags.ExcludeFromNoxiousThorns;
         }
 
         public override void Hooks()
@@ -118,9 +125,10 @@ With your agreement to purchase and use this product, CuCo is released of liabil
                 return;
 
             int forkHits = victimBody.GetBuffCount(forkRepeatHitBuff);
+            bool forked = victimBody.HasBuff(forkedBuff);
             bool forkReady = attackerBody.HasBuff(forkReadyBuff);
             //if the attacker can fork or if the victim is already forked
-            if(forkReady || forkHits > 0)
+            if(forkReady || forked)
             {
                 if (!victimBody.healthComponent.alive)
                 {
@@ -135,23 +143,55 @@ With your agreement to purchase and use this product, CuCo is released of liabil
                 }
                 //refresh fork cooldown always
                 attackerBody.AddTimedBuff(forkRechargeBuff, forkRecharge);
+                victimBody.AddTimedBuff(forkedBuff, forkDuration);
 
                 //if the next hit goes over the attack requirement, do lightning
                 //otherwise, extend all fork hit counts
                 //i do it this way so the fork attack count always stays at or above 1
-                if(forkHits >= forkAttackRequirement)
+                int overspillHitCount = CalculateOverspillCount(damageInfo.damage, attackerBody.damage);// Mathf.FloorToInt(damageInfo.damage / (attackerBody.damage * 2f));
+                int CalculateOverspillCount(float attackDamage, float baseDamage)
                 {
+                    int count = 0;
+                    float idek = baseDamage * 2;
+                    while (attackDamage >= idek)
+                    {
+                        count++;
+                        attackDamage -= idek;
+                        idek += baseDamage * 2;
+                    }
+                    return count;
+                }
+                if(forkHits + overspillHitCount >= forkAttackRequirement)
+                {
+                    int a = forkAttackRequirement;
+                    a -= forkHits;
+                    overspillHitCount -= a;
+                    if (overspillHitCount >= forkAttackRequirement)
+                        overspillHitCount = forkAttackRequirement - 1;
+
                     victimBody.ClearTimedBuffs(forkRepeatHitBuff);
+                    forkHits = 0;
                     //do lightning
                     DoForkLightningStrike(attackerBody, damageInfo, victimBody, itemCount);
                 }
-                else
-                { 
-                    victimBody.ExtendTimedBuffIfPresent(forkRepeatHitBuff, forkDuration, forkDuration);
-                }
 
-                //add a fork hit
-                victimBody.AddTimedBuff(forkRepeatHitBuff, forkDuration);
+                for (int l = 0; l < victimBody.timedBuffs.Count; l++)
+                {
+                    TimedBuff timedBuff = victimBody.timedBuffs[l];
+                    if (timedBuff.buffIndex == forkRepeatHitBuff.buffIndex)
+                    {
+                        if (timedBuff.timer < forkDuration)
+                        {
+                            timedBuff.timer = forkDuration;
+                            timedBuff.totalDuration = forkDuration;
+                        }
+                    }
+                }
+                for (int i = 0; i <= overspillHitCount; i++)
+                {
+                    //add a fork hit
+                    victimBody.AddTimedBuff(forkRepeatHitBuff, forkDuration);
+                }
             }
         }
 
