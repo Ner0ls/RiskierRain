@@ -219,7 +219,10 @@ With your agreement to purchase and use this product, CuCo is released of liabil
             int i = UnityEngine.Random.Range(0, hurtBoxesList.Count);
             HurtBox targetHurtBox = hurtBoxesList[i];
             SetStateOnHurt component = targetHurtBox.healthComponent.GetComponent<SetStateOnHurt>();
-            component.SetStun(1);
+            if (component)
+            {
+                component.SetStun(1);
+            }
 
             OrbManager.instance.AddOrb(new SimpleLightningStrikeOrb
             {
