@@ -184,10 +184,15 @@ namespace SwanSongExtended.Items
                 buffCount--;
             }//FIX THIS ITS WEIRD
         }
-        //void OnDestroy()
-        //{
-            //while (buffCount > 0)
-                //this.body.RemoveBuff(luckUpBuffIndex);
-        //}
+        void OnDestroy()
+        {
+            if (!NetworkServer.active)
+                return;
+            while (buffCount > 0)
+            {
+                this.body.RemoveBuff(luckUpBuffIndex);
+                buffCount--;
+            }
+        }
     }
 }
