@@ -19,6 +19,7 @@ using static R2API.RecalculateStatsAPI;
 using RainrotSharedUtils;
 using MonoMod.RuntimeDetour;
 using UnityEngine.Networking;
+using MonoMod.Cil;
 //using RiskierRain.Changes.Reworks.NerfsReworks.SpawnlistChanges; //idk if this is a good way of doing
 
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -144,6 +145,23 @@ namespace RiskierRain
               typeof(CharacterBody).GetMethod("get_hasOneShotProtection", (BindingFlags)(-1)),
               typeof(RiskierRainPlugin).GetMethod(nameof(ReflectOnThatThang), (BindingFlags)(-1))
             );
+
+            IL.RoR2.GenericSkill.RunRecharge += FuckAspdScalingOnCooldowns;
+            IL.RoR2.Skills.SkillDef.GetRechargeInterval += FuckAspdScalingOnCooldowns;
+
+            void FuckAspdScalingOnCooldowns(ILContext il)
+            {
+                ILCursor c = new ILCursor(il);
+
+                bool ilFound = c.TryGotoNext(MoveType.After,
+                    x => x.MatchLdfld<RoR2.Skills.SkillDef>(nameof(RoR2.Skills.SkillDef.attackSpeedBuffsRestockSpeed))
+                    );
+                if (ilFound)
+                {
+                    c.Emit(Mono.Cecil.Cil.OpCodes.Pop);
+                    c.Emit(Mono.Cecil.Cil.OpCodes.Ldc_I4_0);
+                }
+            }
 
             ///summary
             ///- nerfs healing
