@@ -26,7 +26,7 @@ namespace FruityCradles
         public const string guid = "com." + teamName + "." + modName;
         public const string teamName = "RiskOfBrainrot";
         public const string modName = "FruityCradles";
-        public const string version = "1.0.4";
+        public const string version = "1.0.5";
         #endregion
 
         #region config
@@ -61,7 +61,7 @@ namespace FruityCradles
                 PurchaseInteraction cradleInteraction = voidCradlePrefab.GetComponent<PurchaseInteraction>();
                 if (cradleInteraction)
                 {
-                    cradleInteraction.cost = (int)(Mathf.RoundToInt(cradleHealthCost * 10) * 10);
+                    cradleInteraction.cost = (int)(Mathf.RoundToInt(CradleSoulPayCost.Value * 10) * 10);
                     if (DoCradleSoulCost.Value)
                     {
                         cradleInteraction.costType = CostTypeIndex.SoulCost;
