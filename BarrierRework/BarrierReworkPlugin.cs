@@ -40,7 +40,7 @@ namespace BarrierRework
 
         private bool _useDynamicDecay = true;
         private float _barrierDecayRateStatic = 0f; //30
-        private float _barrierDecayRateDynamic = 2f; //0
+        private float _barrierDecayRateDynamic = 1.5f; //0
 
         #region config
         internal static ConfigFile CustomConfigFile { get; private set; }
