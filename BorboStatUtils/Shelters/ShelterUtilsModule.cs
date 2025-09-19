@@ -176,7 +176,8 @@ namespace RainrotSharedUtils.Shelters
         private static void SheltersOnSphereZoneEnable(On.RoR2.SphereZone.orig_OnEnable orig, SphereZone self)
         {
             orig(self);
-            AddShelterProvider(self.gameObject, self as IZone);
+            if(!self.isInverted)
+                AddShelterProvider(self.gameObject, self as IZone);
         }
 
         private static void SheltersOnHoldoutAwake(On.RoR2.HoldoutZoneController.orig_Awake orig, HoldoutZoneController self)
