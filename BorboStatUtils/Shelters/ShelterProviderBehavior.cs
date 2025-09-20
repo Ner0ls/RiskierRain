@@ -14,6 +14,7 @@ namespace RainrotSharedUtils.Shelters
 
 
         internal bool isSuperShelter = false;
+        internal bool isHazardZone = false;
         public float fallbackRadius;
         public IZone zoneBehavior;
 

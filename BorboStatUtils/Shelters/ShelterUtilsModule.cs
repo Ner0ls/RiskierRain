@@ -44,6 +44,11 @@ namespace RainrotSharedUtils.Shelters
         {
             foreach (ShelterProviderBehavior shelter in ShelterProviderBehavior.readOnlyInstancesList)
             {
+                bool isHazard = shelter.isHazardZone;
+                //if shelter is [void seed fog bubble], then ignore (these are processed independently)
+                if (isHazard)
+                    continue;
+                //is inside a shelter or outside an inverted shelter
                 if (shelter.IsInBounds(body.corePosition, radius))
                 {
                     return true;
@@ -55,6 +60,11 @@ namespace RainrotSharedUtils.Shelters
         {
             foreach (ShelterProviderBehavior shelter in ShelterProviderBehavior.readOnlyInstancesList)
             {
+                bool isHazard = shelter.isHazardZone;
+                //if filtering for [storms] and shelter is [void seed fog bubble], then skip
+                if (isHazard)
+                    continue;
+                //is inside a shelter or outside an inverted shelter
                 if (shelter.IsInBounds(position, radius))
                 {
                     return true;
@@ -71,36 +81,42 @@ namespace RainrotSharedUtils.Shelters
             On.RoR2.SphereZone.OnEnable += SheltersOnSphereZoneEnable;
             On.RoR2.VerticalTubeZone.OnEnable += SheltersOnTubeZoneEnable;
 
-            On.RoR2.FogDamageController.GetAffectedBodiesOnTeam += ShelterProtectFromFog2;
-            On.RoR2.FogDamageController.EvaluateTeam += ShelterProtectFromFog;
+            //related to voidlings final stand, could disable
+            On.RoR2.FogDamageController.GetAffectedBodiesOnTeam += GetFogAffectedBodies;
+            On.RoR2.FogDamageController.EvaluateTeam += EvaluateShelteredTeam;
+            //IL.RoR2.FogDamageController.
 
             RoR2.Run.onRunDestroyGlobal += SheltersOnRunDestroy;
         }
 
-        private static void ShelterProtectFromFog(On.RoR2.FogDamageController.orig_EvaluateTeam orig, FogDamageController self, TeamIndex teamIndex)
+        private static void EvaluateShelteredTeam(On.RoR2.FogDamageController.orig_EvaluateTeam orig, FogDamageController self, TeamIndex teamIndex)
         {
-            if (ShelterProviderBehavior.readOnlyInstancesList.Count == self.safeZones.Count)
-            {
-                orig(self, teamIndex);
-                return;
-            }
+            //if (ShelterProviderBehavior.readOnlyInstancesList.Count == self.safeZones.Count)
+            //{
+            //    orig(self, teamIndex);
+            //    return;
+            //}
             foreach (TeamComponent teamComponent in TeamComponent.GetTeamMembers(teamIndex))
             {
                 CharacterBody body = teamComponent.body;
                 bool bodyHasStacks = self.characterBodyToStacks.ContainsKey(body);
+                //this (below) is the only line different from orig, IsBodySheltered instead of false
                 bool bodyIsSheltered = IsBodySheltered(body);
                 bool bodyHasCooldown = body.HasBuff(RoR2Content.Buffs.VoidFogStackCooldown);
-                //using (List<IZone>.Enumerator enumerator2 = self.safeZones.GetEnumerator())
-                //{
-                //    while (enumerator2.MoveNext())
-                //    {
-                //        if (enumerator2.Current.IsInBounds(teamComponent.transform.position))
-                //        {
-                //            flag2 = true;
-                //            break;
-                //        }
-                //    }
-                //}
+                if (!bodyIsSheltered)
+                {
+                    using (List<IZone>.Enumerator enumerator2 = self.safeZones.GetEnumerator())
+                    {
+                        while (enumerator2.MoveNext())
+                        {
+                            if (enumerator2.Current.IsInBounds(teamComponent.transform.position))
+                            {
+                                bodyIsSheltered = true;
+                                break;
+                            }
+                        }
+                    }
+                }
                 if (bodyIsSheltered)
                 {
                     if (bodyHasStacks)
@@ -129,19 +145,20 @@ namespace RainrotSharedUtils.Shelters
             }
         }
 
-        private static IEnumerable<CharacterBody> ShelterProtectFromFog2(On.RoR2.FogDamageController.orig_GetAffectedBodiesOnTeam orig, FogDamageController self, TeamIndex teamIndex)
+        private static IEnumerable<CharacterBody> GetFogAffectedBodies(On.RoR2.FogDamageController.orig_GetAffectedBodiesOnTeam orig, FogDamageController self, TeamIndex teamIndex)
         {
             IEnumerable<CharacterBody> affectedBodies = orig(self, teamIndex);
 
             return affectedBodies.Where(body => !ShelterUtilsModule.IsBodySheltered(body));
         }
 
-        private static ShelterProviderBehavior AddShelterProvider(GameObject obj, IZone zone)
+        private static ShelterProviderBehavior AddShelterProvider(GameObject obj, IZone zone, bool inverted = false)
         {
             ShelterProviderBehavior shelter = obj.GetComponent<ShelterProviderBehavior>();
             if (!shelter)
             {
                 shelter = obj.AddComponent<ShelterProviderBehavior>();
+                shelter.isHazardZone = inverted;
             }
             shelter.zoneBehavior = zone;
             return shelter;
@@ -176,8 +193,7 @@ namespace RainrotSharedUtils.Shelters
         private static void SheltersOnSphereZoneEnable(On.RoR2.SphereZone.orig_OnEnable orig, SphereZone self)
         {
             orig(self);
-            if(!self.isInverted)
-                AddShelterProvider(self.gameObject, self as IZone);
+            AddShelterProvider(self.gameObject, self as IZone, self.isInverted);
         }
 
         private static void SheltersOnHoldoutAwake(On.RoR2.HoldoutZoneController.orig_Awake orig, HoldoutZoneController self)
