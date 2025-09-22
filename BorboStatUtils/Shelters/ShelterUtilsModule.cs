@@ -1,4 +1,5 @@
-﻿using RoR2;
+﻿using EntityStates;
+using RoR2;
 using RoR2BepInExPack.Utilities;
 using System;
 using System.Collections.Generic;
@@ -81,12 +82,63 @@ namespace RainrotSharedUtils.Shelters
             On.RoR2.SphereZone.OnEnable += SheltersOnSphereZoneEnable;
             On.RoR2.VerticalTubeZone.OnEnable += SheltersOnTubeZoneEnable;
 
-            //related to voidlings final stand, could disable
-            On.RoR2.FogDamageController.GetAffectedBodiesOnTeam += GetFogAffectedBodies;
-            On.RoR2.FogDamageController.EvaluateTeam += EvaluateShelteredTeam;
             //IL.RoR2.FogDamageController.
+            On.RoR2.FogDamageController.EvaluateTeam += EvaluateShelteredTeam;
+            //related to voidlings final stand, could disable this
+            On.RoR2.FogDamageController.GetAffectedBodiesOnTeam += GetFogAffectedBodies;
+
+            //mockshelters
+            On.RoR2.HalcyoniteShrineInteractable.DrainConditionMet += MockShelter_Halcyon;
+            On.RoR2.TeleporterInteraction.ChargingState.OnExit += MockShelter_TP;
 
             RoR2.Run.onRunDestroyGlobal += SheltersOnRunDestroy;
+        }
+
+
+        private static void MockShelter_TP(On.RoR2.TeleporterInteraction.ChargingState.orig_OnExit orig, BaseState self)
+        {
+            Debug.LogError("MockShelter TP");
+            HoldoutZoneController zone = (self as TeleporterInteraction.ChargingState).teleporterInteraction.holdoutZoneController;
+            float radius = zone.currentRadius;
+            GameObject indicator = zone.radiusIndicator.gameObject;
+            MakeMockShelter(indicator, radius, 25f);
+
+            orig(self);
+        }
+
+        private static void MockShelter_Halcyon(On.RoR2.HalcyoniteShrineInteractable.orig_DrainConditionMet orig, RoR2.HalcyoniteShrineInteractable self)
+        {
+            Debug.LogError("MockShelter Halcyon");
+            float radius = self.radius;
+            //self.shrineHalcyoniteBubble.SetActive(true);
+            GameObject indicator = self.shrineHalcyoniteBubble.gameObject;
+            //self.shrineHalcyoniteBubble.SetActive(false);
+            MakeMockShelter(indicator, radius, 15f, stupidBullshit: 2);
+
+            orig(self);
+        }
+
+        private static void MakeMockShelter(GameObject indicator, float startRadius, float endRadius, float stupidBullshit = 1)
+        {
+            GameObject mockShelter = new GameObject();
+            mockShelter.name = "MockShelter";
+            mockShelter.transform.position = indicator.transform.position;
+            MockShelterComponent shelterComponent = mockShelter.AddComponent<MockShelterComponent>();
+            shelterComponent.startingRadius = startRadius;
+            shelterComponent.endRadius = endRadius;
+            shelterComponent.scaleMultiplier = stupidBullshit;
+
+            if (indicator == null)
+                return;
+            GameObject newIndicator = GameObject.Instantiate(indicator, mockShelter.transform);
+            if (!newIndicator.activeInHierarchy)
+                newIndicator.SetActive(true);
+            newIndicator.transform.parent = mockShelter.transform;
+            shelterComponent.areaIndicatorReference = newIndicator;
+            if (newIndicator.TryGetComponent<ShelterProviderBehavior>(out ShelterProviderBehavior component))
+            {
+                component.enabled = false;
+            }
         }
 
         private static void EvaluateShelteredTeam(On.RoR2.FogDamageController.orig_EvaluateTeam orig, FogDamageController self, TeamIndex teamIndex)
@@ -152,7 +204,7 @@ namespace RainrotSharedUtils.Shelters
             return affectedBodies.Where(body => !ShelterUtilsModule.IsBodySheltered(body));
         }
 
-        private static ShelterProviderBehavior AddShelterProvider(GameObject obj, IZone zone, bool inverted = false)
+        private static ShelterProviderBehavior AddShelterProvider(GameObject obj, IZone zone, bool inverted = false, float radius = 0)
         {
             ShelterProviderBehavior shelter = obj.GetComponent<ShelterProviderBehavior>();
             if (!shelter)
@@ -161,6 +213,7 @@ namespace RainrotSharedUtils.Shelters
                 shelter.isHazardZone = inverted;
             }
             shelter.zoneBehavior = zone;
+            shelter.fallbackRadius = radius;
             return shelter;
         }
 
@@ -181,25 +234,28 @@ namespace RainrotSharedUtils.Shelters
         {
             orig(self);
 
-            ShelterProviderBehavior shelter = AddShelterProvider(self.gameObject, self.holdoutZoneController as IZone);
+            ShelterProviderBehavior shelter = AddShelterProvider(self.gameObject, self.holdoutZoneController as IZone, 
+                radius: self.holdoutZoneController.baseRadius);
+            shelter.holdoutZoneController = self.holdoutZoneController;
             shelter.isSuperShelter = true;
         }
         private static void SheltersOnTubeZoneEnable(On.RoR2.VerticalTubeZone.orig_OnEnable orig, VerticalTubeZone self)
         {
             orig(self);
-            AddShelterProvider(self.gameObject, self as IZone);
+            AddShelterProvider(self.gameObject, self as IZone, radius: self.radius);
         }
 
         private static void SheltersOnSphereZoneEnable(On.RoR2.SphereZone.orig_OnEnable orig, SphereZone self)
         {
             orig(self);
-            AddShelterProvider(self.gameObject, self as IZone, self.isInverted);
+            AddShelterProvider(self.gameObject, self as IZone, self.isInverted, radius: self.radius);
         }
 
         private static void SheltersOnHoldoutAwake(On.RoR2.HoldoutZoneController.orig_Awake orig, HoldoutZoneController self)
         {
             orig(self);
-            AddShelterProvider(self.gameObject, self as IZone);
+            ShelterProviderBehavior shelter = AddShelterProvider(self.gameObject, self as IZone, radius: self.baseRadius);
+            shelter.holdoutZoneController = self;
         }
         #endregion
     }
