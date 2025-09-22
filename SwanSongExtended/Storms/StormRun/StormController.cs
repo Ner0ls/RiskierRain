@@ -200,15 +200,35 @@ namespace SwanSongExtended.Storms
                         new MeteorStormController.MeteorWave(
                             CharacterBody.readOnlyInstancesList
                                 .Where(body => /*!ShelterUtilsModule.IsBodySheltered(body) &&*/
-                                (body.teamComponent.teamIndex == TeamIndex.Player && !body.isFlying) 
+                                (body.teamComponent.teamIndex == TeamIndex.Player && !body.isFlying)
                                 || IsCharacterStormElite(body) || Util.CheckRoll(meteorTargetEnemyChance))
                                 .ToArray<CharacterBody>(),
                             TeleporterInteraction.instance ? TeleporterInteraction.instance.transform.position : base.transform.position);
                     item.hitChance = 1 - waveMissChance;
                     this.meteorWaves.Add(item);
                     this.meteorWaves.Add(item);
+
+                    AddShelterPerimeterStrikes();
+                    AddCharacterTargetedStrikes();
                 }
 
+                float num = float.PositiveInfinity;
+                if (Run.instance)
+                    num = Run.instance.time - meteorImpactDelay;
+                float num2 = num - meteorTravelEffectDuration;
+                for (int j = this.meteorsToDetonate.Count - 1; j >= 0; j--)
+                {
+                    MeteorStormController.Meteor meteor = this.meteorsToDetonate[j];
+                    if (meteor.startTime < num)
+                    {
+                        this.meteorsToDetonate.RemoveAt(j);
+                        this.DetonateMeteor(meteor);
+                    }
+                }
+            }
+
+            private void AddCharacterTargetedStrikes()
+            {
                 for (int i = this.meteorWaves.Count - 1; i >= 0; i--)
                 {
                     MeteorStormController.MeteorWave meteorWave = this.meteorWaves[i];
@@ -234,18 +254,65 @@ namespace SwanSongExtended.Storms
                         }
                     }
                 }
+            }
 
-                float num = float.PositiveInfinity;
-                if (Run.instance)
-                    num = Run.instance.time - meteorImpactDelay;
-                float num2 = num - meteorTravelEffectDuration;
-                for (int j = this.meteorsToDetonate.Count - 1; j >= 0; j--)
+            private void AddShelterPerimeterStrikes()
+            {
+                foreach (ShelterProviderBehavior shelter in ShelterProviderBehavior.readOnlyInstancesList)
                 {
-                    MeteorStormController.Meteor meteor = this.meteorsToDetonate[j];
-                    if (meteor.startTime < num)
+                    if (shelter.fallbackRadius <= 1)
+                        continue;
+                    if (shelter.isHazardZone)
                     {
-                        this.meteorsToDetonate.RemoveAt(j);
-                        this.DetonateMeteor(meteor);
+                        float shelterArea = 3 * shelter.fallbackRadius * shelter.fallbackRadius;
+                        continue;
+                    }
+
+                    float shelterPerimeter = 6 * shelter.fallbackRadius;
+                    float meteorCount = shelterPerimeter / (meteorBlastRadius * shelterPerimeterStrikeGap);
+                    float remainder = meteorCount - (float)Math.Truncate(meteorCount);
+                    if (Util.CheckRoll0To1(remainder))
+                        Mathf.CeilToInt(meteorCount);
+                    else
+                        Mathf.FloorToInt(meteorCount);
+
+                    for (int i = 0; i < meteorCount; i++)
+                    {
+                        float rand = UnityEngine.Random.Range(0f, 2f);
+                        float distance = shelter.fallbackRadius + (meteorBlastRadius * rand);
+                        Vector2 dir = UnityEngine.Random.insideUnitCircle.normalized;
+                        Vector3 vector = new Vector3(dir.x, 0, dir.y) * distance;
+
+                        MeteorStormController.Meteor meteor = new MeteorStormController.Meteor();
+                        meteor.startTime = Run.instance.time;
+                        meteor.impactPosition = shelter.transform.position + vector;
+
+                        Vector3 origin = meteor.impactPosition + Vector3.up * 6f;
+                        Vector3 onUnitSphere = UnityEngine.Random.onUnitSphere;
+                        onUnitSphere.y = -1f;
+                        RaycastHit raycastHit;
+                        if (Physics.Raycast(origin, onUnitSphere, out raycastHit, 12f, LayerIndex.world.mask, QueryTriggerInteraction.Ignore))
+                        {
+                            meteor.impactPosition = raycastHit.point;
+                        }
+                        else if (Physics.Raycast(meteor.impactPosition, Vector3.down, out raycastHit, float.PositiveInfinity, LayerIndex.world.mask, QueryTriggerInteraction.Ignore))
+                        {
+                            meteor.impactPosition = raycastHit.point;
+                        }
+                        else
+                        {
+                            meteor.valid = false;
+                        }
+
+                        if (GetMeteorViable(meteor))
+                        {
+                            this.meteorsToDetonate.Add(meteor);
+                            EffectManager.SpawnEffect(meteorWarningEffectPrefab, new EffectData
+                            {
+                                origin = meteor.impactPosition,
+                                scale = meteorBlastRadius
+                            }, true);
+                        }
                     }
                 }
             }

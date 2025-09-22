@@ -3,6 +3,7 @@ using R2API;
 using RainrotSharedUtils.Shelters;
 using RoR2;
 using RoR2.ExpansionManagement;
+using SwanSongExtended.Components;
 using SwanSongExtended.Elites;
 using SwanSongExtended.Modules;
 using System;
@@ -53,6 +54,7 @@ namespace SwanSongExtended.Storms
         public static float meteorBlastDamageScalarPerLevel = 0.5f;
         public static float meteorBlastRadius = 10;
         public static float meteorBlastForce = 0;
+        public static float shelterPerimeterStrikeGap = 10;
         public static BlastAttack.FalloffModel meteorFalloffModel = BlastAttack.FalloffModel.None;
         public static ModdedDamageType stormDamageType;
 
