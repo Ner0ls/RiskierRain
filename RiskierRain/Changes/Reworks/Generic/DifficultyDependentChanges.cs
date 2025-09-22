@@ -624,10 +624,10 @@ namespace RiskierRain
         public void AddPityCharge()
         {
             On.RoR2.TeleporterInteraction.ChargingState.FixedUpdate += WeakenBossPostTpCharge;
-            On.RoR2.TeleporterInteraction.ChargedState.OnExit += PityChargeOnExit;
+            On.RoR2.TeleporterInteraction.ChargingState.OnExit += PityChargeOnExit;
         }
 
-        private void PityChargeOnExit(On.RoR2.TeleporterInteraction.ChargedState.orig_OnExit orig, TeleporterInteraction.ChargedState self)
+        private void PityChargeOnExit(On.RoR2.TeleporterInteraction.ChargingState.orig_OnExit orig, TeleporterInteraction.ChargingState self)
         {
             orig(self);
             if (pityChargeOn)
