@@ -775,17 +775,11 @@ namespace RiskierRain
                 HalcyoniteShrineInteractable hsi = halcyoniteShrinePrefab.GetComponent<HalcyoniteShrineInteractable>();
                 if (hsi)
                 {
-                    ShelterProviderBehavior shelter = halcyoniteShrinePrefab.AddComponent<ShelterProviderBehavior>();
-                    shelter.fallbackRadius = halcyoniteShrineRadius;
-                    shelter.enabled = false;
-
                     hsi.lowGoldCost = halcyoniteShrineLowGoldCost;
                     hsi.midGoldCost = halcyoniteShrineMidGoldCost;
                     hsi.maxGoldCost = halcyoniteShrineMaxGoldCost;
                 }
             }
-            On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteNoQuality.OnEnter += ShrineHalcyoniteShelterStart;
-            On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteFinished.OnEnter += ShrineHalcyoniteShelterEnd;
         }
 
         private void ShrineHalcyoniteShelterEnd(On.EntityStates.ShrineHalcyonite.ShrineHalcyoniteFinished.orig_OnEnter orig, EntityStates.ShrineHalcyonite.ShrineHalcyoniteFinished self)

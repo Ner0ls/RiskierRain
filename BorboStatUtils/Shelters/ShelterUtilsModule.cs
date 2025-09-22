@@ -7,6 +7,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace RainrotSharedUtils.Shelters
 {
@@ -86,6 +87,18 @@ namespace RainrotSharedUtils.Shelters
             On.RoR2.FogDamageController.EvaluateTeam += EvaluateShelteredTeam;
             //related to voidlings final stand, could disable this
             On.RoR2.FogDamageController.GetAffectedBodiesOnTeam += GetFogAffectedBodies;
+
+            //halcyon
+            GameObject halcyoniteShrinePrefab = Addressables.LoadAssetAsync<GameObject>("RoR2/DLC2/ShrineHalcyonite.prefab").WaitForCompletion();
+            if (halcyoniteShrinePrefab)
+            {
+                HalcyoniteShrineInteractable hsi = halcyoniteShrinePrefab.GetComponent<HalcyoniteShrineInteractable>();
+                if (hsi)
+                {
+                    ShelterProviderBehavior shelter = halcyoniteShrinePrefab.AddComponent<ShelterProviderBehavior>();
+                    shelter.fallbackRadius = hsi.radius;
+                }
+            }
 
             //mockshelters
             On.RoR2.HalcyoniteShrineInteractable.DrainConditionMet += MockShelter_Halcyon;
