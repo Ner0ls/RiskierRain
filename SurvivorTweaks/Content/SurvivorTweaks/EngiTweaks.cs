@@ -35,6 +35,7 @@ namespace SurvivorTweaks.SurvivorTweaks
 
         public override void Init()
         {
+            ShelterUtilsModule.UseCustomShelters = true;
             GetBodyObject();
             GetSkillsFromBodyObject(bodyObject);
 

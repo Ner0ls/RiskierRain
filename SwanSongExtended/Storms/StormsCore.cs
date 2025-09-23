@@ -60,7 +60,7 @@ namespace SwanSongExtended.Storms
 
         public static void Init()
         {
-            ShelterUtilsModule.useShelterBuff = true;
+            ShelterUtilsModule.UseGlobalShelters = true;
             stormDamageType = ReserveDamageType();
             CreateStormEliteTiers();
             CreateStormsRunBehaviorPrefab();

@@ -56,11 +56,17 @@ namespace RainrotSharedUtils.Shelters
 
         void OnEnable()
         {
+            if(!ShelterUtilsModule.UseGlobalShelters && !ShelterUtilsModule.UseCustomShelters)
+            {
+                Debug.LogError("Shelter Provider cannot initialize: Shelter Module not enabled. (Set UseGlobalShelters or UseCustomShelters to true!)");
+                Destroy(this);
+            }
             instancesList.Add(this);
         }
         void OnDisable()
         {
-            instancesList.Remove(this);
+            if(instancesList.Contains(this))
+                instancesList.Remove(this);
         }
     }
 }

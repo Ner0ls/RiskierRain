@@ -13,7 +13,8 @@ namespace RainrotSharedUtils.Shelters
 {
     public static class ShelterUtilsModule
     {
-        public static bool useShelterBuff = false;
+        public static bool UseGlobalShelters = false;
+        public static bool UseCustomShelters = false;
 
         #region interfacing
         public static bool IsBodySuperSheltered(CharacterBody body, float radius = 0)
@@ -110,7 +111,6 @@ namespace RainrotSharedUtils.Shelters
 
         private static void MockShelter_TP(On.RoR2.TeleporterInteraction.ChargingState.orig_OnExit orig, BaseState self)
         {
-            Debug.LogError("MockShelter TP");
             HoldoutZoneController zone = (self as TeleporterInteraction.ChargingState).teleporterInteraction.holdoutZoneController;
             float radius = zone.currentRadius;
             GameObject indicator = zone.radiusIndicator.gameObject;
@@ -121,7 +121,6 @@ namespace RainrotSharedUtils.Shelters
 
         private static void MockShelter_Halcyon(On.RoR2.HalcyoniteShrineInteractable.orig_DrainConditionMet orig, RoR2.HalcyoniteShrineInteractable self)
         {
-            Debug.LogError("MockShelter Halcyon");
             float radius = self.radius;
             //self.shrineHalcyoniteBubble.SetActive(true);
             GameObject indicator = self.shrineHalcyoniteBubble.gameObject;
@@ -133,6 +132,8 @@ namespace RainrotSharedUtils.Shelters
 
         private static void MakeMockShelter(GameObject indicator, float startRadius, float endRadius, float stupidBullshit = 1)
         {
+            if (!UseGlobalShelters)
+                return;
             GameObject mockShelter = new GameObject();
             mockShelter.name = "MockShelter";
             mockShelter.transform.position = indicator.transform.position;
@@ -156,11 +157,11 @@ namespace RainrotSharedUtils.Shelters
 
         private static void EvaluateShelteredTeam(On.RoR2.FogDamageController.orig_EvaluateTeam orig, FogDamageController self, TeamIndex teamIndex)
         {
-            //if (ShelterProviderBehavior.readOnlyInstancesList.Count == self.safeZones.Count)
-            //{
-            //    orig(self, teamIndex);
-            //    return;
-            //}
+            if (!UseCustomShelters && !UseGlobalShelters)
+            {
+                orig(self, teamIndex);
+                return;
+            }
             foreach (TeamComponent teamComponent in TeamComponent.GetTeamMembers(teamIndex))
             {
                 CharacterBody body = teamComponent.body;
@@ -246,6 +247,8 @@ namespace RainrotSharedUtils.Shelters
         private static void SheltersOnTeleporterAwake(On.RoR2.TeleporterInteraction.orig_Awake orig, TeleporterInteraction self)
         {
             orig(self);
+            if (!UseGlobalShelters)
+                return;
 
             ShelterProviderBehavior shelter = AddShelterProvider(self.gameObject, self.holdoutZoneController as IZone, 
                 radius: self.holdoutZoneController.baseRadius);
@@ -255,18 +258,24 @@ namespace RainrotSharedUtils.Shelters
         private static void SheltersOnTubeZoneEnable(On.RoR2.VerticalTubeZone.orig_OnEnable orig, VerticalTubeZone self)
         {
             orig(self);
+            if (!UseGlobalShelters)
+                return;
             AddShelterProvider(self.gameObject, self as IZone, radius: self.radius);
         }
 
         private static void SheltersOnSphereZoneEnable(On.RoR2.SphereZone.orig_OnEnable orig, SphereZone self)
         {
             orig(self);
+            if (!UseGlobalShelters)
+                return;
             AddShelterProvider(self.gameObject, self as IZone, self.isInverted, radius: self.radius);
         }
 
         private static void SheltersOnHoldoutAwake(On.RoR2.HoldoutZoneController.orig_Awake orig, HoldoutZoneController self)
         {
             orig(self);
+            if (!UseGlobalShelters)
+                return;
             ShelterProviderBehavior shelter = AddShelterProvider(self.gameObject, self as IZone, radius: self.baseRadius);
             shelter.holdoutZoneController = self;
         }

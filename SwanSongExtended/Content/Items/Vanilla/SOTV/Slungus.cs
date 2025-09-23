@@ -79,6 +79,7 @@ FUN-GUYS Inc. is not liable for any illness, injury, death, extended or permanen
 
         public override void Init()
         {
+            ShelterUtilsModule.UseCustomShelters = true;
             slungusBuff = Content.CreateAndAddBuff(
                 "bdSlungusActive",
                 Addressables.LoadAssetAsync<Sprite>("RoR2/Base/ElementalRings/texBuffElementalRingsReadyIcon.tif").WaitForCompletion(), //replace me
