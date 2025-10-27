@@ -45,6 +45,7 @@ namespace MoreStats
             On.RoR2.CharacterBody.UpdateOutOfCombatAndDanger += UpdateDangerMoreStats;
             // Luck Stat Fixes
             ILHook luckHook = new ILHook(typeof(CharacterMaster).GetMethod("get_luck"), ModifyLuck);
+            On.RoR2.CharacterMaster.OnInventoryChanged += FixLuckApply;
 
             // Barrier Decay And Shield Recharge
             IL.RoR2.HealthComponent.ServerFixedUpdate += HookHealthComponentUpdate;
@@ -92,6 +93,13 @@ namespace MoreStats
             }
         }
 
+        private static bool isRecalculatingLuck = false;
+        private static void FixLuckApply(On.RoR2.CharacterMaster.orig_OnInventoryChanged orig, CharacterMaster self)
+        {
+            isRecalculatingLuck = true;
+            orig(self);
+            isRecalculatingLuck = false;
+        }
         private static void ModifyLuck(ILContext il)
         {
             ILCursor c = new ILCursor(il);
@@ -102,6 +110,8 @@ namespace MoreStats
                 c.Emit(OpCodes.Ldarg_0);
                 c.EmitDelegate<Func<Single, CharacterMaster, Single>>((baseLuck, master) =>
                 {
+                    if (isRecalculatingLuck)
+                        return baseLuck;
                     if (master == null || !master.hasBody)
                         return baseLuck;
 
