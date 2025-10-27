@@ -79,6 +79,8 @@ namespace MoreStats
                     }
                     return healAmt;
                 });
+                c.Emit(OpCodes.Starg, 1);
+                c.Emit(OpCodes.Ldarg_1);
             }
             else
             {
