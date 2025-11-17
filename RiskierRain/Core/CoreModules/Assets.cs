@@ -24,21 +24,6 @@ namespace RiskierRain.CoreModules
         {
             return System.IO.Path.Combine(System.IO.Path.GetDirectoryName(RiskierRainPlugin.PInfo.Location), bundleName);
         }
-
-        private static AssetBundle _mainAssetBundle;
-        public static AssetBundle mainAssetBundle
-        {
-            get
-            {
-                if (_mainAssetBundle == null)
-                    _mainAssetBundle = AssetBundle.LoadFromFile(GetAssetBundlePath("itmightbebad"));
-                return _mainAssetBundle;
-            }
-            set
-            {
-                _mainAssetBundle = value;
-            }
-        }
         public static AssetBundle _retierAssetBundle;
         public static AssetBundle retierAssetBundle
         {
