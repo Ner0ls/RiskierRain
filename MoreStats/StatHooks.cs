@@ -44,8 +44,9 @@ namespace MoreStats
             // Continuously Update Shield Ready
             On.RoR2.CharacterBody.UpdateOutOfCombatAndDanger += UpdateDangerMoreStats;
             // Luck Stat Fixes
-            ILHook luckHook = new ILHook(typeof(CharacterMaster).GetMethod("get_luck"), ModifyLuck);
-            On.RoR2.CharacterMaster.OnInventoryChanged += FixLuckApply;
+            //luck
+            On.RoR2.CharacterMaster.OnInventoryChanged += GetMasterLuck;
+            On.RoR2.Util.CheckRoll_float_float_CharacterMaster += RoundLuckInCheckRoll;
 
             // Barrier Decay And Shield Recharge
             IL.RoR2.HealthComponent.ServerFixedUpdate += HookHealthComponentUpdate;
@@ -92,59 +93,6 @@ namespace MoreStats
                 Debug.LogError("MoreStats Healing Hook Failed!!!!");
             }
         }
-
-        private static bool isRecalculatingLuck = false;
-        private static void FixLuckApply(On.RoR2.CharacterMaster.orig_OnInventoryChanged orig, CharacterMaster self)
-        {
-            isRecalculatingLuck = true;
-            orig(self);
-            isRecalculatingLuck = false;
-        }
-        private static void ModifyLuck(ILContext il)
-        {
-            ILCursor c = new ILCursor(il);
-            if(c.TryGotoNext(MoveType.Before,
-                x => x.MatchRet()
-                ))
-            {
-                c.Emit(OpCodes.Ldarg_0);
-                c.EmitDelegate<Func<Single, CharacterMaster, Single>>((baseLuck, master) =>
-                {
-                    if (isRecalculatingLuck)
-                        return baseLuck;
-                    if (master == null || !master.hasBody)
-                        return baseLuck;
-
-                    CharacterBody body = master.GetBody();
-                    if (body == null)
-                        return baseLuck;
-                    MoreStatCoefficients msc = GetMoreStatsFromBody(body);
-                    float newLuck = baseLuck + msc.luckAdd;
-                    float remainder = newLuck % 1;
-                    if (remainder < 0)
-                        remainder += 1;
-                    if (remainder > Single.Epsilon && Util.CheckRoll(remainder * 100, 0))
-                    {
-                        newLuck = Mathf.CeilToInt(newLuck);
-                    }
-                    else
-                    {
-                        newLuck = Mathf.FloorToInt(newLuck);
-                    }
-                    return newLuck;
-                });
-            }
-            else
-            {
-                Debug.LogError("MoreStats Luck Hook Failed!!!!");
-                Debug.LogError("MoreStats Luck Hook Failed!!!!");
-                Debug.LogError("MoreStats Luck Hook Failed!!!!");
-                Debug.LogError("MoreStats Luck Hook Failed!!!!");
-                Debug.LogError("MoreStats Luck Hook Failed!!!!");
-            }
-        }
-
-
 
         #region events
         public static FixedConditionalWeakTable<CharacterBody, MoreStatCoefficients> characterCustomStats = new FixedConditionalWeakTable<CharacterBody, MoreStatCoefficients>();
@@ -308,10 +256,12 @@ namespace MoreStats
             c.EmitDelegate<Action<CharacterBody>>((body) =>
             {
                 //get stats
-                CustomStats = characterCustomStats.GetOrCreateValue(body);
+                CustomStats = GetMoreStatsFromBody(body);
                 CustomStats.ResetStats();
 
-                CustomStats.luckAdd = StatMods.luckAdd;
+                if (body.master)
+                    body.master.luck = CustomStats.luckFromMaster + StatMods.luckAdd;
+
                 CustomStats.burnChance = StatMods.burnChanceOnHit;
                 //CustomStats.chillChance = StatMods.chillChanceOnHit;
                 CustomStats.healingMult = StatMods.healingPercentIncreaseMult;
@@ -512,15 +462,31 @@ namespace MoreStats
         #endregion
 
         #region luck
-        private static void UpdateMoreLuckStat(On.RoR2.CharacterMaster.orig_OnInventoryChanged orig, CharacterMaster self)
+        private static void GetMasterLuck(On.RoR2.CharacterMaster.orig_OnInventoryChanged orig, CharacterMaster self)
         {
-            CharacterBody body = self.GetBody();
-            if (body)
-            {
-                MoreStatCoefficients stats = GetMoreStatsFromBody(body);
-                stats.luckAdd = 0;
-            }
             orig(self);
+            CharacterBody body = self.GetBody();
+            if (body == null)
+                return;
+            MoreStatCoefficients customStats = GetMoreStatsFromBody(body);
+            customStats.luckFromMaster = self.luck;
+            //body.RecalculateStats();
+        }
+
+        private static bool RoundLuckInCheckRoll(On.RoR2.Util.orig_CheckRoll_float_float_CharacterMaster orig, float percentChance, float luck, CharacterMaster effectOriginMaster)
+        {
+            float remainder = luck % 1;
+            if (remainder < 0)
+                remainder += 1;
+            if (remainder > Single.Epsilon && Util.CheckRoll(remainder * 100, 0))
+            {
+                luck = (float)Math.Ceiling(luck);
+            }
+            else
+            {
+                luck = (float)Math.Floor(luck);
+            }
+            return orig(percentChance, luck, effectOriginMaster);
         }
         #endregion
 
@@ -635,7 +601,7 @@ namespace MoreStats
         public float barrierDecayDynamicHalfLife = 0;
         public float barrierGenRate = 0;
 
-        public float luckAdd = 0;
+        public float luckFromMaster = 0;
         public float burnChance = 0;
         //public float chillChance = 0;
 
@@ -648,13 +614,15 @@ namespace MoreStats
 
         public float healingMult = 1;
 
-        public void ResetStats()
+        /// <summary>
+        /// Does not reset luckFromMaster
+        /// </summary>
+        internal void ResetStats()
         {
             barrierDecayFrozen = false;
             barrierDecayDynamicHalfLife = 0;
             barrierGenRate = 0;
 
-            luckAdd = 0;
             burnChance = 0;
             //chillChance = 0;     
             
